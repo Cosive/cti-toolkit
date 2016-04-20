@@ -3,16 +3,28 @@
 from setuptools import setup
 
 setup(name='certau_stix_toolkit',
-    version='0.1',
+    version='1.0',
     description='CERT Australia STIX utilities',
     author='CERT Australia, Australian Government',
     author_email='info@cert.gov.au',
     url='http://www.cert.gov.au/',
     packages={
         'certau',
-        'certau/client',
-        'certau/transform'
+        'certau/source',
+        'certau/transform',
     },
-    scripts=[ 'scripts/stixtransclient.py' ],
-    install_requires=['configargparse','lxml','libtaxii','cybox==2.1.0.12','stix==1.1.1.5','pymisp','requests'],
+    scripts=[
+        'scripts/stixtransclient.py',
+    ],
+    install_requires=[
+        'configargparse',
+        'lxml',
+        'libtaxii',
+        'cybox==2.1.0.12',
+        'stix==1.1.1.5',
+        'stix-ramrod',
+        'mixbox',
+        'pymisp',
+        'requests',
+    ]
 )

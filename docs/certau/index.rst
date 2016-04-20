@@ -6,5 +6,5 @@ Contents:
 .. toctree::
     :maxdepth: 2
 
-    stixtrans
-    taxii
+    source
+    transform

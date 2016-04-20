@@ -1,1 +1,0 @@
-from .taxii import SimpleTaxiiClient

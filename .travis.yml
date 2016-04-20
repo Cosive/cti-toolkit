@@ -1,0 +1,11 @@
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libxml2-dev libxslt1-dev libz-dev
+sudo: true
+language: python
+python:
+  - "2.7"
+install: pip install tox-travis python-coveralls
+script: tox
+after_success:
+  - coveralls

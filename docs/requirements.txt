@@ -1,0 +1,2 @@
+# Requirements for readthedocs.org site
+sphinxcontrib-napoleon

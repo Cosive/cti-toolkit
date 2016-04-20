@@ -5,8 +5,8 @@ Installation
 
 This document describes how to install the CERT Australia CTI Toolkit.
 
-Installation is streamlined using Python's setuptools. The following installation
-process has been tested on clean install of Ubuntu 14.04.
+Installation is streamlined using Python's setuptools. The following
+installation process has been tested on clean install of Ubuntu 14.04.
 
 #. Install prerequisites required by setuptools and libtaxii::
 
@@ -30,10 +30,23 @@ That's it. You should now be able to run utilities, such as stixtransclient.py::
 Documentation
 -------------
 
+Online documentation is available at `<http://cti-toolkit.readthedocs.org/>`_.
+
 To build the documentation you need Sphinx::
 
-    $ sudo pip install Sphinx sphinxcontrib-napoleon
+    $ sudo pip install Sphinx sphinxcontrib-napoleon sphinx_rtd_theme
     $ cd docs
     $ make html
 
-This will create an HTML version of the documentation in docs/_build/html.
+This will create an HTML version of the documentation in ``docs/_build/html``.
+
+Tests
+-----
+
+Requires tox::
+
+    $ sudo pip install tox
+
+Then run the tests from the repository root using::
+
+    $ tox

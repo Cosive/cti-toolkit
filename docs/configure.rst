@@ -1,13 +1,21 @@
-:mod:`ctitoolkit.conf`
-======================
+.. _configuration:
 
-The stixtransclient.py utility can read its configuration parameters
-from the command line or configuration files located at:
+Configuration
+=============
+
+The ``stixtransclient.py`` utility can read its configuration parameters from
+the following locations:
  - /etc/ctitoolkit.conf
  - ~/.ctitoolkit
+ - a configuration file specified using the ``--config`` command line option
+ - as explicit command line parameters
+
+If a configuration option is specified in more than one of the above locations
+the last one processed will take precedence. Options are processed in the
+order listed above.
 
 Any options that can be specified on the command line can be specified
-in a configuration file. Command line options will always take precedence.
+in a configuration file.
 
 :mod:`ctitoolkit.conf` examples
 -------------------------------
@@ -53,4 +61,3 @@ FILE::
     misp: true
     misp_url:http://misp.host.tld
     misp_key:keykeykeykeykeykeyke
-

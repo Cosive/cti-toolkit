@@ -1,31 +1,31 @@
 <stix:STIX_Package
-	xmlns:AddressObj="http://cybox.mitre.org/objects#AddressObject-2"
-	xmlns:DomainNameObj="http://cybox.mitre.org/objects#DomainNameObject-1"
-	xmlns:EmailMessageObj="http://cybox.mitre.org/objects#EmailMessageObject-2"
-	xmlns:FileObj="http://cybox.mitre.org/objects#FileObject-2"
-	xmlns:HTTPSessionObj="http://cybox.mitre.org/objects#HTTPSessionObject-2"
-	xmlns:MutexObj="http://cybox.mitre.org/objects#MutexObject-2"
-	xmlns:NetworkConnectionObj="http://cybox.mitre.org/objects#NetworkConnectionObject-2"
-	xmlns:PortObj="http://cybox.mitre.org/objects#PortObject-2"
-	xmlns:SocketAddressObj="http://cybox.mitre.org/objects#SocketAddressObject-1"
-	xmlns:URIObj="http://cybox.mitre.org/objects#URIObject-2"
-	xmlns:WinRegistryKeyObj="http://cybox.mitre.org/objects#WinRegistryKeyObject-2"
-	xmlns:cert_au="http://www.cert.gov.au/"
-	xmlns:CCIRC-CCRIC="http://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx"
-	xmlns:CISCP="us-cert.gov/ciscp"
-	xmlns:NCCIC="us-cert.gov"
-	xmlns:coa="http://stix.mitre.org/CourseOfAction-1"
-	xmlns:cybox="http://cybox.mitre.org/cybox-2"
-	xmlns:cyboxCommon="http://cybox.mitre.org/common-2"
-	xmlns:cyboxVocabs="http://cybox.mitre.org/default_vocabularies-2"
-	xmlns:indicator="http://stix.mitre.org/Indicator-2"
-	xmlns:marking="http://data-marking.mitre.org/Marking-1"
-	xmlns:stix="http://stix.mitre.org/stix-1"
-	xmlns:stixCommon="http://stix.mitre.org/common-1"
-	xmlns:stixVocabs="http://stix.mitre.org/default_vocabularies-1"
-	xmlns:tlpMarking="http://data-marking.mitre.org/extensions/MarkingStructure#TLP-1"
-	xmlns:ttp="http://stix.mitre.org/TTP-1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="cert_au:Package-dd2d0b1c-22d6-48b8-a511-2659a642015d" version="1.1.1" timestamp="2015-12-23T03:06:50.254779+00:00">
+    xmlns:AddressObj="http://cybox.mitre.org/objects#AddressObject-2"
+    xmlns:DomainNameObj="http://cybox.mitre.org/objects#DomainNameObject-1"
+    xmlns:EmailMessageObj="http://cybox.mitre.org/objects#EmailMessageObject-2"
+    xmlns:FileObj="http://cybox.mitre.org/objects#FileObject-2"
+    xmlns:HTTPSessionObj="http://cybox.mitre.org/objects#HTTPSessionObject-2"
+    xmlns:MutexObj="http://cybox.mitre.org/objects#MutexObject-2"
+    xmlns:NetworkConnectionObj="http://cybox.mitre.org/objects#NetworkConnectionObject-2"
+    xmlns:PortObj="http://cybox.mitre.org/objects#PortObject-2"
+    xmlns:SocketAddressObj="http://cybox.mitre.org/objects#SocketAddressObject-1"
+    xmlns:URIObj="http://cybox.mitre.org/objects#URIObject-2"
+    xmlns:WinRegistryKeyObj="http://cybox.mitre.org/objects#WinRegistryKeyObject-2"
+    xmlns:cert_au="http://www.cert.gov.au/"
+    xmlns:CCIRC-CCRIC="http://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx"
+    xmlns:CISCP="us-cert.gov/ciscp"
+    xmlns:NCCIC="us-cert.gov"
+    xmlns:coa="http://stix.mitre.org/CourseOfAction-1"
+    xmlns:cybox="http://cybox.mitre.org/cybox-2"
+    xmlns:cyboxCommon="http://cybox.mitre.org/common-2"
+    xmlns:cyboxVocabs="http://cybox.mitre.org/default_vocabularies-2"
+    xmlns:indicator="http://stix.mitre.org/Indicator-2"
+    xmlns:marking="http://data-marking.mitre.org/Marking-1"
+    xmlns:stix="http://stix.mitre.org/stix-1"
+    xmlns:stixCommon="http://stix.mitre.org/common-1"
+    xmlns:stixVocabs="http://stix.mitre.org/default_vocabularies-1"
+    xmlns:tlpMarking="http://data-marking.mitre.org/extensions/MarkingStructure#TLP-1"
+    xmlns:ttp="http://stix.mitre.org/TTP-1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="cert_au:Package-dd2d0b1c-22d6-48b8-a511-2659a642015d" version="1.1.1" timestamp="2015-12-23T03:06:50.254779+00:00">
     <stix:STIX_Header>
         <stix:Title>CA-TEST-STIX</stix:Title>
         <stix:Package_Intent xsi:type="stixVocabs:PackageIntentVocab-1.0">Indicators</stix:Package_Intent>
@@ -99,7 +99,7 @@
                     <FileObj:Hashes>
                         <cyboxCommon:Hash>
                             <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
-                            <cyboxCommon:Simple_Hash_Value>cccccccccccccc33574c79829dc1ccf</cyboxCommon:Simple_Hash_Value>
+                            <cyboxCommon:Simple_Hash_Value>ccccccccccccccc33574c79829dc1ccf</cyboxCommon:Simple_Hash_Value>
                         </cyboxCommon:Hash>
                     </FileObj:Hashes>
                 </cybox:Properties>
@@ -108,7 +108,7 @@
         <cybox:Observable id="cert_au:Observable-84060d51-a524-483f-8f17-2e8ff8474d80">
             <cybox:Object id="cert_au:File-a0c56188-0bb8-4fb3-ac6a-5a77ca38c35e">
                 <cybox:Properties xsi:type="FileObj:FileObjectType">
-                    <FileObj:File_Name condition="Equals">Execute_this.jar</FileObj:File_Name>
+                    <FileObj:File_Name condition="Equals">Execute—this.jar</FileObj:File_Name>
                     <FileObj:Hashes>
                         <cyboxCommon:Hash>
                             <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
@@ -125,7 +125,7 @@
                     <FileObj:Hashes>
                         <cyboxCommon:Hash>
                             <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
-                            <cyboxCommon:Simple_Hash_Value condition="Equals">11111111111f2601b4d21660fb</cyboxCommon:Simple_Hash_Value>
+                            <cyboxCommon:Simple_Hash_Value condition="Equals">11111111111111111f2601b4d21660fb</cyboxCommon:Simple_Hash_Value>
                         </cyboxCommon:Hash>
                     </FileObj:Hashes>
                 </cybox:Properties>
@@ -138,7 +138,7 @@
                     <FileObj:Hashes>
                         <cyboxCommon:Hash>
                             <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">SHA256</cyboxCommon:Type>
-                            <cyboxCommon:Simple_Hash_Value condition="Equals">111111111111119f167683e164e795896be3be94de7f7103f67c6fde667bdf</cyboxCommon:Simple_Hash_Value>
+                            <cyboxCommon:Simple_Hash_Value condition="Equals">11111111111111119f167683e164e795896be3be94de7f7103f67c6fde667bdf</cyboxCommon:Simple_Hash_Value>
                         </cyboxCommon:Hash>
                         <cyboxCommon:Hash>
                             <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">SHA1</cyboxCommon:Type>

@@ -3,6 +3,5 @@ hostname: hailataxii.com
 username: guest
 password: guest
 path: /taxii-data
-collection: guest.dataForLast_7daysOnly 
+collection: guest.dataForLast_7daysOnly
 taxii: true
-soltra: true

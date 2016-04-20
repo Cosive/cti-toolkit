@@ -15,8 +15,8 @@ Contents:
    :maxdepth: 1
 
    install
-   stixtransclient
-   ctitoolkit.conf
+   configure
+   scripts/index
    certau/index
 
 

@@ -12,3 +12,6 @@ docs/_build
 # Tests
 .tox/
 .cache/
+
+# virtualenv
+env/
