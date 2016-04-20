@@ -4,8 +4,8 @@ CERT Australia CTI Toolkit
 .. image:: https://travis-ci.org/certau/cti-toolkit.svg?branch=master
     :target: https://travis-ci.org/certau/cti-toolkit
 
-.. image:: https://coveralls.io/repos/github/certau/cti-toolkit/badge.svg?branch=master
-    :target: https://coveralls.io/github/certau/cti-toolkit?branch=master
+.. image:: https://coveralls.io/repos/github/certau/cti-toolkit/badge.svg?branch=v1.0
+    :target: https://coveralls.io/github/certau/cti-toolkit?branch=v1.0
 
 .. image:: https://readthedocs.org/projects/cti-toolkit/badge/?version=latest
     :target: http://cti-toolkit.readthedocs.org/en/latest/?badge=latest
