@@ -1,0 +1,14 @@
+# See also https://github.com/github/gitignore/blob/master/Python.gitignore
+
+# Byte compiled / optimised / DLL files
+*.py[cod]
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+docs/_build
+
+# Tests
+.tox/
+.cache/

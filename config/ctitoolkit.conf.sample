@@ -1,0 +1,26 @@
+# Sample config file
+#  - stored in /etc/certaustix or ~/.certaustix
+#  - if both files exist contents of ~/.certaustix will override entries in /etc/certaustix
+#  - command line arguments will always win
+
+# hostname: name of taxii server you are connecting to
+hostname: taxii.host.tld
+
+# Location of the authentication certificate
+cert: /home/user/cert.pem
+
+# Location of the private key file associated with cert
+key: /home/user/key.pem
+
+# Username and password
+username: _username_
+password: _password_
+
+# Name of collection to poll
+collection: advisories
+
+# Flag to indicate whether SSL to be used
+ssl: true
+
+# Flag to indicate that taxii to be used (as opposed to reading a file)
+taxii: true
