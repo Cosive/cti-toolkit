@@ -12,8 +12,7 @@ installation process has been tested on clean install of Ubuntu 14.04.
 
     $ sudo apt-get install python-pip python-dev libxml2-dev libxslt1-dev libz-dev
 
-#. Clone the cti-toolkit repository (prompts for github username and
-   password)::
+#. Clone the cti-toolkit repository::
 
     $ git clone https://github.com/certau/cti-toolkit.git
 
