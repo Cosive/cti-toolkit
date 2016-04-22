@@ -62,3 +62,10 @@ Requires tox::
 Then run the tests from the repository root using::
 
     $ tox
+
+Acknowledgements
+----------------
+
+CERT Australia would like to acknowledge the following contributors:
+
+* `Robert Wallhead <https://github.com/thisismyrobot>`_
