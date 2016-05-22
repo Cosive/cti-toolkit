@@ -105,6 +105,10 @@ def get_arg_parser():
         help="hostname of TAXII server",
     )
     taxii_group.add_argument(
+        "--port",
+        help="port of TAXII server",
+    )
+    taxii_group.add_argument(
         "--username",
         help="username for TAXII authentication",
     )
@@ -273,6 +277,7 @@ def main():
         source = SimpleTaxiiClient(
             hostname=options.hostname,
             path=options.path,
+            port=options.port,
             collection=options.collection,
             use_ssl=options.ssl,
             username=options.username,

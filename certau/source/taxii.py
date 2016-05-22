@@ -38,13 +38,14 @@ class SimpleTaxiiClient(HttpClient, StixSource):
     """
 
     def __init__(self, hostname, path, collection,
-                 use_ssl=False, username=None, password=None,
+                 use_ssl=False, username=None, password=None, port=None, 
                  key_file=None, cert_file=None, begin_ts=None,
                  end_ts=None, subscription_id=None):
         super(SimpleTaxiiClient, self).__init__()
 
         self._logger = logging.getLogger()
         self._hostname = hostname
+        self._port = port
         self._path = path
         self._collection = collection
         self._begin_ts = begin_ts
@@ -138,6 +139,7 @@ class SimpleTaxiiClient(HttpClient, StixSource):
             self._path,
             VID_TAXII_XML_11,
             poll_request1.to_xml(),
+            self._port,
         )
         self._logger.debug("TAXII response received")
         self._logger.debug("HTTP response %s",
