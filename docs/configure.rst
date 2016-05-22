@@ -30,8 +30,11 @@ YETI::
     # Output data in Bro intel framework format
     source: YETI
     hostname: yeti.host.tld
+    port: 8443 #if on non-standard port
+    path: /services/poll/
     cert: /path/cert.pem
     key: /path/key.pem
+    ca_file: /path/ca_file.pem
     username: _USER_
     password: _PASSWORD_
     collection: advisories
@@ -39,7 +42,6 @@ YETI::
     ssl: true
     taxii: true
     bro: true
-    aus: true
 
 SoltraEdge::
 

@@ -28,6 +28,7 @@ class SimpleTaxiiClient(HttpClient, StixSource):
         use_ssl: use SSL when connecting to the TAXII server
         username: a username for password-based authentication
         password: a password for password-based authentication
+        port: the port to connect to on the TAXII server
         key_file: a private key file for SSL certificate-based authentication
         cert_file: a certificate file for SSL certificate-based authentication
         begin_ts: a timestamp to describe the earliest content to be returned
@@ -39,7 +40,7 @@ class SimpleTaxiiClient(HttpClient, StixSource):
 
     def __init__(self, hostname, path, collection,
                  use_ssl=False, username=None, password=None, port=None, 
-                 key_file=None, cert_file=None, begin_ts=None,
+                 key_file=None, cert_file=None, ca_file=None, begin_ts=None,
                  end_ts=None, subscription_id=None):
         super(SimpleTaxiiClient, self).__init__()
 
@@ -53,6 +54,13 @@ class SimpleTaxiiClient(HttpClient, StixSource):
         self._subscription_id = subscription_id
 
         self.set_use_https(use_ssl)
+        if ca_file:
+            self._logger.debug(
+                "SSL - verification using file (%s)",
+                ca_file
+            )
+            self.set_verify_server(verify_server=True, ca_file=ca_file)
+
         if use_ssl and username:
             self._logger.debug(
                 "AUTH - using CERT (%s) and User creds (%s:%s)",

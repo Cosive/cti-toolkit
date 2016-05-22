@@ -109,6 +109,10 @@ def get_arg_parser():
         help="port of TAXII server",
     )
     taxii_group.add_argument(
+        "--ca_file",
+        help="File containing CA certs of TAXII server",
+    )
+    taxii_group.add_argument(
         "--username",
         help="username for TAXII authentication",
     )
@@ -284,6 +288,7 @@ def main():
             password=options.password,
             key_file=options.key,
             cert_file=options.cert,
+            ca_file=options.ca_file,
             begin_ts=options.begin_timestamp,
             end_ts=options.end_timestamp,
             subscription_id=options.subscription_id,
