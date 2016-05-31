@@ -25,8 +25,16 @@ ssl: true
 # Flag to indicate that taxii to be used (as opposed to reading a file)
 taxii: true
 
-# This setting specifies the snort rule ID that the ctitoolkit will use.
+# This setting specifies the initial snort rule ID that the ctitoolkit will use to start from.
 # To include your own rules, assign a sid between 5000000-5999999
 # and add it to local.rules and run: perl /usr/share/ossim/scripts/create_sidmap.pl /etc/snort/rules/
 # and restart snort: /etc/init.d/snort restart
-snort-sid-range: 5000000-5999999
+#snort-initial-sid: 5500000
+
+# This setting specifies the revision number of the generated rules. It defaults to the
+# first revision (the first version of the rule).
+#snort-rule-revision: 1
+
+# This setting specifies the rule action that all generated rules will have.
+# The options are: [alert|log|pass|activate|dynamic|drop|reject|sdrop]
+#snort-rule-action: alert
