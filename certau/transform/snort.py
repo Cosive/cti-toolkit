@@ -27,11 +27,25 @@ class StixSnortTransform(StixTextTransform):
             [alert|log|pass|activate|dynamic|drop|reject|sdrop]
     """
 
+    OBJECT_FIELDS = {
+        'Address': ['address_value'],
+        'DomainName': ['value'],
+        'EmailMessage': [
+            'header.from_.address_value',
+            'header.to.address_value',
+        ],
+        'File': ['hashes.simple_hash_value'],
+        'HTTPSession': ['http_request_response.http_client_request.' +
+                        'http_request_header.parsed_header.user_agent'],
+        'SocketAddress': ['ip_address.address_value'],
+        'URI': ['value'],
+    }
+
     def __init__(self, package, separator='\t', include_header=False,
-                 include_observable_id=True,
+                 header_prefix='#', include_observable_id=True,
                  snort_initial_sid=5500000, snort_rule_revision=1, snort_rule_action="alert"):
         super(StixSnortTransform, self).__init__(
-            package, separator, include_header, include_observable_id,
+            package, separator, include_header, header_prefix,
         )
         self._sid = int(snort_initial_sid)
         self._snort_rule_revision = int(snort_rule_revision)
@@ -42,12 +56,11 @@ class StixSnortTransform(StixTextTransform):
         if object_type in self._observables:
             for observable in self._observables[object_type]:
                 id_ = observable['id']
-                for field in observable['fields']:
-                    try:
-                        ip = field["address_value"]
-                        text += '{} ip any any -> {} any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server {} (ID {})", sid:{}; rev:{}; classtype:bad-unknown;)\n'.format(self._snort_rule_action, ip, ip, id_, self._sid, self._snort_rule_revision)
-                    except KeyError:
-                        pass
-                    else:
+                try:
+                    for fields in observable['fields']:
+                        ip = fields["address_value"]
+                        text += '{} ip any any -> {} any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server {} (ID {})"; sid:{}; rev:{}; classtype:bad-unknown;)\n'.format(self._snort_rule_action, ip, ip, id_, self._sid, self._snort_rule_revision)
                         self._sid += 1
+                except KeyError:
+                    pass
         return text
