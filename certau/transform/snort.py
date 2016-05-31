@@ -2,7 +2,6 @@ import re
 
 from cybox.objects.address_object import Address
 from cybox.objects.uri_object import URI
-import pprint
 
 from .text import StixTextTransform
 
