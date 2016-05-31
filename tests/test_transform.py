@@ -162,3 +162,18 @@ def test_transform_to_bro(package):
         183.82.180.95\tIntel::ADDR\tCCIRC\thttps://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx\tF\t-\t-
         host.domain.tld/path/file\tIntel::URL\tCERT-AU\thttps://www.cert.gov.au/\tF\t-\t-
     """).strip().expandtabs()
+
+def test_transform_to_snort(package):
+    """Test of transform between a sample STIX file and the 'snort' output
+    format.
+    """
+    # Select 'stats' output format.
+    transformer = certau.transform.StixSnortTransform(
+            package, include_header=False
+    )
+
+    assert transformer.text().strip().expandtabs() == textwrap.dedent("""
+        alert ip any any -> 158.164.39.51 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 158.164.39.51 (ID cert_au:Observable-fe5ddeac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500000; rev:1; classtype:bad-unknown;)\n
+        alert ip any any -> 111.222.33.44 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 111.222.33.44 (ID cert_au:Observable-ccccceac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500001; rev:1; classtype:bad-unknown;)\n
+    """).strip().expandtabs()
+
