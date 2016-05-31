@@ -17,75 +17,16 @@ class StixSnortTransform(StixTextTransform):
     Args:
         package: the STIX package to process
         separator: a string separator used in the text output
-        include_header: a boolean value that indicates whether or not header
-            information should be included in the text output
-        header_prefix: a string prepended to header lines in the output
-        source: a value to include in the output metadata field 'meta.source'
-        url: a value to include in the output field metadata 'meta.url'
-        do_notice: a value to include in the output metadata field
-            'meta.do_notice', if set to 'T' a Bro notice will be raised by Bro
-            on a match of this indicator
+        include_observable_id: a boolean value that indicates whether or not
+            the observable id should be included in the text output
+        snort_initial_sid: the initial snort rule number the script should start
+            counting from.
+        snort_rule_revision: a number indicating which revision of the snort rule
+            should be generated. The default is 1 (first version of the rule).
+        snort_rule_action: a value from the following list that indicates the rule
+            action that all generated snort rules will have:
+            [alert|log|pass|activate|dynamic|drop|reject|sdrop]
     """
-
-    RULE_CONTENT = 'alert ip any any -> <BADIP> any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server <BADIP>", sid:<SNORTID>; rev:1; classtype:bad-unknown;)'
-
-    OBJECT_FIELDS = {
-        'Address': ['address_value'],
-        'DomainName': ['value'],
-        'EmailMessage': [
-            'header.from_.address_value',
-            'header.to.address_value',
-        ],
-        'File': ['hashes.simple_hash_value'],
-        'HTTPSession': ['http_request_response.http_client_request.' +
-                        'http_request_header.parsed_header.user_agent'],
-        'SocketAddress': ['ip_address.address_value'],
-        'URI': ['value'],
-    }
-
-    OBJECT_CONSTRAINTS = {
-        'Address': {
-            'category': [Address.CAT_IPV4, Address.CAT_IPV6],
-        },
-        'URI': {
-            'type_': [URI.TYPE_URL],
-        },
-    }
-
-    STRING_CONDITION_CONSTRAINT = ['None', 'Equals']
-
-    HEADER_LABELS = [
-        'indicator', 'indicator_type', 'meta.source', 'meta.url',
-        'meta.do_notice', 'meta.if_in', 'meta.whitelist',
-    ]
-
-    # Map Cybox object type to Bro Intel types.
-    BIF_TYPE_MAPPING = {
-        'Address': 'Intel::ADDR',
-        'DomainName': 'Intel::DOMAIN',
-        'EmailMessage': 'Intel::EMAIL',
-        'File': 'Intel::FILE_HASH',
-        'HTTPSession': 'Intel::SOFTWARE',
-        'SocketAddress': 'Intel::ADDR',
-        'URI': 'Intel::URL',
-    }
-
-    # Map observable id prefix to source and url.
-    BIF_SOURCE_MAPPING = {
-        'cert_au': {
-            'source': 'CERT-AU',
-            'url': 'https://www.cert.gov.au/',
-        },
-        'CCIRC-CCRIC': {
-            'source': 'CCIRC',
-            'url': ('https://www.publicsafety.gc.ca/' +
-                    'cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx'),
-        },
-        'NCCIC': {
-            'source': 'NCCIC',
-            'url': 'https://www.us-cert.gov/',
-        },
-    }
 
     def __init__(self, package, separator='\t', include_header=False,
                  include_observable_id=True,
