@@ -14,10 +14,11 @@ class StixSnortTransform(StixTextTransform):
     network-based intrusion detection system as Snort rules.
 
     Args:
-        package: the STIX package to process
-        separator: a string separator used in the text output
-        include_observable_id: a boolean value that indicates whether or not
-            the observable id should be included in the text output
+        package: the STIX package to transform
+        separator: the delimiter used in text output
+        include_header: a boolean value indicating whether
+            or not headers should be included in the output
+        header_prefix: a string prepended to each header row
         snort_initial_sid: the initial snort rule number the script should start
             counting from.
         snort_rule_revision: a number indicating which revision of the snort rule
@@ -42,10 +43,9 @@ class StixSnortTransform(StixTextTransform):
     }
 
     def __init__(self, package, separator='\t', include_header=False,
-                 header_prefix='#', include_observable_id=True,
-                 snort_initial_sid=5500000, snort_rule_revision=1, snort_rule_action="alert"):
+                 header_prefix='#', snort_initial_sid=5500000, snort_rule_revision=1, snort_rule_action="alert"):
         super(StixSnortTransform, self).__init__(
-            package, separator, include_header, header_prefix,
+            package, separator, include_header, header_prefix
         )
         self._sid = int(snort_initial_sid)
         self._snort_rule_revision = int(snort_rule_revision)

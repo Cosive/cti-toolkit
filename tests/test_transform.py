@@ -173,7 +173,7 @@ def test_transform_to_snort(package):
     )
 
     assert transformer.text().strip().expandtabs() == textwrap.dedent("""
-        alert ip any any -> 158.164.39.51 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 158.164.39.51 (ID cert_au:Observable-fe5ddeac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500000; rev:1; classtype:bad-unknown;)\n
-        alert ip any any -> 111.222.33.44 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 111.222.33.44 (ID cert_au:Observable-ccccceac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500001; rev:1; classtype:bad-unknown;)\n
+        alert ip any any -> 158.164.39.51 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 158.164.39.51 (ID cert_au:Observable-fe5ddeac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500000; rev:1; classtype:bad-unknown;)
+        alert ip any any -> 111.222.33.44 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 111.222.33.44 (ID cert_au:Observable-ccccceac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500001; rev:1; classtype:bad-unknown;)
     """).strip().expandtabs()
 
