@@ -24,15 +24,9 @@ installation process has been tested on clean install of Ubuntu 14.04.
 
     $ sudo apt-get install python-pip python-dev libxml2-dev libxslt1-dev libz-dev
 
-#. Clone the cti-toolkit repository::
+#. Install the cti-toolkit::
 
-    $ git clone https://github.com/certau/cti-toolkit.git
-
-#. Run the setup.py script to build and install the tools (and pip
-   dependencies)::
-
-    $ cd cti-toolkit
-    $ sudo python setup.py install
+    $ sudo pip install cti-toolkit
 
 That's it. You should now be able to run utilities, such as
 ``stixtransclient.py``::
