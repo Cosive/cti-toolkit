@@ -14,7 +14,7 @@ from stix.core import STIXPackage
 from certau.source import StixFileSource, SimpleTaxiiClient
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
-from certau.transform import StixMispTransform
+from certau.transform import StixMispTransform, StixSnortTransform
 
 
 def get_arg_parser():
@@ -81,6 +81,11 @@ def get_arg_parser():
         "-m", "--misp",
         action="store_true",
         help="feed output to a MISP server",
+    )
+    output_ex_group.add_argument(
+        "-sn", "--snort",
+        action="store_true",
+        help="output observables in Snort rule format",
     )
     output_ex_group.add_argument(
         "-x", "--xml_output",
@@ -184,6 +189,21 @@ def get_arg_parser():
         "--base-url",
         help="base URL for indicator source - use with --bro or --misp",
     )
+    snort_group = parser.add_argument_group(
+        title='snort output arguments (use with --snort)',
+    )
+    snort_group.add_argument(
+        "--snort-initial-sid",
+        help="The initial Snort IDs to begin from (default: 5500000)",
+    )
+    snort_group.add_argument(
+        "--snort-rule-revision",
+        help="The revision of the Snort rule (default: 1)",
+    )
+    snort_group.add_argument(
+        "--snort-rule-action",
+        help="Change all Snort rules generated to [alert|log|pass|activate|dynamic|drop|reject|sdrop]",
+    )
     misp_group = parser.add_argument_group(
         title='misp output arguments (use with --misp)',
     )
@@ -268,6 +288,15 @@ def main():
         transform_kwargs['analysis'] = options.misp_analysis
         transform_kwargs['information'] = options.misp_info
         transform_kwargs['published'] = options.misp_published
+    elif options.snort:
+        transform_class = StixSnortTransform
+        if options.snort_initial_sid:
+            transform_kwargs['snort_initial_sid'] = options.snort_initial_sid
+        if options.snort_rule_revision:
+            transform_kwargs['snort_rule_revision'] = options.snort_rule_revision
+        if options.snort_rule_action:
+            allowed_actions = ["alert","log","pass","activate","dynamic","drop","reject","sdrop"]
+            transform_kwargs['snort_rule_action'] = options.snort_rule_action if options.snort_rule_action in allowed_actions else "alert"
     elif options.xml_output:
         pass
     else:

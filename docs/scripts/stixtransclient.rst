@@ -4,8 +4,11 @@
 Few systems can utilise indicators and observables when stored in STIX packages.
 CERT Australia has developed a utility (``stixtransclient.py``) that allows the
 atomic observables contained within a STIX package to be extracted and presented
-in either a text delimited format, or in the `Bro Intel Framework
-<http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html>`_ format.
+in either a text delimited format, in the `Bro Intel Framework
+<http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html>`_ format, or in
+a `Snort
+<https://snort.org/>`_ or `Suricata
+<https://redmine.openinfosecfoundation.org/projects/suricata/wiki/Suricata>`_ rule format .
 The utility can also communicate with a `MISP
 <http://www.misp-project.org/>`_ server and insert observables from a STIX
 package into a new MISP event.
@@ -109,6 +112,22 @@ Display observables in the format used by the Bro Intelligence Framework
     183.82.180.95	Intel::ADDR	CCIRC	https://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx	T	-	-
     host.domain.tld/path/file	Intel::URL	CERT-AU	https://www.cert.gov.au/	T	-	-
 
+Display IP observables in the format used by Snort IDS starting with a snort rule id of 5590000
+(Note - Each run of stixtransclient.py will need a different sids::
+
+    $ stixtransclient.py --file CA-TEST-STIX.xml --snort --snort-initial-sid 5590000
+
+    alert ip any any -> 188.115.196.39 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 188.115.196.39 (ID cert_au:Observable-6a47b9da-ee08-413e-81ca-a3bb2ad46db4)", sid:5590000; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 59.210.83.95 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 59.210.83.95 (ID cert_au:Observable-0e1f6465-e9c2-4409-9e2b-29189bbd6ca0)", sid:5590001; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 217.105.97.215 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 217.105.97.215 (ID cert_au:Observable-f19853c3-4ce9-465f-9d5a-b194f85016ee)", sid:5590002; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 147.93.7.4 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 147.93.7.4 (ID cert_au:Observable-15404e6d-6c09-4c5c-8024-14b55d8dee66)", sid:5590003; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 203.95.198.169 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 203.95.198.169 (ID cert_au:Observable-f5832d9a-894c-4667-a1c7-2b37f5048740)", sid:5590004; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 110.244.163.122 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 110.244.163.122 (ID cert_au:Observable-f7b8c56b-1a69-4d02-99ee-30e9bdd59452)", sid:5590005; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 248.206.70.230 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 248.206.70.230 (ID cert_au:Observable-5ad9e361-f32f-4174-b854-27bb73d77645)", sid:5590006; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 99.253.98.57 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 99.253.98.57 (ID cert_au:Observable-1526c98f-950e-46da-931a-3749524c519f)", sid:5590007; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 3.46.87.116 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 3.46.87.116 (ID cert_au:Observable-62fb38b3-fc53-48cb-ad7d-6a9762ee87c4)", sid:5590008; rev:1; classtype:bad-unknown;)
+    alert ip any any -> 28.13.163.200 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 28.13.163.200 (ID cert_au:Observable-091354ba-6db5-42a6-8db0-1041b148ba28)", sid:5590009; rev:1; classtype:bad-unknown;)
+
 
 Command line options (help)
 ---------------------------
@@ -120,8 +139,9 @@ displayed below::
     
     usage: stixtransclient.py [-h] [-c CONFIG] [-v] [-d]
                               (--file FILE [FILE ...] | --taxii)
-                              (-s | -t | -b | -m | -x XML_OUTPUT) [-r]
-                              [--hostname HOSTNAME] [--username USERNAME]
+                              (-s | -t | -b | -m | -sn | -x XML_OUTPUT) [-r]
+                              [--hostname HOSTNAME] [--port PORT]
+                              [--ca_file CA_FILE] [--username USERNAME]
                               [--password PASSWORD] [--ssl] [--key KEY]
                               [--cert CERT] [--path PATH]
                               [--collection COLLECTION]
@@ -130,8 +150,11 @@ displayed below::
                               [--subscription-id SUBSCRIPTION_ID]
                               [-f FIELD_SEPARATOR] [--header] [--title TITLE]
                               [--source SOURCE] [--bro-no-notice]
-                              [--base-url BASE_URL] [--misp-url MISP_URL]
-                              [--misp-key MISP_KEY]
+                              [--base-url BASE_URL]
+                              [--snort-initial-sid SNORT_INITIAL_SID]
+                              [--snort-rule-revision SNORT_RULE_REVISION]
+                              [--snort-rule-action SNORT_RULE_ACTION]
+                              [--misp-url MISP_URL] [--misp-key MISP_KEY]
                               [--misp-distribution MISP_DISTRIBUTION]
                               [--misp-threat MISP_THREAT]
                               [--misp-analysis MISP_ANALYSIS]
@@ -166,6 +189,7 @@ displayed below::
       -t, --text            output observables in delimited text
       -b, --bro             output observables in Bro intel framework format
       -m, --misp            feed output to a MISP server
+      -sn, --snort          output observables in Snort rule format
       -x XML_OUTPUT, --xml_output XML_OUTPUT
                             output XML STIX packages to the given directory (use
                             with --taxii)
@@ -175,6 +199,8 @@ displayed below::
 
     taxii input arguments (use with --taxii):
       --hostname HOSTNAME   hostname of TAXII server
+      --port PORT           port of TAXII server
+      --ca_file CA_FILE     File containing CA certs of TAXII server
       --username USERNAME   username for TAXII authentication
       --password PASSWORD   password for TAXII authentication
       --ssl                 use SSL to connect to TAXII server
@@ -204,6 +230,15 @@ displayed below::
       --base-url BASE_URL   base URL for indicator source - use with --bro or
                             --misp
 
+    snort output arguments (use with --snort):
+      --snort-initial-sid SNORT_INITIAL_SID
+                            The initial Snort IDs to begin from (default: 5500000)
+      --snort-rule-revision SNORT_RULE_REVISION
+                            The revision of the Snort rule (default: 1)
+      --snort-rule-action SNORT_RULE_ACTION
+                            Change all Snort rules generated to
+                            [alert|log|pass|activate|dynamic|drop|reject|sdrop]
+
     misp output arguments (use with --misp):
       --misp-url MISP_URL   URL of MISP server
       --misp-key MISP_KEY   token for accessing MISP instance
@@ -215,6 +250,5 @@ displayed below::
       --misp-analysis MISP_ANALYSIS
                             MISP analysis phase - default: 0 (initial)
       --misp-info MISP_INFO
-                            MISP event description - default: 'Automated STIX
-                            ingest'
+                            MISP event description
       --misp-published      set MISP published state to True
