@@ -17,5 +17,7 @@
 
 .. autoclass:: certau.transform.StixBroIntelTransform
 
+.. autoclass:: certau.transform.StixSnortTransform
+
 .. autoclass:: certau.transform.StixMispTransform
     :members: get_misp_object

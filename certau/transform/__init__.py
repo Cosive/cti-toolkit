@@ -13,16 +13,20 @@ There are two broad types of transform currently supported:
      * :py:class:`StixCsvTransform` - display indicators in CSV format
      * :py:class:`StixBroIntelTransform` - display indicators in the Bro
        Intel format
+     * :py:class:`StixSnortTransform` - display indicators in the Snort
+       rule format
 
 #. Transforms that interact with a service:
      * :py:class:`StixMispTransform` - publish indicators to a MISP instance
 """
 
-__all__ = ['base', 'text', 'stats', 'csv', 'brointel', 'misp']
+__all__ = ['base', 'text', 'stats', 'csv', 'brointel', 'misp', 'snort']
+
 
 from .base import StixTransform
 from .text import StixTextTransform
 from .stats import StixStatsTransform
 from .csv import StixCsvTransform
 from .brointel import StixBroIntelTransform
+from .snort import StixSnortTransform
 from .misp import StixMispTransform

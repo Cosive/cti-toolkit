@@ -85,7 +85,6 @@ class StixMispTransform(StixTransform):
         self._misp_analysis = analysis
         self._misp_information = information
         self._misp_published = published
-        
 
     @staticmethod
     def get_misp_object(misp_url, misp_key, use_ssl=False):
@@ -110,7 +109,7 @@ class StixMispTransform(StixTransform):
                     self._misp_information += ' | '
                 if description:
                     self._misp_information += description
-            
+
         if self._package.timestamp:
             timestamp = self._package.timestamp
         else:
@@ -124,14 +123,14 @@ class StixMispTransform(StixTransform):
             date=timestamp.strftime('%Y-%m-%d'),
             published=self._misp_published,
         )
-        
+
         # Add TLP tag to the event - assumes MISP tag ids as follows
         # TLP:RED:   1
         # TLP:AMBER: 2
         # TLP:GREEN: 3
         # TLP:WHITE: 4
 
-        tlp_tags = {'red':1,'amber':2,'green':3,'white':4}
+        tlp_tags = {'red': 1, 'amber': 2, 'green': 3, 'white': 4}
         tlp_tag_id = tlp_tags[self.package_tlp().lower()]
         self._misp.add_tag(self._event, tlp_tag_id)
 
