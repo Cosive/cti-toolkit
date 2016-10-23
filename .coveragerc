@@ -1,0 +1,2 @@
+[run]
+omit = certau/scripts/stixtransclient.py

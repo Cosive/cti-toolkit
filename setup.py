@@ -2,20 +2,37 @@
 
 from setuptools import setup
 
-setup(name='certau_stix_toolkit',
-    version='1.0',
-    description='CERT Australia STIX utilities',
+setup(
+    name='cti-toolkit',
+    version='1.0.1',
+    description='CERT Australia cyber threat intelligence (CTI) toolkit',
+    url='https://github.com/certau/cti-toolkit/',
     author='CERT Australia, Australian Government',
     author_email='info@cert.gov.au',
-    url='http://www.cert.gov.au/',
+    license='BSD',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'Intended Audience :: Information Technology',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: BSD License',
+        'Natural Language :: English',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+    ],
+    keywords='STIX TAXII',
     packages={
         'certau',
+        'certau/scripts',
         'certau/source',
         'certau/transform',
     },
-    scripts=[
-        'scripts/stixtransclient.py',
-    ],
+    entry_points={
+        'console_scripts': [
+            'stixtransclient.py=certau.scripts.stixtransclient:main',
+        ],
+    },
     install_requires=[
         'configargparse',
         'lxml',
