@@ -29,8 +29,9 @@ class StixSnortTransform(StixTextTransform):
     """
 
     OBJECT_FIELDS = {
-        'Address': ['category', 'address_value'],
+        'Address': ['address_value'],
         'DomainName': ['value'],
+        'SocketAddress': ['ip_address.address_value'],
         'URI': ['value'],
     }
 
@@ -48,9 +49,12 @@ class StixSnortTransform(StixTextTransform):
         text = ''
         id_ = observable['id']
         if self.OBJECT_FIELDS and object_type in self.OBJECT_FIELDS:
-            if object_type == 'Address':
+            if object_type == 'Address' or object_type == 'SocketAddress':
                 for field in observable['fields']:
-                    ip = field['address_value']
+                    if object_type == 'Address':
+                        ip = field['address_value']
+                    else:
+                        ip = field['ip_address.address_value']
                     text += '{} ip any any -> {} any (flow:established,to_server; msg:"CTI-Toolkit connection to potentially malicious server {} (ID {})"; sid:{}; rev:{}; classtype:bad-unknown;)\n'.format(self._snort_rule_action, ip, ip, id_, self._sid, self._snort_rule_revision)
             elif object_type == 'DomainName':
                 for field in observable['fields']:
