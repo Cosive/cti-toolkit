@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='cti-toolkit',
-    version='1.1.0.dev1',
+    version='1.1.0.dev2',
     description='CERT Australia cyber threat intelligence (CTI) toolkit',
     url='https://github.com/certau/cti-toolkit/',
     author='CERT Australia, Australian Government',
