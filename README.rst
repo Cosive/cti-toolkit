@@ -10,6 +10,9 @@ CERT Australia CTI Toolkit
 .. image:: https://readthedocs.org/projects/cti-toolkit/badge/?version=latest
     :target: http://cti-toolkit.readthedocs.org/en/latest/?badge=latest
 
+.. image:: https://badge.fury.io/py/cti-toolkit.svg
+    :target: https://badge.fury.io/py/cti-toolkit
+
 This package contains cyber threat intelligence (CTI) tools created
 by CERT Australia.
 
