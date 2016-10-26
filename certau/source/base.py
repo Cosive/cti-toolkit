@@ -1,6 +1,7 @@
 import ramrod
 from stix.core import STIXPackage
 from stix.utils.parser import UnsupportedVersionError
+from stix.extensions.marking import ais  # Needed to support AIS Markings
 
 
 class StixSource(object):
