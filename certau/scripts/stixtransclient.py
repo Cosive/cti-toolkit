@@ -6,6 +6,7 @@ the STIX package(s), or a STIX package file can be supplied.
 
 import sys
 import logging
+import pkg_resources
 from StringIO import StringIO
 
 import configargparse
@@ -41,6 +42,12 @@ def get_arg_parser():
         "-d", "--debug",
         action="store_true",
         help="enable debug output",
+    )
+    version = pkg_resources.require('cti-toolkit')[0].version
+    global_group.add_argument(
+        "-V", "--version",
+        action="version",
+        version="cti-toolkit {} by CERT Australia".format(version),
     )
     # Source options
     source_group = parser.add_argument_group('input (source) options')
