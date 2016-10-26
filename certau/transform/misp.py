@@ -1,9 +1,15 @@
 import time
+import warnings
 from datetime import datetime
 
 from cybox.common import Hash
 from cybox.objects.address_object import Address
 from cybox.objects.uri_object import URI
+
+# suppress PyMISP warning about Python 2
+warnings.filterwarnings('ignore',
+    'You\'re using python 2, it is ' 'strongly recommended to use python >=3.3'
+)
 from pymisp import PyMISP
 
 from .base import StixTransform
