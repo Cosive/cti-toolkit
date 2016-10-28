@@ -13,6 +13,10 @@ CERT Australia CTI Toolkit
 .. image:: https://badge.fury.io/py/cti-toolkit.svg
     :target: https://badge.fury.io/py/cti-toolkit
 
+.. image:: https://landscape.io/github/certau/cti-toolkit/develop/landscape.svg?style=flat
+   :target: https://landscape.io/github/certau/cti-toolkit/develop
+   :alt: Code Health
+
 This package contains cyber threat intelligence (CTI) tools created
 by CERT Australia.
 
