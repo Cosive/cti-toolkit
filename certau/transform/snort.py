@@ -1,5 +1,3 @@
-import re
-
 from urlparse import urlparse
 
 from .text import StixTextTransform
@@ -45,6 +43,16 @@ class StixSnortTransform(StixTextTransform):
         self._snort_rule_revision = int(snort_rule_revision)
         self._snort_rule_action = snort_rule_action
 
+    def _snort_rule_text(self, match, conditions):
+        rule = '{} '.format(self._snort_rule_action)
+        rule += '{} ('.format(match)
+        for condition in conditions:
+            rule += '{}; '.format(condition)
+        rule += 'sid:{}; '.format(self._sid)
+        rule += 'rev:{}; '.format(self._snort_rule_revision)
+        rule += 'classtype:bad-unknown;)\n'
+        return rule
+
     def text_for_observable(self, observable, object_type):
         text = ''
         id_ = observable['id']
@@ -52,17 +60,46 @@ class StixSnortTransform(StixTextTransform):
             if object_type == 'Address' or object_type == 'SocketAddress':
                 for field in observable['fields']:
                     if object_type == 'Address':
-                        ip = field['address_value']
+                        address = field['address_value']
                     else:
-                        ip = field['ip_address.address_value']
-                    text += '{} ip any any -> {} any (flow:established,to_server; msg:"CTI-Toolkit connection to potentially malicious server {} (ID {})"; sid:{}; rev:{}; classtype:bad-unknown;)\n'.format(self._snort_rule_action, ip, ip, id_, self._sid, self._snort_rule_revision)
+                        address = field['ip_address.address_value']
+                    text += self._snort_rule_text(
+                        match='ip any any -> {} any'.format(address),
+                        conditions=[
+                            'flow:established,to_server',
+                            'msg:"CTI-Toolkit connection to potentially '
+                            'malicious server {} (ID {})"'.format(address, id_),
+                        ],
+                    )
             elif object_type == 'DomainName':
                 for field in observable['fields']:
                     domain = field['value']
-                    text += '{} tcp any any -> $EXTERNAL_NET $HTTP_PORTS (flow:established,to_server; content:"{}"; http_header; nocase; msg:"CTI-Toolkit connection to potentially malicious domain {} (ID {})"; sid:{}; rev:{}; classtype:bad-unknown;)\n'.format(self._snort_rule_action, domain, domain, id_, self._sid, self._snort_rule_revision)
+                    text += self._snort_rule_text(
+                        match='tcp any any -> $EXTERNAL_NET $HTTP_PORTS',
+                        conditions=[
+                            'flow:established,to_server',
+                            'content:"{}"'.format(domain),
+                            'http_header',
+                            'nocase',
+                            'msg:"CTI-Toolkit connection to potentially '
+                            'malicious domain {} (ID {})"'.format(domain, id_),
+                        ],
+                    )
             elif object_type == 'URI':
                 for field in observable['fields']:
                     url = urlparse(field['value'])
-                    text += '{} tcp any any -> $EXTERNAL_NET $HTTP_PORTS (flow:established,to_server; content:"{}"; http_header; nocase; uricontent:"{}"; nocase; msg:"CTI-Toolkit connection to potentially malicious url {} (ID {})"; sid:{}; rev:{}; classtype:bad-unknown;)\n'.format(self._snort_rule_action, url.netloc, url.path, url.geturl(), id_, self._sid, self._snort_rule_revision)
+                    text += self._snort_rule_text(
+                        match='tcp any any -> $EXTERNAL_NET $HTTP_PORTS',
+                        conditions=[
+                            'flow:established,to_server',
+                            'content:"{}"'.format(url.netloc),
+                            'http_header',
+                            'nocase',
+                            'uricontent:"{}"'.format(url.path),
+                            'nocase',
+                            'msg:"CTI-Toolkit connection to potentially '
+                            'malicious url {} (ID {})"'.format(url.geturl(), id_),
+                        ],
+                    )
             self._sid += 1
         return text

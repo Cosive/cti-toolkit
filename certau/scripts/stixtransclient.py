@@ -7,10 +7,8 @@ the STIX package(s), or a STIX package file can be supplied.
 import sys
 import logging
 import pkg_resources
-from StringIO import StringIO
 
 import configargparse
-from stix.core import STIXPackage
 
 from certau.source import StixFileSource, SimpleTaxiiClient
 from certau.transform import StixTextTransform, StixStatsTransform
