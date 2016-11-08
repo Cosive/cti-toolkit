@@ -39,7 +39,7 @@ class SimpleTaxiiClient(HttpClient, StixSource):
     """
 
     def __init__(self, hostname, path, collection,
-                 use_ssl=False, username=None, password=None, port=None, 
+                 use_ssl=False, username=None, password=None, port=None,
                  key_file=None, cert_file=None, ca_file=None, begin_ts=None,
                  end_ts=None, subscription_id=None):
         super(SimpleTaxiiClient, self).__init__()
