@@ -2,8 +2,8 @@ import logging
 import pprint
 import copy
 
-from mixbox import entities
-from mixbox import fields
+from mixbox.entities import Entity, EntityList
+#from mixbox import fields
 
 from cybox.core import Object
 from cybox.common import ObjectProperties
