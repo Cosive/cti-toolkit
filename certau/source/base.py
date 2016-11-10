@@ -7,12 +7,15 @@ from stix.extensions.marking import ais  # Needed to support AIS Markings
 class StixSource(object):
     """A base class for sources of STIX packages."""
 
-    def load_stix_package(self, stix_file):
+    def load_stix_package(self, stix_file, stix_version='1.2'):
         """Helper for loading and updating (if required) a STIX package."""
         try:
+            # TODO add in a version check to make sure that the returned STIX is
+            # what the user requested. If not, it needs ramrodding
             package = STIXPackage.from_xml(stix_file)
+            
         except UnsupportedVersionError:
-            updated = ramrod.update(stix_file, to_='1.1.1')
+            updated = ramrod.update(stix_file, to_=stix_version)
             document = updated.document.as_stringio()
             try:
                 package = STIXPackage.from_xml(document)
