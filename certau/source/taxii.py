@@ -138,9 +138,11 @@ class SimpleTaxiiClient(HttpClient, StixSource):
     def send_poll_request(self):
         """Send the poll request to the TAXII server."""
         poll_request1 = self.create_poll_request()
+        scheme = 'http'
+        if self.use_https:
+            scheme = 'https'
         self._logger.debug(
-            "Request generated: using collection name - %s",
-            self._collection)
+            "Request generated: {0}://{1}:{2}{3}, using collection name {4}".format(scheme, self._hostname,  self._port,  self._path, self._collection))
 
         http_response = self.call_taxii_service2(
             self._hostname,

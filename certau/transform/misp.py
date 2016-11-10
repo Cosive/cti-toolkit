@@ -1,10 +1,15 @@
 import time
+import warnings
+
 from datetime import datetime
 
 from cybox.common import Hash
 from cybox.objects.address_object import Address
 from cybox.objects.uri_object import URI
-from pymisp import PyMISP
+
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
+    from pymisp import PyMISP
 
 from .base import StixTransform
 
