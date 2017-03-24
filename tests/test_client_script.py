@@ -1,19 +1,22 @@
 """TAXII command-line client tests."""
-import sys
+import os
 import stixtransclient
 
+import certau
+import stix
 
-def test_bro_flag(process_package_args):
-    """Test the -b or --bro flags do a StixBroIntelTransform."""
 
-    # configargparse's import of sys.argv needs to be haxored :)
+def test_text_file_basic_transform(stixtransclient_commandline, process_package):
+    """Test the text file loading."""
+    stixtransclient_commandline.set([
+        '--file',
+        os.path.join('tests', 'CA-TEST-STIX.xml'),
+        '--text'
+    ])
 
     stixtransclient.main()
 
-#    x._process_package(1, 2, 3)
-
-    assert process_package_args == [1, 2, 3]
-
-#    x._process_package(1, 2, 8)
-
-#    assert process_package_args == [1, 2, 8]
+    package, _class, kwargs = process_package.was_called_with()
+    assert isinstance(package, stix.core.STIXPackage)
+    assert _class is certau.transform.StixCsvTransform
+    assert kwargs == {}
