@@ -19,41 +19,32 @@ def package():
 
 
 @pytest.fixture
-def stixtransclient_commandline(monkeypatch):
-    """Allow setting sys.argv."""
-    class Args(object):
-        """Just a helper type to allow for returning something with a 'set'
-        method.
-        """
+def client_wrapper(monkeypatch):
+    """Wrapper around the client to test command line arguments are mapped to
+    stixtransclient._process_package() properly.
+    """
+    last_call_args = []
+
+    def save_args(pkg, cls, kwargs):
+        """Drop-in replacement for capturing how it was called."""
+        del last_call_args[:]
+        last_call_args.extend((pkg, cls, kwargs))
+    monkeypatch.setattr(stixtransclient, '_process_package', save_args)
+
+    class ClientWrapper(object):
+        """Wrap the two different helpers."""
         @staticmethod
-        def set(new_args):
+        def set_command_line(new_args):
             """Set sys.argv."""
             filename = sys.argv[0]
             full_args = [filename] + new_args
             monkeypatch.setattr(sys, 'argv', full_args)
 
-    return Args
-
-
-@pytest.fixture
-def process_package(monkeypatch):
-    """Mock the stixtransclient._process_package function, returning the
-    args from the last call to it.
-    """
-    last_call_args = []
-
-    def mock_return(pkg, cls, kwargs):
-        """Drop-in replacement for capturing how it was called."""
-        del last_call_args[:]
-        last_call_args.extend((pkg, cls, kwargs))
-
-    monkeypatch.setattr(stixtransclient, '_process_package', mock_return)
-
-    class Args(object):
-        """Helper to allow for retrieving the last args."""
         @staticmethod
-        def was_called_with():
-            """Return the current args."""
+        def last_args():
+            """Return the last args passed to
+            stixtransclient._process_package().
+            """
             return last_call_args
 
-    return Args
+    return ClientWrapper
