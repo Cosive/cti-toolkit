@@ -36,3 +36,19 @@ def test_bro_with_source_flag_sets_source(client_wrapper):
 
     _, _, kwargs = client_wrapper.last_args()
     assert kwargs['source'] == 'Custom Bro indicator source'
+
+
+
+def test_bro_no_notice_flag_sets_do_notice_to_f(client_wrapper):
+    """Test the '--bro-no-notice' flag sets meta.do_notice to 'F'."""
+    client_wrapper.set_command_line([
+        '--file',
+        os.path.join('tests', 'CA-TEST-STIX.xml'),
+        '--bro',
+        '--bro-no-notice',
+    ])
+
+    stixtransclient.main()
+
+    _, _, kwargs = client_wrapper.last_args()
+    assert kwargs['do_notice'] == 'F'

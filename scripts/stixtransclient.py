@@ -182,7 +182,7 @@ def get_arg_parser():
     )
     other_group.add_argument(
         "--base-url",
-        help="base URL for indicator source - use with --bro",
+        help="base URL for indicator source (use with --bro)",
     )
     misp_group = parser.add_argument_group(
         title='misp output arguments (use with --misp)',
