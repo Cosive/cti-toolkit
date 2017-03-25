@@ -173,7 +173,7 @@ def get_arg_parser():
     )
     other_group.add_argument(
         "--source",
-        help="source of indicators - e.g. Hailataxii, CERT-AU",
+        help="source of indicators - e.g. Hailataxii, CERT-AU (use with --bro)",
     )
     other_group.add_argument(
         "--bro-no-notice",
