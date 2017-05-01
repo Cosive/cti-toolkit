@@ -183,7 +183,7 @@ def get_arg_parser():
     )
     other_group.add_argument(
         "--source",
-        help="source of indicators - e.g. Hailataxii, CERT-AU",
+        help="source of indicators - e.g. Hailataxii, CERT-AU (use with --bro)",
     )
     other_group.add_argument(
         "--bro-no-notice",
@@ -192,7 +192,7 @@ def get_arg_parser():
     )
     other_group.add_argument(
         "--base-url",
-        help="base URL for indicator source - use with --bro or --misp",
+        help="base URL for indicator source (use with --bro)",
     )
     snort_group = parser.add_argument_group(
         title='snort output arguments (use with --snort)',
@@ -284,6 +284,11 @@ def main():
             transform_kwargs['separator'] = options.field_separator
     elif options.bro:
         transform_class = StixBroIntelTransform
+        transform_kwargs['do_notice'] = 'F' if options.bro_no_notice else 'T'
+        if options.source:
+            transform_kwargs['source'] = options.source
+        if options.base_url:
+            transform_kwargs['url'] = options.base_url
     elif options.misp:
         transform_class = StixMispTransform
         misp = StixMispTransform.get_misp_object(
