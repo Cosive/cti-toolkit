@@ -3,7 +3,7 @@ import sys
 import StringIO
 import pytest
 import stix
-import stixtransclient
+from certau.scripts import stixtransclient
 
 
 @pytest.fixture(scope='module')

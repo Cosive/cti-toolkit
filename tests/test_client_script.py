@@ -1,6 +1,7 @@
 """TAXII command-line client tests."""
 import os
-import stixtransclient
+
+from certau.scripts import stixtransclient
 
 import certau
 import stix
