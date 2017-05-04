@@ -8,7 +8,7 @@ from cybox.objects.uri_object import URI
 
 # suppress PyMISP warning about Python 2
 warnings.filterwarnings('ignore', 'You\'re using python 2, it is strongly '
-                        'recommended to use python >=3.3')
+                        'recommended to use python >=3.4')
 from pymisp import PyMISP
 
 from .base import StixTransform
@@ -92,16 +92,18 @@ class StixMispTransform(StixTransform):
         self._misp_published = published
 
     @staticmethod
-    def get_misp_object(misp_url, misp_key, use_ssl=False):
+    def get_misp_object(misp_url, misp_key, misp_ssl=False, misp_cert=None):
         """Returns a PyMISP object for communicating with a MISP host.
 
         Args:
             misp_url: URL for MISP API end-point
             misp_key: API key for accessing MISP API
-            use_ssl: a boolean value indicating whether or not the connection
-                should use HTTPS (instead of HTTP)
+            misp_ssl: a boolean value indicating whether the server's SSL
+                certificate will be verified
+            misp_cert: a tuple containing a certificate and key for SSL
+                client authentication
         """
-        return PyMISP(misp_url, misp_key, use_ssl)
+        return PyMISP(misp_url, misp_key, ssl=misp_ssl, cert=misp_cert)
 
     def init_misp_event(self):
         if not self._misp_information:
@@ -129,15 +131,17 @@ class StixMispTransform(StixTransform):
             published=self._misp_published,
         )
 
-        # Add TLP tag to the event - assumes MISP tag ids as follows
-        # TLP:RED:   1
-        # TLP:AMBER: 2
-        # TLP:GREEN: 3
-        # TLP:WHITE: 4
-
-        tlp_tags = {'red': 1, 'amber': 2, 'green': 3, 'white': 4}
-        tlp_tag_id = tlp_tags[self.package_tlp().lower()]
-        self._misp.add_tag(self._event, tlp_tag_id)
+        # Add TLP tag to the event
+        package_tlp = self.package_tlp().lower()
+        tlp_tag_id = None
+        misp_tags = self._misp.get_all_tags()
+        if 'Tag' in misp_tags:
+            for tag in misp_tags['Tag']:
+                if tag['name'] == 'tlp:{}'.format(package_tlp):
+                    tlp_tag_id = tag['id']
+                    break
+        if tlp_tag_id is not None:
+            self._misp.tag(self._event['Event']['uuid'], tlp_tag_id)
 
     def publish_fields(self, fields, object_type):
         if isinstance(self.MISP_FUNCTION_MAPPING[object_type], list):
@@ -147,7 +151,6 @@ class StixMispTransform(StixTransform):
                 if field in fields:
                     add_method = getattr(self._misp, function)
                     add_method(self._event, fields[field])
-                    time.sleep(0.5)
         else:
             add_method = getattr(self._misp,
                                  self.MISP_FUNCTION_MAPPING[object_type])
@@ -177,7 +180,6 @@ class StixMispTransform(StixTransform):
                 field = self.OBJECT_FIELDS[object_type][0]
                 if field in fields:
                     add_method(self._event, fields[field])
-            time.sleep(0.5)
 
     def publish_observable(self, observable, object_type):
         if 'fields' in observable:
@@ -188,7 +190,6 @@ class StixMispTransform(StixTransform):
         if self._observables:
             self._logger.info("Publishing results to MISP")
             self.init_misp_event()
-            time.sleep(0.5)
             for object_type in sorted(self.OBJECT_FIELDS.keys()):
                 if object_type in self._observables:
                     for observable in self._observables[object_type]:

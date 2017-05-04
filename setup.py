@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='cti-toolkit',
-    version='1.1.0.dev2',
+    version='1.1.0.dev3',
     description='CERT Australia cyber threat intelligence (CTI) toolkit',
     url='https://github.com/certau/cti-toolkit/',
     author='CERT Australia, Australian Government',
@@ -41,7 +41,7 @@ setup(
         'stix==1.1.1.7',
         'stix-ramrod',
         'mixbox',
-        'pymisp',
+        'pymisp>=2.4.71',
         'requests',
     ]
 )

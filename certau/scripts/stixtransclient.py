@@ -222,6 +222,19 @@ def get_arg_parser():
         help="token for accessing MISP instance",
     )
     misp_group.add_argument(
+        "--misp-ssl",
+        action="store_true",
+        help="validate SSL certificate of the MISP server",
+    )
+    misp_group.add_argument(
+        "--misp-client-cert",
+        help="Client certificate for authenticating to MISP instance",
+    )
+    misp_group.add_argument(
+        "--misp-client-key",
+        help="Private key associated with client certificate",
+    )
+    misp_group.add_argument(
         "--misp-distribution",
         default=0,
         type=int,
@@ -291,8 +304,15 @@ def main():
             transform_kwargs['url'] = options.base_url
     elif options.misp:
         transform_class = StixMispTransform
-        misp = StixMispTransform.get_misp_object(
-            options.misp_url, options.misp_key)
+        misp_kwargs = dict(
+            misp_url=options.misp_url,
+            misp_key=options.misp_key,
+            misp_ssl=options.misp_ssl,
+        )
+        if options.misp_client_cert and options.misp_client_key:
+            misp_kwargs['misp_cert'] = (options.misp_client_cert, 
+                                   options.misp_client_key)
+        misp = StixMispTransform.get_misp_object(**misp_kwargs)
         transform_kwargs['misp'] = misp
         transform_kwargs['distribution'] = options.misp_distribution
         transform_kwargs['threat_level'] = options.misp_threat
