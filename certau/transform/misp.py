@@ -128,7 +128,6 @@ class StixMispTransform(StixTransform):
             analysis=self._misp_analysis,
             info=self._misp_information,
             date=timestamp.strftime('%Y-%m-%d'),
-            published=self._misp_published,
         )
 
         # Add TLP tag to the event
@@ -194,5 +193,7 @@ class StixMispTransform(StixTransform):
                 if object_type in self._observables:
                     for observable in self._observables[object_type]:
                         self.publish_observable(observable, object_type)
+            if self._misp_published:
+                self._misp.publish(self._event)
         else:
             self._logger.info("Package has no observables - skipping")
