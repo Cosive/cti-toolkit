@@ -136,10 +136,10 @@ The command line (and configuration) options for stixtransclient.py are
 displayed below::
 
     $ stixtransclient.py -h
-    
-    usage: stixtransclient.py [-h] [-c CONFIG] [-v] [-d]
+
+    usage: stixtransclient.py [-h] [-c CONFIG] [-v] [-d] [-V]
                               (--file FILE [FILE ...] | --taxii)
-                              (-s | -t | -b | -m | -sn | -x XML_OUTPUT) [-r]
+                              (-s | -t | -b | -m | --snort | -x XML_OUTPUT) [-r]
                               [--hostname HOSTNAME] [--port PORT]
                               [--ca_file CA_FILE] [--username USERNAME]
                               [--password PASSWORD] [--ssl] [--key KEY]
@@ -155,6 +155,8 @@ displayed below::
                               [--snort-rule-revision SNORT_RULE_REVISION]
                               [--snort-rule-action SNORT_RULE_ACTION]
                               [--misp-url MISP_URL] [--misp-key MISP_KEY]
+                              [--misp-ssl] [--misp-client-cert MISP_CLIENT_CERT]
+                              [--misp-client-key MISP_CLIENT_KEY]
                               [--misp-distribution MISP_DISTRIBUTION]
                               [--misp-threat MISP_THREAT]
                               [--misp-analysis MISP_ANALYSIS]
@@ -162,12 +164,10 @@ displayed below::
 
     Utility to extract observables from local STIX files or a TAXII server. Args
     that start with '--' (eg. -v) can also be set in a config file
-    (/etc/ctitoolkit.conf or ~/.ctitoolkit or specified via -c). The recognized
-    syntax for setting (key, value) pairs is based on the INI and YAML formats
-    (e.g. key=value or foo=TRUE). For full documentation of the differences from
-    the standards please refer to the ConfigArgParse documentation. If an arg is
-    specified in more than one place, then commandline values override config file
-    values which override defaults.
+    (/etc/ctitoolkit.conf or ~/.ctitoolkit or specified via -c). Config file
+    syntax allows: key=value, flag=true, stuff=[a,b,c] (for details, see syntax at
+    https://goo.gl/R74nmi). If an arg is specified in more than one place, then
+    commandline values override config file values which override defaults.
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -177,6 +177,7 @@ displayed below::
                             configuration file to use
       -v, --verbose         verbose output
       -d, --debug           enable debug output
+      -V, --version         show program's version number and exit
 
     input (source) options:
       --file FILE [FILE ...]
@@ -189,7 +190,7 @@ displayed below::
       -t, --text            output observables in delimited text
       -b, --bro             output observables in Bro intel framework format
       -m, --misp            feed output to a MISP server
-      -sn, --snort          output observables in Snort rule format
+      --snort               output observables in Snort rule format
       -x XML_OUTPUT, --xml_output XML_OUTPUT
                             output XML STIX packages to the given directory (use
                             with --taxii)
@@ -224,11 +225,11 @@ displayed below::
                             field delimiter character/string to use in text output
       --header              include header row for text output
       --title TITLE         title for package (if not included in STIX file)
-      --source SOURCE       source of indicators - e.g. Hailataxii, CERT-AU
+      --source SOURCE       source of indicators - e.g. Hailataxii, CERT-AU (use
+                            with --bro)
       --bro-no-notice       suppress Bro intel notice framework messages (use with
                             --bro)
-      --base-url BASE_URL   base URL for indicator source - use with --bro or
-                            --misp
+      --base-url BASE_URL   base URL for indicator source (use with --bro)
 
     snort output arguments (use with --snort):
       --snort-initial-sid SNORT_INITIAL_SID
@@ -242,6 +243,11 @@ displayed below::
     misp output arguments (use with --misp):
       --misp-url MISP_URL   URL of MISP server
       --misp-key MISP_KEY   token for accessing MISP instance
+      --misp-ssl            validate SSL certificate of the MISP server
+      --misp-client-cert MISP_CLIENT_CERT
+                            Client certificate for authenticating to MISP instance
+      --misp-client-key MISP_CLIENT_KEY
+                            Private key associated with client certificate
       --misp-distribution MISP_DISTRIBUTION
                             MISP distribution group - default: 0 (your
                             organisation only)
