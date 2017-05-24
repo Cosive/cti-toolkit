@@ -310,8 +310,8 @@ def main():
             misp_ssl=options.misp_ssl,
         )
         if options.misp_client_cert and options.misp_client_key:
-            misp_kwargs['misp_cert'] = (options.misp_client_cert, 
-                                   options.misp_client_key)
+            misp_kwargs['misp_cert'] = (options.misp_client_cert,
+                                        options.misp_client_key)
         misp = StixMispTransform.get_misp_object(**misp_kwargs)
         transform_kwargs['misp'] = misp
         transform_kwargs['distribution'] = options.misp_distribution
@@ -356,11 +356,6 @@ def main():
         )
         source.send_poll_request()
 
-        if options.xml_output:
-            logger.debug("Writing XML to %s", options.xml_output)
-            source.save_content_blocks(options.xml_output)
-            return
-
         logger.info("Processing TAXII content blocks")
     else:
         logger.info("Processing file input")
@@ -368,8 +363,11 @@ def main():
 
     while True:
         package = source.next_stix_package()
-        if package:
-            _process_package(package, transform_class, transform_kwargs)
+        if package is not None:
+            if options.xml_output:
+                source.save_package(package, options.xml_output)
+            else:
+                _process_package(package, transform_class, transform_kwargs)
         else:
             break
 
