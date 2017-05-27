@@ -6,7 +6,8 @@ import types
 from mixbox.entities import EntityList
 from cybox.core import Object
 from cybox.common import ObjectProperties
-from stix.extensions.marking.tlp import TLPMarkingStructure
+
+import certau.util.stix
 
 
 class StixTransform(object):
@@ -78,28 +79,18 @@ class StixTransform(object):
 
     def package_title(self, default=''):
         """Retrieves the STIX package title (str) from the header."""
-        if self._package.stix_header and self._package.stix_header.title:
-            return self._package.stix_header.title.encode('utf-8')
-        else:
-            return default
+        title = certau.util.stix.package_title(self._package)
+        return default if title is None else title
 
     def package_description(self, default=''):
         """Retrieves the STIX package description (str) from the header."""
-        if self._package.stix_header and self._package.stix_header.description:
-            return self._package.stix_header.description.value.encode('utf-8')
-        else:
-            return default
+        description = certau.util.stix.package_description(self._package)
+        return default if description is None else description
 
     def package_tlp(self, default='AMBER'):
         """Retrieves the STIX package TLP (str) from the header."""
-        if self._package.stix_header:
-            handling = self._package.stix_header.handling
-            if handling and handling.marking:
-                for marking_spec in handling.marking:
-                    for marking_struct in marking_spec.marking_structures:
-                        if isinstance(marking_struct, TLPMarkingStructure):
-                            return marking_struct.color
-        return default
+        tlp = certau.util.stix.package_tlp(self._package)
+        return default if tlp is None else tlp
 
     # ### Internal methods for processing observables, objects and properties.
 
