@@ -1,8 +1,9 @@
 import logging
 import pprint
 import copy
+import types
 
-from cybox import EntityList
+from mixbox.entities import EntityList
 from cybox.core import Object
 from cybox.common import ObjectProperties
 from stix.extensions.marking.tlp import TLPMarkingStructure
@@ -93,8 +94,8 @@ class StixTransform(object):
         """Retrieves the STIX package TLP (str) from the header."""
         if self._package.stix_header:
             handling = self._package.stix_header.handling
-            if handling and handling.markings:
-                for marking_spec in handling.markings:
+            if handling and handling.marking:
+                for marking_spec in handling.marking:
                     for marking_struct in marking_spec.marking_structures:
                         if isinstance(marking_struct, TLPMarkingStructure):
                             return marking_struct.color
@@ -314,7 +315,16 @@ class StixTransform(object):
             next_parts = _next_parts(fields, field)
             value = getattr(entity, field, None)
 
-            if isinstance(value, (list, EntityList)):
+            # Test if value is not a string and iterable
+            iterable = False
+            if not isinstance(value, types.StringType):
+                try:
+                    iter(value)
+                    iterable = True
+                except TypeError, error:
+                    pass
+
+            if iterable:
                 values_copy = copy.deepcopy(values)
                 first = True
                 for item in value:
