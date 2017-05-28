@@ -202,16 +202,22 @@ def get_arg_parser():
     )
     snort_group.add_argument(
         "--snort-initial-sid",
-        help="The initial Snort IDs to begin from (default: 5500000)",
+        default=5500000,
+        type=int,
+        help="initial Snort IDs to begin from - default: 5500000",
     )
     snort_group.add_argument(
         "--snort-rule-revision",
-        help="The revision of the Snort rule (default: 1)",
+        default=1,
+        type=int,
+        help="revision of the Snort rule - default: 1",
     )
     snort_group.add_argument(
         "--snort-rule-action",
-        help=("Change all Snort rules generated to "
-              "[alert|log|pass|activate|dynamic|drop|reject|sdrop]"),
+        choices=['alert', 'log', 'pass', 'activate', 'dynamic', 'drop',
+                 'reject', 'sdrop'],
+        default='alert',
+        help="action used for Snort rules generated - default: 'alert'",
     )
     misp_group = parser.add_argument_group(
         title='misp output arguments (use with --misp)',
@@ -385,14 +391,9 @@ def main():
         transform_kwargs['published'] = options.misp_published
     elif options.snort:
         transform_class = StixSnortTransform
-        allowed_actions = ["alert", "log", "pass", "activate", "dynamic",
-                           "drop", "reject", "sdrop"]
-        if options.snort_initial_sid:
-            transform_kwargs['snort_initial_sid'] = options.snort_initial_sid
-        if options.snort_rule_revision:
-            transform_kwargs['snort_rule_revision'] = options.snort_rule_revision
-        if options.snort_rule_action and options.snort_rule_action in allowed_actions:
-            transform_kwargs['snort_rule_action'] = options.snort_rule_action
+        transform_kwargs['snort_initial_sid'] = options.snort_initial_sid
+        transform_kwargs['snort_rule_revision'] = options.snort_rule_revision
+        transform_kwargs['snort_rule_action'] = options.snort_rule_action
     elif options.xml_output:
         pass
     else:
