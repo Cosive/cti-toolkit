@@ -48,7 +48,7 @@ class StixSource(object):
 
     def file_name_for_source_item(self, source_item):
         # Default behaviour is to assume the source item is a file name
-        return source_item
+        return os.path.basename(source_item)
 
     def next_stix_package(self):
         """Return the next STIX package available from the source (or None)."""
