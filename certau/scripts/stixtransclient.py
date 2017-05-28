@@ -10,10 +10,13 @@ import pkg_resources
 
 import configargparse
 
+from stix.extensions.marking import ais
+
 from certau.source import StixFileSource, SimpleTaxiiClient
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
 from certau.transform import StixMispTransform, StixSnortTransform
+from certau.util.stix import package_tlp
 
 
 def get_arg_parser():
@@ -263,6 +266,67 @@ def get_arg_parser():
         action="store_true",
         help="set MISP published state to True",
     )
+    xml_group = parser.add_argument_group(
+        title='XML (STIX) output arguments (use with --xml-output)',
+    )
+    xml_group.add_argument(
+        "--ais-marking",
+        action='store_true',
+        help="add the AIS Marking structure to the STIX package",
+    )
+    xml_group.add_argument(
+        "--ais-proprietary",
+        action='store_true',
+        help="set IsProprietary to True (otherwise False) in AIS Marking",
+    )
+    xml_group.add_argument(
+        "--ais-consent",
+        choices=['EVERYONE', 'NONE', 'USG'],
+        default='NONE',
+        help="consent level for submitter attribution in AIS Marking",
+    )
+    xml_group.add_argument(
+        "--ais-default-tlp",
+        choices=['WHITE', 'GREEN', 'AMBER'],
+        default='AMBER',
+        help='TLP used in AIS Marking when none found in package header',
+    )
+    xml_group.add_argument(
+        "--ais-country",
+        help="ISO-3661-1 alpha2 submitter country for AIS Marking",
+    )
+    xml_group.add_argument(
+        "--ais-administrative-area",
+        help="ISO-3661-2 submitter administrative area for AIS Marking",
+    )
+    xml_group.add_argument(
+        "--ais-organisation",
+        help="ISO-3661-2 submitter organisation for AIS Marking",
+    )
+    xml_group.add_argument(
+        "--ais-industry-type",
+        choices=[
+            ais.CHEMICAL_SECTOR,
+            ais.COMMERCIAL_FACILITIES_SECTOR,
+            ais.COMMUNICATIONS_SECTOR,
+            ais.CRITICAL_MANUFACTURING_SECTOR,
+            ais.DAMS_SECTOR,
+            ais.DEFENSE_INDUSTRIAL_BASE_SECTOR,
+            ais.EMERGENCY_SERVICES_SECTOR,
+            ais.ENERGY_SECTOR,
+            ais.FINANCIAL_SERVICES_SECTOR,
+            ais.FOOD_AND_AGRICULTURE_SECTOR,
+            ais.GOVERNMENT_FACILITIES_SECTOR,
+            ais.HEALTH_CARE_AND_PUBLIC_HEALTH_SECTOR,
+            ais.INFORMATION_TECHNOLOGY_SECTOR,
+            ais.NUCLEAR_REACTORS_MATERIALS_AND_WASTE_SECTOR,
+            ais.OTHER,
+            ais.TRANSPORTATION_SYSTEMS_SECTOR,
+            ais.WATER_AND_WASTEWATER_SYSTEMS_SECTOR,
+        ],
+        default=ais.OTHER,
+        help="submitter industry type for AIS Marking",
+    )
     return parser
 
 
@@ -365,6 +429,21 @@ def main():
         package = source.next_stix_package()
         if package is not None:
             if options.xml_output:
+                if options.ais_marking:
+                    tlp = package_tlp(package) or options.ais_default_tlp
+                    # Note add_ais_marking() removes existing markings
+                    ais.add_ais_marking(
+                        stix_package=package,
+                        proprietary=options.ais_proprietary,
+                        consent=options.ais_consent,
+                        color=tlp,
+                        country_name_code=options.ais_country,
+                        country_name_code_type='ISO-3166-1_alpha-2',
+                        industry_type=options.ais_industry_type,
+                        admin_area_name_code=options.ais_administrative_area,
+                        admin_area_name_code_type='ISO-3166-2',
+                        organisation_name=options.ais_organisation,
+                    )
                 source.save_package(package, options.xml_output)
             else:
                 _process_package(package, transform_class, transform_kwargs)
