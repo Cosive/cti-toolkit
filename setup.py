@@ -27,6 +27,7 @@ setup(
         'certau/scripts',
         'certau/source',
         'certau/transform',
+        'certau/util',
     },
     entry_points={
         'console_scripts': [
