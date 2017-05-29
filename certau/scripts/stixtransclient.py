@@ -232,8 +232,11 @@ def get_arg_parser():
     )
     misp_group.add_argument(
         "--misp-ssl",
-        action="store_true",
-        help="validate SSL certificate of the MISP server",
+        nargs='?',
+        const=True,
+        default=False,
+        help=("validate SSL certificate of the MISP server "
+              "(takes an optional CA certificate file)"),
     )
     misp_group.add_argument(
         "--misp-client-cert",
