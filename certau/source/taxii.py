@@ -163,7 +163,7 @@ class SimpleTaxiiClient(HttpClient, StixSource):
     def io_for_source_item(self, source_item):
         return StringIO(source_item.content)
 
-    def file_name_from_source_item(self, content_block):
+    def file_name_for_source_item(self, content_block):
         # Shamelessly mimics libtaxii (for compatability).
         binding_id = content_block.content_binding.binding_id
         if binding_id in self.format_for_binding_id:
