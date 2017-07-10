@@ -16,7 +16,7 @@ from certau.source import StixFileSource, SimpleTaxiiClient
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
 from certau.transform import StixMispTransform, StixSnortTransform
-from certau.util.stix import package_tlp
+from certau.lib.stix.helpers import package_tlp
 
 
 def get_arg_parser():

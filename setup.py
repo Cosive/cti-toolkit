@@ -24,10 +24,10 @@ setup(
     keywords='STIX TAXII',
     packages={
         'certau',
+        'certau/lib',
         'certau/scripts',
         'certau/source',
         'certau/transform',
-        'certau/util',
     },
     entry_points={
         'console_scripts': [

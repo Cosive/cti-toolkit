@@ -7,7 +7,7 @@ from mixbox.entities import EntityList
 from cybox.core import Object
 from cybox.common import ObjectProperties
 
-import certau.util.stix
+import certau.lib.stix.helpers as stix_helpers
 
 
 class StixTransform(object):
@@ -79,17 +79,17 @@ class StixTransform(object):
 
     def package_title(self, default=''):
         """Retrieves the STIX package title (str) from the header."""
-        title = certau.util.stix.package_title(self._package)
+        title = stix_helpers.package_title(self._package)
         return default if title is None else title
 
     def package_description(self, default=''):
         """Retrieves the STIX package description (str) from the header."""
-        description = certau.util.stix.package_description(self._package)
+        description = stix_helpers.package_description(self._package)
         return default if description is None else description
 
     def package_tlp(self, default='AMBER'):
         """Retrieves the STIX package TLP (str) from the header."""
-        tlp = certau.util.stix.package_tlp(self._package)
+        tlp = stix_helpers.package_tlp(self._package)
         return default if tlp is None else tlp
 
     # ### Internal methods for processing observables, objects and properties.
