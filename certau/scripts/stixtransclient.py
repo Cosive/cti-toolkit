@@ -4,11 +4,13 @@ into the Bro Intelligence Format. It can interact with a TAXII server to obtain
 the STIX package(s), or a STIX package file can be supplied.
 """
 
+import os
 import sys
 import logging
 import pkg_resources
 import dateutil
 import urlparse
+import pickle
 
 import configargparse
 
@@ -174,6 +176,10 @@ def get_arg_parser():
     taxii_group.add_argument(
         "--subscription-id",
         help="a subscription ID for the poll request",
+    )
+    taxii_group.add_argument(
+        "--state-file",
+        help="file used to maintain latest poll times",
     )
     other_group = parser.add_argument_group(
         title='other output options',
@@ -345,7 +351,6 @@ def get_arg_parser():
     )
     return parser
 
-
 def _process_package(package, transform_class, transform_kwargs):
     """Loads a STIX package and runs a transform over it."""
     transform = transform_class(package, **transform_kwargs)
@@ -354,6 +359,29 @@ def _process_package(package, transform_class, transform_kwargs):
     elif isinstance(transform, StixMispTransform):
         transform.publish()
 
+def get_taxii_poll_state(filename, poll_url, collection):
+    if os.path.isfile(filename):
+        with open(filename, 'r') as state_file:
+            poll_state = pickle.load(state_file)
+            if isinstance(poll_state, dict) and poll_url in poll_state:
+                if collection in poll_state[poll_url]:
+                    return poll_state[poll_url][collection]
+    return None
+
+def set_taxii_poll_state(filename, poll_url, collection, timestamp):
+    if timestamp is not None:
+        poll_state = dict()
+        if os.path.isfile(filename):
+            with open(filename, 'r') as state_file:
+                poll_state = pickle.load(state_file)
+                if not isinstance(poll_state, dict):
+                    raise Exception('unexpected content encountered when '
+                                    'reading TAXII poll state file')
+        if poll_url not in poll_state:
+            poll_state[poll_url] = dict()
+        poll_state[poll_url][collection] = timestamp
+        with open(filename, 'w') as state_file:
+            pickle.dump(poll_state, state_file)
 
 def main():
     parser = get_arg_parser()
@@ -434,8 +462,15 @@ def main():
         else:
             poll_url = options.poll_url
 
-        # Parse begin and end timestamps if provided
-        if options.begin_timestamp:
+        # Use state file to grab begin_timestamp if possible
+        # Otherwise, parse begin and end timestamps if provided
+        if options.state_file and not options.begin_timestamp:
+            begin_timestamp = get_taxii_poll_state(
+                filename=options.state_file,
+                poll_url=poll_url,
+                collection=options.collection,
+            )
+        elif options.begin_timestamp:
             begin_timestamp = dateutil.parser.parse(options.begin_timestamp)
         else:
             begin_timestamp = None
@@ -456,6 +491,16 @@ def main():
         # Send the poll request
         poll_response = taxii_client.send_poll_request(poll_request, poll_url)
         source = TaxiiPollResponseSource(poll_response, poll_url)
+
+        # Update the timestamp for the latest poll
+        if options.state_file:
+            end_timestamp_label = poll_response.inclusive_end_timestamp_label
+            set_taxii_poll_state(
+                filename=options.state_file,
+                poll_url=options.poll_url,
+                collection=options.collection,
+                timestamp=end_timestamp_label.isoformat(),
+            )
 
         logger.info("Processing TAXII content blocks")
     else:
