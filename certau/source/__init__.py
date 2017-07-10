@@ -4,5 +4,5 @@ These classes should implement the ``next_stix_package()`` method.
 """
 
 from .base import StixSource
-from .taxii import SimpleTaxiiClient
+from .taxii import TaxiiPollResponseSource
 from .files import StixFileSource

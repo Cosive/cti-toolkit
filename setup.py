@@ -25,6 +25,8 @@ setup(
     packages={
         'certau',
         'certau/lib',
+        'certau/lib/stix',
+        'certau/lib/taxii',
         'certau/scripts',
         'certau/source',
         'certau/transform',

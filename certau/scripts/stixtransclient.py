@@ -7,16 +7,19 @@ the STIX package(s), or a STIX package file can be supplied.
 import sys
 import logging
 import pkg_resources
+import dateutil
+import urlparse
 
 import configargparse
 
 from stix.extensions.marking import ais
 
-from certau.source import StixFileSource, SimpleTaxiiClient
+from certau.source import StixFileSource, TaxiiPollResponseSource
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
 from certau.transform import StixMispTransform, StixSnortTransform
 from certau.lib.stix.helpers import package_tlp
+from certau.lib.taxii.client import SimpleTaxiiClient
 
 
 def get_arg_parser():
@@ -114,12 +117,16 @@ def get_arg_parser():
         title='taxii input arguments (use with --taxii)',
     )
     taxii_group.add_argument(
+        "--poll-url",
+        help="TAXII server's poll URL",
+    )
+    taxii_group.add_argument(
         "--hostname",
-        help="hostname of TAXII server",
+        help="hostname of TAXII server (deprecated - use --poll-url)",
     )
     taxii_group.add_argument(
         "--port",
-        help="port of TAXII server",
+        help="port of TAXII server (deprecated - use --poll-url)",
     )
     taxii_group.add_argument(
         "--ca_file",
@@ -136,7 +143,7 @@ def get_arg_parser():
     taxii_group.add_argument(
         "--ssl",
         action="store_true",
-        help="use SSL to connect to TAXII server",
+        help="use SSL to connect to TAXII server (deprecated - use --poll-url)",
     )
     taxii_group.add_argument(
         "--key",
@@ -148,7 +155,7 @@ def get_arg_parser():
     )
     taxii_group.add_argument(
         "--path",
-        help="path on TAXII server for polling",
+        help="path on TAXII server for polling (deprecated - use --poll-url)",
     )
     taxii_group.add_argument(
         "--collection",
@@ -407,22 +414,48 @@ def main():
 
     if options.taxii:
         logger.info("Processing a TAXII message")
-        source = SimpleTaxiiClient(
-            hostname=options.hostname,
-            path=options.path,
-            port=options.port,
-            collection=options.collection,
-            use_ssl=options.ssl,
+
+        taxii_client = SimpleTaxiiClient(
             username=options.username,
             password=options.password,
             key_file=options.key,
             cert_file=options.cert,
             ca_file=options.ca_file,
-            begin_ts=options.begin_timestamp,
-            end_ts=options.end_timestamp,
-            subscription_id=options.subscription_id,
         )
-        source.send_poll_request()
+
+        # Build the poll URL if it wasn't provided
+        if options.poll_url is None:
+            scheme = 'https' if options.ssl else 'http'
+            netloc = options.hostname
+            if options.port:
+                netloc += ':{}'.format(options.port)
+            url_parts = [scheme, netloc, options.path, '', '', '']
+            poll_url = urlparse.urlunparse(url_parts)
+        else:
+            poll_url = options.poll_url
+
+        # Parse begin and end timestamps if provided
+        if options.begin_timestamp:
+            begin_timestamp = dateutil.parser.parse(options.begin_timestamp)
+        else:
+            begin_timestamp = None
+
+        if options.end_timestamp:
+            end_timestamp = dateutil.parser.parse(options.end_timestamp)
+        else:
+            end_timestamp = None
+
+        # Create the poll request message
+        poll_request = taxii_client.create_poll_request(
+            collection=options.collection,
+            subscription_id=options.subscription_id,
+            begin_timestamp=begin_timestamp,
+            end_timestamp=end_timestamp,
+        )
+
+        # Send the poll request
+        poll_response = taxii_client.send_poll_request(poll_request, poll_url)
+        source = TaxiiPollResponseSource(poll_response, poll_url)
 
         logger.info("Processing TAXII content blocks")
     else:
