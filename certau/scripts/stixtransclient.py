@@ -7,7 +7,6 @@ the STIX package(s), or a STIX package file can be supplied.
 import os
 import sys
 import logging
-import pkg_resources
 import dateutil
 import urlparse
 import pickle
@@ -16,7 +15,8 @@ import configargparse
 
 from stix.extensions.marking import ais
 
-from certau.source import StixFileSource, TaxiiPollResponseSource
+from certau import version_string
+from certau.source import StixFileSource, TaxiiContentBlockSource
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
 from certau.transform import StixMispTransform, StixSnortTransform
@@ -49,11 +49,10 @@ def get_arg_parser():
         action="store_true",
         help="enable debug output",
     )
-    version = pkg_resources.require('cti-toolkit')[0].version
     global_group.add_argument(
         "-V", "--version",
         action="version",
-        version="cti-toolkit {} by CERT Australia".format(version),
+        version="{} (by CERT Australia)".format(version_string),
     )
     # Source options
     source_group = parser.add_argument_group('input (source) options')
@@ -480,37 +479,38 @@ def main():
         else:
             end_timestamp = None
 
-        # Create the poll request message
-        poll_request = taxii_client.create_poll_request(
+        content_blocks = taxii_client.poll(
+            poll_url=poll_url,
             collection=options.collection,
             subscription_id=options.subscription_id,
             begin_timestamp=begin_timestamp,
             end_timestamp=end_timestamp,
         )
 
-        # Send the poll request
-        poll_response = taxii_client.send_poll_request(poll_request, poll_url)
-        source = TaxiiPollResponseSource(poll_response, poll_url)
-
-        # Update the timestamp for the latest poll
-        if options.state_file:
-            end_timestamp_label = poll_response.inclusive_end_timestamp_label
-            set_taxii_poll_state(
-                filename=options.state_file,
-                poll_url=options.poll_url,
-                collection=options.collection,
-                timestamp=end_timestamp_label.isoformat(),
-            )
+        source = TaxiiContentBlockSource(
+            content_blocks=content_blocks,
+            collection=options.collection,
+        )
 
         logger.info("Processing TAXII content blocks")
     else:
         logger.info("Processing file input")
         source = StixFileSource(options.file, options.recurse)
 
-    while True:
-        package = source.next_stix_package()
+    if options.xml_output:
+        # Try to create the output directory if it doesn't exist
+        if not os.path.isdir(options.xml_output):
+            try:
+                os.makedirs(options.xml_output)
+            except Exception:
+                logger.error('unable to create output directory')
+                return
+
+    for source_item in source.source_items():
+        package = source_item.stix_package
         if package is not None:
             if options.xml_output:
+                # Add AIS Marking
                 if options.ais_marking:
                     tlp = package_tlp(package) or options.ais_default_tlp
                     # Note add_ais_marking() removes existing markings
@@ -526,11 +526,18 @@ def main():
                         admin_area_name_code_type='ISO-3166-2',
                         organisation_name=options.ais_organisation,
                     )
-                source.save_package(package, options.xml_output)
+                source_item.save(options.xml_output)
             else:
                 _process_package(package, transform_class, transform_kwargs)
-        else:
-            break
+
+    # Update the timestamp for the latest poll
+    if options.taxii and options.state_file and taxii_client.poll_end_time:
+        set_taxii_poll_state(
+            filename=options.state_file,
+            poll_url=options.poll_url,
+            collection=options.collection,
+            timestamp=taxii_client.poll_end_time.isoformat(),
+        )
 
 
 if __name__ == '__main__':

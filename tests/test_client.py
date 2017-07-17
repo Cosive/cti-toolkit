@@ -183,19 +183,21 @@ def test_send_poll_request():
         username='user',
         password='pass',
     )
-    poll_request = taxii_client.create_poll_request(
-        collection='my_collection',
-        begin_timestamp='2015-12-30T10:13:05.00000+10:00',
-        end_timestamp='2015-12-30T18:09:43.00000+10:00',
-    )
-    # send_poll_request should fail to get a valid poll response
+
+    # poll() should fail to get a valid poll response
     # and throw an exception as a result - below ensures this
     with pytest.raises(Exception) as excinfo:
-        taxii_client.send_poll_request(
-            poll_request=poll_request,
-            poll_url='http://example.com/taxii_endpoint'
+        # taxii_client.poll returns a generator of ContentBlocks
+        content_blocks = taxii_client.poll(
+            poll_url='http://example.com:80/taxii_endpoint',
+            collection='my_collection',
+            begin_timestamp='2015-12-30T10:13:05.00000+10:00',
+            end_timestamp='2015-12-30T18:09:43.00000+10:00',
         )
-    assert str(excinfo.value) == 'expected a TAXII poll response'
+        # Need to trigger exception by calling the generator
+        for content_block in content_blocks:
+            pass
+        assert str(excinfo.value) == 'didn\'t get a poll response'
 
     # Capture the client request data
     request = httpretty.last_request()
@@ -209,7 +211,7 @@ def test_send_poll_request():
         'x-taxii-accept': 'urn:taxii.mitre.org:message:xml:1.1',
         'x-taxii-protocol': 'urn:taxii.mitre.org:protocol:http:1.0',
         'accept-encoding': 'identity',
-        'user-agent': 'libtaxii.httpclient',
+        'user-agent': 'cti-toolkit v1.1.0.dev3 (libtaxii)',
         'connection': 'close',
         'accept': 'application/xml',
         'x-taxii-content-type': 'urn:taxii.mitre.org:message:xml:1.1',

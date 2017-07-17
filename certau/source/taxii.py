@@ -1,33 +1,35 @@
 from StringIO import StringIO
 
-from libtaxii.messages_11 import PollResponse
-
 from certau.lib.taxii.util import file_name_for_content_block
-from certau.source.base import StixSource
+from certau.source.base import StixSourceItem
 
 
-class TaxiiPollResponseSource(StixSource):
-    """Return STIX packages obtained from a TAXII poll response.
+class TaxiiContentBlockSourceItem(StixSourceItem):
 
-    Args:
-        poll_response: a libtaxii PollResponse message
-        poll_url: the URL used for sending the poll request
-        collection: the collection that was polled
-    """
+    def __init__(self, content_block, collection):
+        self.collection = collection
+        super(TaxiiContentBlockSourceItem, self).__init__(content_block)
 
-    def __init__(self, poll_response, poll_url):
-        super(TaxiiPollResponseSource, self).__init__()
+    def io(self):
+        return StringIO(self.source_item.content)
 
-        if not isinstance(poll_response, PollResponse):
-            raise Exception('poll_response not a valid libtaxii PollResponse')
+    def file_name(self):
+        return file_name_for_content_block(
+            content_block=self.source_item,
+            collection=self.collection,
+        )
 
-        self.poll_response = poll_response
-        self.poll_url = poll_url
-        self.collection = poll_response.collection_name
-        self._source_items = poll_response.content_blocks
 
-    def io_for_source_item(self, source_item):
-        return StringIO(source_item.content)
+class TaxiiContentBlockSource(object):
+    """Return STIX packages obtained from a TAXII poll."""
 
-    def file_name_for_source_item(self, content_block):
-        return file_name_for_content_block(content_block, self.collection)
+    def __init__(self, content_blocks, collection):
+        self.content_blocks = content_blocks
+        self.collection = collection
+
+    def source_items(self):
+        for content_block in self.content_blocks:
+            yield TaxiiContentBlockSourceItem(
+                content_block=content_block,
+                collection=self.collection,
+            )

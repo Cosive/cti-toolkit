@@ -3,9 +3,11 @@ import logging
 import urlparse
 
 from libtaxii import get_message_from_http_response, VID_TAXII_XML_11
-from libtaxii.messages_11 import PollRequest, MSG_POLL_RESPONSE
-from libtaxii.messages_11 import generate_message_id
+from libtaxii.messages_11 import PollRequest, PollFulfillmentRequest
+from libtaxii.messages_11 import PollResponse, generate_message_id
 from libtaxii.clients import HttpClient
+
+from certau import version_string
 
 
 class SimpleTaxiiClient(HttpClient):
@@ -32,6 +34,8 @@ class SimpleTaxiiClient(HttpClient):
         self.key_file = key_file
         self.cert_file = cert_file
         self.ca_file = ca_file
+
+        self.poll_end_time = None
 
     def setup_authentication(self, use_ssl):
         """Setup the appropriate credentials and authentication type.
@@ -89,12 +93,12 @@ class SimpleTaxiiClient(HttpClient):
                             begin_timestamp=None, end_timestamp=None):
         """Create a poll request message using supplied parameters."""
 
-        request_kwargs = {
-            'message_id': generate_message_id(),
-            'collection_name': collection,
-            'exclusive_begin_timestamp_label': begin_timestamp,
-            'inclusive_end_timestamp_label': end_timestamp,
-        }
+        request_kwargs = dict(
+            message_id=generate_message_id(),
+            collection_name=collection,
+            exclusive_begin_timestamp_label=begin_timestamp,
+            inclusive_end_timestamp_label=end_timestamp,
+        )
 
         if subscription_id:
             request_kwargs['subscription_id'] = subscription_id
@@ -103,8 +107,34 @@ class SimpleTaxiiClient(HttpClient):
 
         return PollRequest(**request_kwargs)
 
-    def send_poll_request(self, poll_request, poll_url):
-        """Send the poll request to the TAXII server using the given URL."""
+    @staticmethod
+    def create_fulfillment_request(collection, result_id, part_number):
+        return PollFulfillmentRequest(
+            message_id=generate_message_id(),
+            collection_name=collection,
+            result_id=result_id,
+            result_part_number=part_number,
+        )
+
+    def send_taxii_message(self, request, host, path, port):
+        # Send the request message and return the response
+        http_response = self.call_taxii_service2(
+            host=host,
+            path=path,
+            message_binding=VID_TAXII_XML_11,
+            post_data=request.to_xml(),
+            port=port,
+            user_agent='{} (libtaxii)'.format(version_string)
+        )
+        response = get_message_from_http_response(
+            http_response=http_response,
+            in_response_to=request.message_id,
+        )
+        return response
+
+    def poll(self, poll_url, collection, subscription_id=None,
+             begin_timestamp=None, end_timestamp=None):
+        """Send the TAXII poll request to the server using the given URL."""
 
         # Parse the poll_url to get the parts required by libtaxii
         url_parts = urlparse.urlparse(poll_url)
@@ -123,24 +153,66 @@ class SimpleTaxiiClient(HttpClient):
         # Initialise the authentication settings
         self.setup_authentication(use_ssl)
 
-        # Send the poll_request
-        self._logger.debug('sending poll request using URL: %s', poll_url)
-        http_response = self.call_taxii_service2(
-            url_parts.hostname,
-            url_parts.path,
-            VID_TAXII_XML_11,
-            poll_request.to_xml(),
-            url_parts.port,
-        )
-        self._logger.debug('response received: %s',
-                           http_response.__class__.__name__)
-
-        poll_response = get_message_from_http_response(
-            http_response,
-            poll_request.message_id,
+        request = self.create_poll_request(
+            collection=collection,
+            subscription_id=subscription_id,
+            begin_timestamp=begin_timestamp,
+            end_timestamp=end_timestamp,
         )
 
-        if poll_response.message_type != MSG_POLL_RESPONSE:
-            raise Exception('expected a TAXII poll response')
+        self._logger.debug('sending poll request (url=%s, collection=%s)',
+                           poll_url, collection)
+        response = self.send_taxii_message(
+            request=request,
+            host=url_parts.hostname,
+            path=url_parts.path,
+            port=url_parts.port,
+        )
 
-        return poll_response
+        first = True
+        while True:
+            if not isinstance(response, PollResponse):
+                raise Exception('didn\'t get a poll response')
+
+            self._logger.debug('received poll response '
+                               '(content_blocks=%d, result_id=%s, more=%s)',
+                               len(response.content_blocks),
+                               response.result_id,
+                               'True' if response.more else 'False')
+
+            if len(response.content_blocks) == 0:
+                break
+
+            # Save end timestamp from first PollResponse
+            if first:
+                self.poll_end_time = response.inclusive_end_timestamp_label
+
+            for content_block in response.content_blocks:
+                yield content_block
+
+            if not response.more:
+                break
+
+            # Send a fulfilment request
+            if first:
+                # Initialise fulfilment request values
+                part_number = response.result_part_number
+                result_id = response.result_id
+                first = False
+
+            part_number += 1
+            request = self.create_fulfillment_request(
+                collection=collection,
+                result_id=result_id,
+                part_number=part_number,
+            )
+
+            self._logger.debug('sending fulfilment request '
+                               '(result_id=%s, part_number=%d)',
+                               result_id, part_number)
+            response = self.send_taxii_message(
+                request=request,
+                host=url_parts.hostname,
+                path=url_parts.path,
+                port=url_parts.port,
+            )
