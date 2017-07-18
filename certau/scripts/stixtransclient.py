@@ -364,7 +364,8 @@ def get_taxii_poll_state(filename, poll_url, collection):
             poll_state = pickle.load(state_file)
             if isinstance(poll_state, dict) and poll_url in poll_state:
                 if collection in poll_state[poll_url]:
-                    return poll_state[poll_url][collection]
+                    time_string = poll_state[poll_url][collection]
+                    return dateutil.parser.parse(time_string)
     return None
 
 def set_taxii_poll_state(filename, poll_url, collection, timestamp):
@@ -378,7 +379,7 @@ def set_taxii_poll_state(filename, poll_url, collection, timestamp):
                                     'reading TAXII poll state file')
         if poll_url not in poll_state:
             poll_state[poll_url] = dict()
-        poll_state[poll_url][collection] = timestamp
+        poll_state[poll_url][collection] = str(timestamp)
         with open(filename, 'w') as state_file:
             pickle.dump(poll_state, state_file)
 
@@ -479,6 +480,12 @@ def main():
         else:
             end_timestamp = None
 
+        # Sanity checks for timestamps
+        if (begin_timestamp is not None and end_timestamp is not None
+                and begin_timestamp > end_timestamp):
+            logger.error('poll end_timestamp is earlier than begin_timestamp')
+            return
+
         content_blocks = taxii_client.poll(
             poll_url=poll_url,
             collection=options.collection,
@@ -536,7 +543,7 @@ def main():
             filename=options.state_file,
             poll_url=options.poll_url,
             collection=options.collection,
-            timestamp=taxii_client.poll_end_time.isoformat(),
+            timestamp=taxii_client.poll_end_time,
         )
 
 

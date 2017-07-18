@@ -181,6 +181,9 @@ class SimpleTaxiiClient(HttpClient):
                                'True' if response.more else 'False')
 
             if len(response.content_blocks) == 0:
+                if first:
+                    self._logger.info('poll response contained '
+                                      'no content blocks')
                 break
 
             # Save end timestamp from first PollResponse
