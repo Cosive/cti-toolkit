@@ -6,6 +6,7 @@ import types
 from mixbox.entities import EntityList
 from cybox.core import Object
 from cybox.common import ObjectProperties
+from stix.core import STIXPackage
 
 import certau.lib.stix.helpers as stix_helpers
 
@@ -19,7 +20,7 @@ class StixTransform(object):
     transform STIX packages into alternate formats.
 
     The default constructor processes a STIX package to initialise
-    self._observables, a :py:class:`dict` keyed by object type.
+    self.observables, a :py:class:`dict` keyed by object type.
     Each entry contains a list :py:class:`list` of :py:class:`dict` objects
     with three keys: 'id', 'observable', and 'fields', containing the
     observable ID, the :py:class:`Observable<cybox.core.observable.Observable>`
@@ -67,30 +68,83 @@ class StixTransform(object):
     OBJECT_CONSTRAINTS = dict()
     STRING_CONDITION_CONSTRAINT = list()
 
-    def __init__(self, package):
-        self._package = package
-        self._observables = self._observables_for_package(package)
+    def __init__(self, package, default_title=None, default_description=None,
+                 default_tlp='AMBER'):
+        self.package = package
+        self.observables = self._observables_for_package(package)
+        self.default_title = default_title
+        self.default_description = default_description
+        self.default_tlp = default_tlp
 
         # Initialise the logger
         self._logger = logging.getLogger()
         self._logger.debug('%s object created', self.__class__.__name__)
 
+    # ##### Properties
+
+    @property
+    def package(self):
+        return self._package
+
+    @package.setter
+    def package(self, package):
+        if not isinstance(package, STIXPackage):
+            raise TypeError('expected STIXPackage object')
+        self._package = package
+
+    @property
+    def default_title(self):
+        return self._default_title
+
+    @default_title.setter
+    def default_title(self, title):
+        self._default_title = '' if title is None else str(title)
+
+    @property
+    def default_description(self):
+        return self._default_description
+
+    @default_description.setter
+    def default_description(self, description):
+        if description is None:
+            self._default_description = ''
+        else:
+            self._default_description = str(description)
+
+    @property
+    def default_tlp(self):
+        return self._default_tlp
+
+    @default_tlp.setter
+    def default_tlp(self, tlp):
+        if str(tlp) not in stix_helpers.TLP_COLOURS:
+            raise TypeError('invalid TLP colour')
+        self._default_tlp = str(tlp)
+
+    @property
+    def observables(self):
+        return self._observables
+
+    @observables.setter
+    def observables(self, observables):
+        self._observables = observables
+
     # ##### Helpers for extracting various STIX package elements. #####
 
-    def package_title(self, default=''):
+    def package_title(self):
         """Retrieves the STIX package title (str) from the header."""
-        title = stix_helpers.package_title(self._package)
-        return default if title is None else title
+        title = stix_helpers.package_title(self.package)
+        return title or self.default_title
 
-    def package_description(self, default=''):
+    def package_description(self):
         """Retrieves the STIX package description (str) from the header."""
-        description = stix_helpers.package_description(self._package)
-        return default if description is None else description
+        description = stix_helpers.package_description(self.package)
+        return description or self.default_description
 
-    def package_tlp(self, default='AMBER'):
+    def package_tlp(self):
         """Retrieves the STIX package TLP (str) from the header."""
-        tlp = stix_helpers.package_tlp(self._package)
-        return default if tlp is None else tlp
+        tlp = stix_helpers.package_tlp(self.package)
+        return tlp or self.default_tlp
 
     # ### Internal methods for processing observables, objects and properties.
 

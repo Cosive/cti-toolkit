@@ -20,7 +20,7 @@ from certau.source import StixFileSource, TaxiiContentBlockSource
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
 from certau.transform import StixMispTransform, StixSnortTransform
-from certau.lib.stix.helpers import package_tlp
+from certau.lib.stix.helpers import package_tlp, TLP_COLOURS
 from certau.lib.taxii.client import SimpleTaxiiClient
 
 
@@ -193,8 +193,18 @@ def get_arg_parser():
         help="include header row for text output",
     )
     other_group.add_argument(
-        "--title",
+        "--default-title",
         help="title for package (if not included in STIX file)",
+    )
+    other_group.add_argument(
+        "--default-description",
+        help="description for package (if not included in STIX file)",
+    )
+    other_group.add_argument(
+        "--default-tlp",
+        choices=TLP_COLOURS,
+        default="AMBER",
+        help="TLP colour for package (if not included in STIX file)",
     )
     other_group.add_argument(
         "--source",
@@ -308,7 +318,7 @@ def get_arg_parser():
     )
     xml_group.add_argument(
         "--ais-default-tlp",
-        choices=['WHITE', 'GREEN', 'AMBER'],
+        choices=TLP_COLOURS,
         default='AMBER',
         help='TLP used in AIS Marking when none found in package header',
     )
@@ -397,6 +407,9 @@ def main():
     logger.info("logging enabled")
 
     transform_kwargs = {}
+    transform_kwargs['default_title'] = options.default_title
+    transform_kwargs['default_description'] = options.default_description
+    transform_kwargs['default_tlp'] = options.default_tlp
     if options.stats:
         transform_class = StixStatsTransform
     elif options.text:

@@ -76,29 +76,53 @@ class StixCsvTransform(StixTextTransform):
         'WinRegistryKey': ['hive', 'key', 'values.name', 'values.data'],
     }
 
-    def __init__(self, package, separator='|', include_header=True,
+    def __init__(self, package, default_title=None, default_description=None,
+                 default_tlp='AMBER', separator='|', include_header=True,
                  header_prefix='#', include_observable_id=True,
                  include_condition=True):
         super(StixCsvTransform, self).__init__(
-            package, separator, include_header, header_prefix,
+            package, default_title, default_description, default_tlp,
+            separator, include_header, header_prefix,
         )
-        self._include_observable_id = include_observable_id
-        self._include_condition = include_condition
+        self.include_observable_id = include_observable_id
+        self.include_condition = include_condition
 
-    def _include_condition_with_property(self, object_type, property_):
-        if (self._include_condition and
+    # #### Properties
+
+    @property
+    def include_observable_id(self):
+        return self._include_observable_id
+
+    @include_observable_id.setter
+    def include_observable_id(self, include_observable_id):
+        self._include_observable_id = bool(include_observable_id)
+
+    @property
+    def include_condition(self):
+        return self._include_condition
+
+    @include_condition.setter
+    def include_condition(self, include_condition):
+        self._include_condition = bool(include_condition)
+
+    # #### Class helper methods
+
+    def include_condition_with_property(self, object_type, property_):
+        if (self.include_condition and
                 object_type in self.STRING_CONDITION_FIELDS and
                 property_ in self.STRING_CONDITION_FIELDS[object_type]):
             return True
         else:
             return False
 
+    # ##### Overridden class methods
+
     def header(self):
-        title = self.package_title(default=self._package.id_)
+        title = self.package_title()
         tlp = self.package_tlp()
 
         if title or tlp:
-            header = self._header_prefix
+            header = self.header_prefix
             if title:
                 header += ' {}'.format(title)
             if tlp:
@@ -109,18 +133,18 @@ class StixCsvTransform(StixTextTransform):
         return header
 
     def header_for_object_type(self, object_type):
-        header_values = ['id'] if self._include_observable_id else []
+        header_values = ['id'] if self.include_observable_id else []
         header_values.extend(self.OBJECT_HEADER_LABELS[object_type])
-        if self._include_condition:
+        if self.include_condition:
             index = 1
             for field in self.OBJECT_FIELDS[object_type]:
-                if self._include_condition_with_property(object_type, field):
+                if self.include_condition_with_property(object_type, field):
                     condition_label = header_values[index] + '_condition'
                     header_values.insert(index+1, condition_label)
                     index += 1
                 index += 1
-        header = '{} {} observables\n'.format(self._header_prefix, object_type)
-        header += '{} {}\n'.format(self._header_prefix,
+        header = '{} {} observables\n'.format(self.header_prefix, object_type)
+        header += '{} {}\n'.format(self.header_prefix,
                                    self.join(header_values))
         return header
 
@@ -130,7 +154,7 @@ class StixCsvTransform(StixTextTransform):
             for field in self.OBJECT_FIELDS[object_type]:
                 field_value = fields.get(field, 'None')
                 field_values.append(field_value)
-                if self._include_condition_with_property(object_type, field):
+                if self.include_condition_with_property(object_type, field):
                     c_field = self._condition_key_for_field(field)
                     condition = fields.get(c_field, 'None')
                     field_values.append(condition)
@@ -138,12 +162,12 @@ class StixCsvTransform(StixTextTransform):
 
     def text_for_object_type(self, object_type):
         text = ''
-        if object_type in self._observables:
-            for observable in self._observables[object_type]:
+        if object_type in self.observables:
+            for observable in self.observables[object_type]:
                 id_ = observable['id']
                 for field in observable['fields']:
-                    if self._include_observable_id:
-                        text += '{}{}'.format(id_, self._separator)
+                    if self.include_observable_id:
+                        text += '{}{}'.format(id_, self.separator)
                     text += self.text_for_fields(field, object_type) + '\n'
         if text:
             text += '\n'

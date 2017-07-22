@@ -77,19 +77,85 @@ class StixMispTransform(StixTransform):
         'WinRegistryKey': 'add_regkey',
     }
 
-    def __init__(self, package, misp,
+    def __init__(self, package, default_title=None, default_description=None,
+                 default_tlp='AMBER',
+                 misp=None,        # PyMISP object must be provided
                  distribution=0,   # this organisation only
                  threat_level=1,   # threat
                  analysis=2,       # analysis
                  information=None,
                  published=False):
-        super(StixMispTransform, self).__init__(package)
+        super(StixMispTransform, self).__init__(
+            package, default_title, default_description, default_tlp,
+        )
+        self.misp = misp
+        self.distribution = distribution
+        self.threat_level = threat_level
+        self.analysis = analysis
+        self.information = information
+        self.published = published
+
+    # ##### Properties
+
+    @property
+    def misp(self):
+        return self._misp
+
+    @misp.setter
+    def misp(self, misp):
+        if not isinstance(misp, PyMISP):
+            raise TypeError('expected PyMISP object')
         self._misp = misp
-        self._misp_distribution = distribution
-        self._misp_threat_level = threat_level
-        self._misp_analysis = analysis
-        self._misp_information = information
-        self._misp_published = published
+
+    @property
+    def distribution(self):
+        return self._distribution
+
+    @distribution.setter
+    def distribution(self, distribution):
+        self._distribution = int(distribution)
+
+    @property
+    def threat_level(self):
+        return self._threat_level
+
+    @threat_level.setter
+    def threat_level(self, threat_level):
+        self._threat_level = int(threat_level)
+
+    @property
+    def analysis(self):
+        return self._analysis
+
+    @analysis.setter
+    def analysis(self, analysis):
+        self._analysis = int(analysis)
+
+    @property
+    def information(self):
+        return self._information
+
+    @information.setter
+    def information(self, information):
+        self._information = '' if information is None else str(information)
+
+    @property
+    def published(self):
+        return self._published
+
+    @published.setter
+    def published(self, published):
+        self._published = bool(published)
+
+    @property
+    def event(self):
+        return self._event
+
+    @event.setter
+    def event(self, event):
+        self._event = event
+
+    # ##### Class helper methods
 
     @staticmethod
     def get_misp_object(misp_url, misp_key, misp_ssl=False, misp_cert=None):
@@ -106,41 +172,43 @@ class StixMispTransform(StixTransform):
         return PyMISP(misp_url, misp_key, ssl=misp_ssl, cert=misp_cert)
 
     def init_misp_event(self):
-        if not self._misp_information:
+        if not self.information:
             # Try the package header for some 'info'
-            title = self.package_title(default=self._package.id_)
+            title = self.package_title()
             description = self.package_description()
             if title or description:
-                self._misp_information = title
+                self.information = title
                 if title and description:
-                    self._misp_information += ' | '
+                    self.information += ' | '
                 if description:
-                    self._misp_information += description
+                    self.information += description
 
-        if self._package.timestamp:
-            timestamp = self._package.timestamp
+        if self.package.timestamp:
+            timestamp = self.package.timestamp
         else:
             timestamp = datetime.now()
 
-        self._event = self._misp.new_event(
-            distribution=self._misp_distribution,
-            threat_level_id=self._misp_threat_level,
-            analysis=self._misp_analysis,
-            info=self._misp_information,
+        self.event = self.misp.new_event(
+            distribution=self.distribution,
+            threat_level_id=self.threat_level,
+            analysis=self.analysis,
+            info=self.information,
             date=timestamp.strftime('%Y-%m-%d'),
         )
 
         # Add TLP tag to the event
         package_tlp = self.package_tlp().lower()
         tlp_tag_id = None
-        misp_tags = self._misp.get_all_tags()
+        misp_tags = self.misp.get_all_tags()
         if 'Tag' in misp_tags:
             for tag in misp_tags['Tag']:
                 if tag['name'] == 'tlp:{}'.format(package_tlp):
                     tlp_tag_id = tag['id']
                     break
         if tlp_tag_id is not None:
-            self._misp.tag(self._event['Event']['uuid'], tlp_tag_id)
+            self.misp.tag(self.event['Event']['uuid'], tlp_tag_id)
+
+    # ##### Overridden class methods
 
     def publish_fields(self, fields, object_type):
         if isinstance(self.MISP_FUNCTION_MAPPING[object_type], list):
@@ -148,16 +216,16 @@ class StixMispTransform(StixTransform):
                     self.OBJECT_FIELDS[object_type],
                     self.MISP_FUNCTION_MAPPING[object_type]):
                 if field in fields:
-                    add_method = getattr(self._misp, function)
-                    add_method(self._event, fields[field])
+                    add_method = getattr(self.misp, function)
+                    add_method(self.event, fields[field])
         else:
-            add_method = getattr(self._misp,
+            add_method = getattr(self.misp,
                                  self.MISP_FUNCTION_MAPPING[object_type])
             if object_type == 'File':
                 # Convert the hash type and value to kwargs
                 hash_type = fields['hashes.type_'].lower()
                 kwargs = {hash_type: fields['hashes.simple_hash_value']}
-                add_method(self._event, **kwargs)
+                add_method(self.event, **kwargs)
             elif object_type == 'WinRegistryKey':
                 # Combine hive and key into regkey
                 regkey = ''
@@ -171,14 +239,14 @@ class StixMispTransform(StixTransform):
                     regvalue += '\\' if regvalue else ''
                     regvalue += data
                 if regkey or regvalue:
-                    add_method(self._event, regkey, regvalue)
+                    add_method(self.event, regkey, regvalue)
                 else:
                     self._logger.debug('skipping WinRegistryKey with no data')
             else:
                 # A single value
                 field = self.OBJECT_FIELDS[object_type][0]
                 if field in fields:
-                    add_method(self._event, fields[field])
+                    add_method(self.event, fields[field])
 
     def publish_observable(self, observable, object_type):
         if 'fields' in observable:
@@ -186,14 +254,14 @@ class StixMispTransform(StixTransform):
                 self.publish_fields(fields, object_type)
 
     def publish(self):
-        if self._observables:
+        if self.observables:
             self._logger.info("Publishing results to MISP")
             self.init_misp_event()
             for object_type in sorted(self.OBJECT_FIELDS.keys()):
-                if object_type in self._observables:
-                    for observable in self._observables[object_type]:
+                if object_type in self.observables:
+                    for observable in self.observables[object_type]:
                         self.publish_observable(observable, object_type)
-            if self._misp_published:
-                self._misp.publish(self._event)
+            if self.published:
+                self.misp.publish(self.event)
         else:
             self._logger.info("Package has no observables - skipping")

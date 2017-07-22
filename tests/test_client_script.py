@@ -20,7 +20,11 @@ def test_text_file_basic_transform(client_wrapper):
     package, _class, kwargs = client_wrapper.last_args()
     assert isinstance(package, stix.core.STIXPackage)
     assert _class is certau.transform.StixCsvTransform
-    assert kwargs == {}
+    assert kwargs == dict(
+        default_title=None,
+        default_description=None,
+        default_tlp='AMBER',
+    )
 
 
 def test_bro_with_source_flag_sets_source(client_wrapper):

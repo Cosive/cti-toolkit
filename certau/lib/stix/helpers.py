@@ -2,6 +2,8 @@ from __future__ import absolute_import
 
 from stix.extensions.marking.tlp import TLPMarkingStructure
 
+TLP_COLOURS = ["WHITE", "GREEN", "AMBER", "RED"]
+
 def package_title(package):
     """Retrieves the STIX package title (str) from the header."""
     if package.stix_header and package.stix_header.title:
