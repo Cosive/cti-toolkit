@@ -332,7 +332,7 @@ def get_arg_parser():
     )
     xml_group.add_argument(
         "--ais-organisation",
-        help="ISO-3661-2 submitter organisation for AIS Marking",
+        help="submitter organisation for AIS Marking",
     )
     xml_group.add_argument(
         "--ais-industry-type",
