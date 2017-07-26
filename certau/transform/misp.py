@@ -11,6 +11,7 @@ warnings.filterwarnings('ignore', 'You\'re using python 2, it is strongly '
                         'recommended to use python >=3.4')
 from pymisp import PyMISP
 
+from certau.lib.stix.helpers import package_time
 from .base import StixTransform
 
 
@@ -183,10 +184,7 @@ class StixMispTransform(StixTransform):
                 if description:
                     self.information += description
 
-        if self.package.timestamp:
-            timestamp = self.package.timestamp
-        else:
-            timestamp = datetime.now()
+        timestamp = package_time(self.package) or datetime.now()
 
         self.event = self.misp.new_event(
             distribution=self.distribution,
