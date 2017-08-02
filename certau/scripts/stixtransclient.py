@@ -20,6 +20,7 @@ from certau.source import StixFileSource, TaxiiContentBlockSource
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
 from certau.transform import StixMispTransform, StixSnortTransform
+from certau.lib.stix.ais import ais_refactor
 from certau.lib.stix.helpers import package_tlp, TLP_COLOURS
 from certau.lib.taxii.client import SimpleTaxiiClient
 
@@ -533,18 +534,15 @@ def main():
                 # Add AIS Marking
                 if options.ais_marking:
                     tlp = package_tlp(package) or options.ais_default_tlp
-                    # Note add_ais_marking() removes existing markings
-                    ais.add_ais_marking(
-                        stix_package=package,
+                    ais_refactor(
+                        package=package,
                         proprietary=options.ais_proprietary,
                         consent=options.ais_consent,
                         color=tlp,
-                        country_name_code=options.ais_country,
-                        country_name_code_type='ISO-3166-1_alpha-2',
-                        industry_type=options.ais_industry_type,
-                        admin_area_name_code=options.ais_administrative_area,
-                        admin_area_name_code_type='ISO-3166-2',
-                        organisation_name=options.ais_organisation,
+                        country=options.ais_country,
+                        industry=options.ais_industry_type,
+                        admin_area=options.ais_administrative_area,
+                        organisation=options.ais_organisation,
                     )
                 source_item.save(options.xml_output)
             else:

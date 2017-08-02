@@ -37,3 +37,22 @@ def package_tlp(package):
                     if isinstance(marking_struct, TLPMarkingStructure):
                         return str(marking_struct.color)
     return None
+
+def dereference_observables(package):
+    # Build a dictionary for looking up package level observables
+    root_observables = {}
+    for observable in package.observables:
+        if observable.id_ is not None:
+            root_observables[observable.id_] = observable
+    # Dereference observables in indicators
+    for indicator in package.indicators:
+        observables = []
+        for observable in indicator.observables:
+            if observable.idref is None:
+                observables.append(observable)
+            elif observable.idref in root_observables:
+                observables.append(root_observables[observable.idref])
+            else:
+                raise Exception('unable to dereference observable')
+        # Reset the indicator's observables
+        indicator.observables = observables
