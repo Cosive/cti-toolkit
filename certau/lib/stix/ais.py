@@ -22,3 +22,5 @@ def ais_refactor(package, proprietary, consent, color, organisation, industry,
     )
     # Dereference observables
     dereference_observables(package)
+    # Remove the observables from the root of the package
+    package.observables = None

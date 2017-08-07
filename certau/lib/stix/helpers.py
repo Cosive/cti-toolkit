@@ -55,4 +55,7 @@ def dereference_observables(package):
             else:
                 raise Exception('unable to dereference observable')
         # Reset the indicator's observables
-        indicator.observables = observables
+        if len(observables) == 1:  # Handle bug in python-stix
+            indicator.observables = observables[0]
+        elif len(observables) > 1:
+            indicator.observables = observables
