@@ -42,7 +42,7 @@ class StixFileSource(StixSource):
                 break
             else:
                 self._logger.info(
-                    "skipping file '{}' - invalid XML/STIX".format(file_)
+                    "skipping file '%s' - invalid XML/STIX" % file_
                 )
 
         return package

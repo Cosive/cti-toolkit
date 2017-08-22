@@ -4,11 +4,18 @@ CERT Australia CTI Toolkit
 .. image:: https://travis-ci.org/certau/cti-toolkit.svg?branch=master
     :target: https://travis-ci.org/certau/cti-toolkit
 
+.. image:: https://landscape.io/github/certau/cti-toolkit/develop/landscape.svg?style=flat
+   :target: https://landscape.io/github/certau/cti-toolkit/develop
+   :alt: Code Health
+
 .. image:: https://coveralls.io/repos/github/certau/cti-toolkit/badge.svg?branch=v1.0
     :target: https://coveralls.io/github/certau/cti-toolkit?branch=v1.0
 
 .. image:: https://readthedocs.org/projects/cti-toolkit/badge/?version=latest
     :target: http://cti-toolkit.readthedocs.org/en/latest/?badge=latest
+
+.. image:: https://badge.fury.io/py/cti-toolkit.svg
+    :target: https://badge.fury.io/py/cti-toolkit
 
 This package contains cyber threat intelligence (CTI) tools created
 by CERT Australia.
@@ -24,15 +31,9 @@ installation process has been tested on clean install of Ubuntu 14.04.
 
     $ sudo apt-get install python-pip python-dev libxml2-dev libxslt1-dev libz-dev
 
-#. Clone the cti-toolkit repository::
+#. Install the cti-toolkit::
 
-    $ git clone https://github.com/certau/cti-toolkit.git
-
-#. Run the setup.py script to build and install the tools (and pip
-   dependencies)::
-
-    $ cd cti-toolkit
-    $ sudo python setup.py install
+    $ sudo pip install cti-toolkit
 
 That's it. You should now be able to run utilities, such as
 ``stixtransclient.py``::
