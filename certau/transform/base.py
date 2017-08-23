@@ -2,7 +2,9 @@ import logging
 import pprint
 import copy
 
-from cybox import EntityList
+from mixbox.entities import Entity, EntityList
+#from mixbox import fields
+
 from cybox.core import Object
 from cybox.common import ObjectProperties
 from stix.extensions.marking.tlp import TLPMarkingStructure

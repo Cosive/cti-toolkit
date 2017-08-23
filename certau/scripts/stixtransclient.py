@@ -6,10 +6,9 @@ the STIX package(s), or a STIX package file can be supplied.
 
 import sys
 import logging
-from StringIO import StringIO
+import pkg_resources
 
 import configargparse
-from stix.core import STIXPackage
 
 from certau.source import StixFileSource, SimpleTaxiiClient
 from certau.transform import StixTextTransform, StixStatsTransform
@@ -41,6 +40,12 @@ def get_arg_parser():
         "-d", "--debug",
         action="store_true",
         help="enable debug output",
+    )
+    version = pkg_resources.require('cti-toolkit')[0].version
+    global_group.add_argument(
+        "-V", "--version",
+        action="version",
+        version="cti-toolkit {} by CERT Australia".format(version),
     )
     # Source options
     source_group = parser.add_argument_group('input (source) options')
@@ -83,7 +88,7 @@ def get_arg_parser():
         help="feed output to a MISP server",
     )
     output_ex_group.add_argument(
-        "-sn", "--snort",
+        "--snort",
         action="store_true",
         help="output observables in Snort rule format",
     )
@@ -202,7 +207,8 @@ def get_arg_parser():
     )
     snort_group.add_argument(
         "--snort-rule-action",
-        help="Change all Snort rules generated to [alert|log|pass|activate|dynamic|drop|reject|sdrop]",
+        help=("Change all Snort rules generated to "
+              "[alert|log|pass|activate|dynamic|drop|reject|sdrop]"),
     )
     misp_group = parser.add_argument_group(
         title='misp output arguments (use with --misp)',
@@ -295,13 +301,14 @@ def main():
         transform_kwargs['published'] = options.misp_published
     elif options.snort:
         transform_class = StixSnortTransform
+        allowed_actions = ["alert", "log", "pass", "activate", "dynamic",
+                           "drop", "reject", "sdrop"]
         if options.snort_initial_sid:
             transform_kwargs['snort_initial_sid'] = options.snort_initial_sid
         if options.snort_rule_revision:
             transform_kwargs['snort_rule_revision'] = options.snort_rule_revision
-        if options.snort_rule_action:
-            allowed_actions = ["alert","log","pass","activate","dynamic","drop","reject","sdrop"]
-            transform_kwargs['snort_rule_action'] = options.snort_rule_action if options.snort_rule_action in allowed_actions else "alert"
+        if options.snort_rule_action and options.snort_rule_action in allowed_actions:
+            transform_kwargs['snort_rule_action'] = options.snort_rule_action
     elif options.xml_output:
         pass
     else:
