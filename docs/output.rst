@@ -1,20 +1,12 @@
-:mod:`stixtransclient.py`
-=========================
+.. _output:
 
-Few systems can utilise indicators and observables when stored in STIX packages.
-CERT Australia has developed a utility (``stixtransclient.py``) that allows the
-atomic observables contained within a STIX package to be extracted and presented
-in either a text delimited format, in the `Bro Intel Framework
-<http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html>`_ format, or in
-a `Snort
-<https://snort.org/>`_ or `Suricata
-<https://redmine.openinfosecfoundation.org/projects/suricata/wiki/Suricata>`_ rule format .
-The utility can also communicate with a `MISP
-<http://www.misp-project.org/>`_ server and insert observables from a STIX
-package into a new MISP event.
+Output samples
+==============
 
-Examples
---------
+Below you will find samples of output from the various transforms.
+
+Statistics output
+-----------------
 
 Display summary statistics about the object types (observables) contained in
 a STIX package (file)::
@@ -33,6 +25,10 @@ a STIX package (file)::
     SocketAddress observables:             1
     URI observables:                       1
     WinRegistryKey observables:            1
+
+
+Text (CSV) output
+-----------------
 
 Display observable details in text (delimited) format::
 
@@ -89,6 +85,9 @@ Display observable details in text (delimited) format::
     # id|hive|hive_condition|key|key_condition|name|name_condition|data|data_condition
     cert_au:Observable-d0f4708e-4f2b-49c9-bc31-29e7119844e5|HKEY_CURRENT_USER\Software|Equals|\Microsoft\Windows\CurrentVersion\Run|Equals|hotkey|Equals|%APPDATA%\malware.exe -st|Equals
 
+Bro Intel Framework output
+--------------------------
+
 Display observables in the format used by the Bro Intelligence Framework
 (with a header row explaining columns)::
 
@@ -112,8 +111,11 @@ Display observables in the format used by the Bro Intelligence Framework
     183.82.180.95	Intel::ADDR	CCIRC	https://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx	T	-	-
     host.domain.tld/path/file	Intel::URL	CERT-AU	https://www.cert.gov.au/	T	-	-
 
+Snort/Suricata output
+---------------------
+
 Display IP observables in the format used by Snort IDS starting with a snort rule id of 5590000
-(Note - Each run of stixtransclient.py will need a different sids::
+(Note - each run of ``stixtransclient.py`` will need a different initial sid)::
 
     $ stixtransclient.py --file CA-TEST-STIX.xml --snort --snort-initial-sid 5590000
 
@@ -127,128 +129,3 @@ Display IP observables in the format used by Snort IDS starting with a snort rul
     alert ip any any -> 99.253.98.57 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 99.253.98.57 (ID cert_au:Observable-1526c98f-950e-46da-931a-3749524c519f)", sid:5590007; rev:1; classtype:bad-unknown;)
     alert ip any any -> 3.46.87.116 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 3.46.87.116 (ID cert_au:Observable-62fb38b3-fc53-48cb-ad7d-6a9762ee87c4)", sid:5590008; rev:1; classtype:bad-unknown;)
     alert ip any any -> 28.13.163.200 any (flow:established,to_server; msg:"CTI-TOOLKIT Connection to potentially malicious server 28.13.163.200 (ID cert_au:Observable-091354ba-6db5-42a6-8db0-1041b148ba28)", sid:5590009; rev:1; classtype:bad-unknown;)
-
-
-Command line options (help)
----------------------------
-
-The command line (and configuration) options for stixtransclient.py are
-displayed below::
-
-    $ stixtransclient.py -h
-    
-    usage: stixtransclient.py [-h] [-c CONFIG] [-v] [-d]
-                              (--file FILE [FILE ...] | --taxii)
-                              (-s | -t | -b | -m | -sn | -x XML_OUTPUT) [-r]
-                              [--hostname HOSTNAME] [--port PORT]
-                              [--ca_file CA_FILE] [--username USERNAME]
-                              [--password PASSWORD] [--ssl] [--key KEY]
-                              [--cert CERT] [--path PATH]
-                              [--collection COLLECTION]
-                              [--begin-timestamp BEGIN_TIMESTAMP]
-                              [--end-timestamp END_TIMESTAMP]
-                              [--subscription-id SUBSCRIPTION_ID]
-                              [-f FIELD_SEPARATOR] [--header] [--title TITLE]
-                              [--source SOURCE] [--bro-no-notice]
-                              [--base-url BASE_URL]
-                              [--snort-initial-sid SNORT_INITIAL_SID]
-                              [--snort-rule-revision SNORT_RULE_REVISION]
-                              [--snort-rule-action SNORT_RULE_ACTION]
-                              [--misp-url MISP_URL] [--misp-key MISP_KEY]
-                              [--misp-distribution MISP_DISTRIBUTION]
-                              [--misp-threat MISP_THREAT]
-                              [--misp-analysis MISP_ANALYSIS]
-                              [--misp-info MISP_INFO] [--misp-published]
-
-    Utility to extract observables from local STIX files or a TAXII server. Args
-    that start with '--' (eg. -v) can also be set in a config file
-    (/etc/ctitoolkit.conf or ~/.ctitoolkit or specified via -c). The recognized
-    syntax for setting (key, value) pairs is based on the INI and YAML formats
-    (e.g. key=value or foo=TRUE). For full documentation of the differences from
-    the standards please refer to the ConfigArgParse documentation. If an arg is
-    specified in more than one place, then commandline values override config file
-    values which override defaults.
-
-    optional arguments:
-      -h, --help            show this help message and exit
-
-    global arguments:
-      -c CONFIG, --config CONFIG
-                            configuration file to use
-      -v, --verbose         verbose output
-      -d, --debug           enable debug output
-
-    input (source) options:
-      --file FILE [FILE ...]
-                            obtain STIX packages from supplied files or
-                            directories
-      --taxii               poll TAXII server to obtain STIX packages
-
-    output (transform) options:
-      -s, --stats           display summary statistics for each STIX package
-      -t, --text            output observables in delimited text
-      -b, --bro             output observables in Bro intel framework format
-      -m, --misp            feed output to a MISP server
-      -sn, --snort          output observables in Snort rule format
-      -x XML_OUTPUT, --xml_output XML_OUTPUT
-                            output XML STIX packages to the given directory (use
-                            with --taxii)
-
-    file input arguments (use with --file):
-      -r, --recurse         recurse subdirectories when processing files.
-
-    taxii input arguments (use with --taxii):
-      --hostname HOSTNAME   hostname of TAXII server
-      --port PORT           port of TAXII server
-      --ca_file CA_FILE     File containing CA certs of TAXII server
-      --username USERNAME   username for TAXII authentication
-      --password PASSWORD   password for TAXII authentication
-      --ssl                 use SSL to connect to TAXII server
-      --key KEY             file containing PEM key for TAXII SSL authentication
-      --cert CERT           file containing PEM certificate for TAXII SSL
-                            authentication
-      --path PATH           path on TAXII server for polling
-      --collection COLLECTION
-                            TAXII collection to poll
-      --begin-timestamp BEGIN_TIMESTAMP
-                            the begin timestamp (format: YYYY-MM-
-                            DDTHH:MM:SS.ssssss+/-hh:mm) for the poll request
-      --end-timestamp END_TIMESTAMP
-                            the end timestamp (format: YYYY-MM-
-                            DDTHH:MM:SS.ssssss+/-hh:mm) for the poll request
-      --subscription-id SUBSCRIPTION_ID
-                            a subscription ID for the poll request
-
-    other output options:
-      -f FIELD_SEPARATOR, --field-separator FIELD_SEPARATOR
-                            field delimiter character/string to use in text output
-      --header              include header row for text output
-      --title TITLE         title for package (if not included in STIX file)
-      --source SOURCE       source of indicators - e.g. Hailataxii, CERT-AU
-      --bro-no-notice       suppress Bro intel notice framework messages (use with
-                            --bro)
-      --base-url BASE_URL   base URL for indicator source - use with --bro or
-                            --misp
-
-    snort output arguments (use with --snort):
-      --snort-initial-sid SNORT_INITIAL_SID
-                            The initial Snort IDs to begin from (default: 5500000)
-      --snort-rule-revision SNORT_RULE_REVISION
-                            The revision of the Snort rule (default: 1)
-      --snort-rule-action SNORT_RULE_ACTION
-                            Change all Snort rules generated to
-                            [alert|log|pass|activate|dynamic|drop|reject|sdrop]
-
-    misp output arguments (use with --misp):
-      --misp-url MISP_URL   URL of MISP server
-      --misp-key MISP_KEY   token for accessing MISP instance
-      --misp-distribution MISP_DISTRIBUTION
-                            MISP distribution group - default: 0 (your
-                            organisation only)
-      --misp-threat MISP_THREAT
-                            MISP threat level - default: 4 (undefined)
-      --misp-analysis MISP_ANALYSIS
-                            MISP analysis phase - default: 0 (initial)
-      --misp-info MISP_INFO
-                            MISP event description
-      --misp-published      set MISP published state to True

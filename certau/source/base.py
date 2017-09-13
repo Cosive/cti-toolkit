@@ -1,30 +1,40 @@
+import logging
+import os
+
 import ramrod
 from stix.core import STIXPackage
 from stix.utils.parser import UnsupportedVersionError
 
 
-class StixSource(object):
-    """A base class for sources of STIX packages."""
+class StixSourceItem(object):
+    """A base class for STIX package containers."""
 
-    def load_stix_package(self, stix_file, stix_version='1.2'):
-        """Helper for loading and updating (if required) a STIX package."""
+    def __init__(self, source_item, stix_version='1.2'):
+        self.source_item = source_item
         try:
-            # TODO add in a version check to make sure that the returned STIX is
-            # what the user requested. If not, it needs ramrodding
-            package = STIXPackage.from_xml(stix_file)
-            
+            self.stix_package = STIXPackage.from_xml(self.io())
         except UnsupportedVersionError:
-            updated = ramrod.update(stix_file, to_=stix_version)
+            updated = ramrod.update(self.io(), to_=stix_version)
             document = updated.document.as_stringio()
-            try:
-                package = STIXPackage.from_xml(document)
-            except Exception:
-                package = None
+            self.stix_package = STIXPackage.from_xml(document)
         except Exception:
-            package = None
+            logging.error('error parsing STIX package (%s)', self.file_name())
+            self.stix_package = None
 
-        return package
-
-    def next_stix_package(self):
-        """Return the next STIX package available from the source (or None)."""
+    def io(self):
         raise NotImplementedError
+
+    def file_name(self):
+        raise NotImplementedError
+
+    def save(self, directory):
+        try:
+            stix_package = self.stix_package
+            file_name = self.file_name()
+            full_path = os.path.join(directory, file_name)
+            logging.info('saving STIX package to file \'%s\'', full_path)
+            with open(full_path, 'wb') as file_:
+                file_.write(self.stix_package.to_xml())
+        except Exception:
+            logging.error('unable to save STIX package to file \'%s\'',
+                          full_path)

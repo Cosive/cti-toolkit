@@ -6,7 +6,7 @@ Installation
 This document describes how to install the CERT Australia CTI Toolkit.
 
 Installation is streamlined using Python's setuptools. The following
-installation process has been tested on clean install of Ubuntu 14.04.
+installation process has been tested on clean install of Ubuntu Server 16.04.
 
 #. Install prerequisites required by setuptools and libtaxii::
 

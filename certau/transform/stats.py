@@ -20,16 +20,30 @@ class StixStatsTransform(StixTextTransform):
 
     LINE = '++++++++++++++++++++++++++++++++++++++++'
 
-    def __init__(self, package, separator='\t', include_header=True,
+    def __init__(self, package, default_title=None, default_description=None,
+                 default_tlp='AMBER', separator='\t', include_header=True,
                  header_prefix='', pretty_text=True):
         super(StixStatsTransform, self).__init__(
-            package, separator, include_header, header_prefix,
+            package, default_title, default_description, default_tlp,
+            separator, include_header, header_prefix,
         )
-        self._pretty_text = pretty_text
+        self.pretty_text = pretty_text
+
+    # ##### Properties
+
+    @property
+    def pretty_text(self):
+        return self._pretty_text
+
+    @pretty_text.setter
+    def pretty_text(self, pretty_text):
+        self._pretty_text = bool(pretty_text)
+
+    # ##### Overridden class methods
 
     def header(self):
-        header = self._header_prefix + self.LINE + '\n'
-        header += self._header_prefix + 'Summary statistics:'
+        header = self.header_prefix + self.LINE + '\n'
+        header += self.header_prefix + 'Summary statistics:'
 
         title = self.package_title()
         if title:
@@ -39,15 +53,15 @@ class StixStatsTransform(StixTextTransform):
         if tlp:
             header += ' (' + tlp + ')'
 
-        header += '\n' + self._header_prefix + self.LINE + '\n'
+        header += '\n' + self.header_prefix + self.LINE + '\n'
         return header
 
     def text_for_object_type(self, object_type):
-        if object_type in self._observables:
-            count = len(self._observables[object_type])
+        if object_type in self.observables:
+            count = len(self.observables[object_type])
         else:
             count = 0
-        if self._pretty_text:
+        if self.pretty_text:
             text = '{0:<35} {1:>4}\n'.format(
                 object_type + ' observables:',
                 count,

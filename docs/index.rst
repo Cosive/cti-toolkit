@@ -14,9 +14,11 @@ Contents:
 .. toctree::
    :maxdepth: 1
 
+   about
    install
+   commandline
    configure
-   scripts/index
+   output
    certau/index
 
 

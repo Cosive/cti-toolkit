@@ -33,25 +33,62 @@ class StixSnortTransform(StixTextTransform):
         'URI': ['value'],
     }
 
-    def __init__(self, package, separator='\t', include_header=False,
+    SNORT_ACTIONS = ['alert', 'log', 'pass', 'activate',
+                     'dynamic', 'drop', 'reject', 'sdrop']
+
+    def __init__(self, package, default_title=None, default_description=None,
+                 default_tlp='AMBER', separator='\t', include_header=False,
                  header_prefix='#', snort_initial_sid=5500000,
                  snort_rule_revision=1, snort_rule_action='alert'):
         super(StixSnortTransform, self).__init__(
-            package, separator, include_header, header_prefix
+            package, default_title, default_description, default_tlp,
+            separator, include_header, header_prefix,
         )
-        self._sid = int(snort_initial_sid)
-        self._snort_rule_revision = int(snort_rule_revision)
-        self._snort_rule_action = snort_rule_action
+        self.sid = snort_initial_sid
+        self.snort_rule_revision = snort_rule_revision
+        self.snort_rule_action = snort_rule_action
 
-    def _snort_rule_text(self, match, conditions):
-        rule = '{} '.format(self._snort_rule_action)
+    # ##### Properties
+
+    @property
+    def sid(self):
+        return self._sid
+
+    @sid.setter
+    def sid(self, sid):
+        self._sid = int(sid)
+
+    @property
+    def snort_rule_revision(self):
+        return self._snort_rule_revision
+
+    @snort_rule_revision.setter
+    def snort_rule_revision(self, snort_rule_revision):
+        self._snort_rule_revision = int(snort_rule_revision)
+
+    @property
+    def snort_rule_action(self):
+        return self._snort_rule_action
+
+    @snort_rule_action.setter
+    def snort_rule_action(self, snort_rule_action):
+        if str(snort_rule_action) not in self.SNORT_ACTIONS:
+            raise TypeError('invalid Snort action')
+        self._snort_rule_action = str(snort_rule_action)
+
+    # ##### Class helper methods
+
+    def snort_rule_text(self, match, conditions):
+        rule = '{} '.format(self.snort_rule_action)
         rule += '{} ('.format(match)
         for condition in conditions:
             rule += '{}; '.format(condition)
-        rule += 'sid:{}; '.format(self._sid)
-        rule += 'rev:{}; '.format(self._snort_rule_revision)
+        rule += 'sid:{}; '.format(self.sid)
+        rule += 'rev:{}; '.format(self.snort_rule_revision)
         rule += 'classtype:bad-unknown;)\n'
         return rule
+
+    # ##### Overridden class methods
 
     def text_for_observable(self, observable, object_type):
         text = ''
@@ -63,7 +100,7 @@ class StixSnortTransform(StixTextTransform):
                         address = field['address_value']
                     else:
                         address = field['ip_address.address_value']
-                    text += self._snort_rule_text(
+                    text += self.snort_rule_text(
                         match='ip any any -> {} any'.format(address),
                         conditions=[
                             'flow:established,to_server',
@@ -74,7 +111,7 @@ class StixSnortTransform(StixTextTransform):
             elif object_type == 'DomainName':
                 for field in observable['fields']:
                     domain = field['value']
-                    text += self._snort_rule_text(
+                    text += self.snort_rule_text(
                         match='tcp any any -> $EXTERNAL_NET $HTTP_PORTS',
                         conditions=[
                             'flow:established,to_server',
@@ -88,7 +125,7 @@ class StixSnortTransform(StixTextTransform):
             elif object_type == 'URI':
                 for field in observable['fields']:
                     url = urlparse(field['value'])
-                    text += self._snort_rule_text(
+                    text += self.snort_rule_text(
                         match='tcp any any -> $EXTERNAL_NET $HTTP_PORTS',
                         conditions=[
                             'flow:established,to_server',
@@ -101,5 +138,5 @@ class StixSnortTransform(StixTextTransform):
                             'malicious url {} (ID {})"'.format(url.geturl(), id_),
                         ],
                     )
-            self._sid += 1
+            self.sid += 1
         return text
