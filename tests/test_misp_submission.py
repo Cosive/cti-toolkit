@@ -19,7 +19,7 @@ def test_misp_publishing(_,stix_version):
     """Test that the stixtrans module can submit to a MISP server."""
     # STIX file to test against. Place in a StringIO instance so we can
     # close the file.
-    with open('tests/'+ ('TEST-STIX-1.2.xml' if stix_version == 12 else 'TEST-STIX-1.1.1.xml'), 'rb') as stix_f:
+    with open(('TEST-STIX-1.2.xml' if stix_version == 12 else 'TEST-STIX-1.1.1.xml'), 'rb') as stix_f:
         stix_io = StringIO.StringIO(stix_f.read())
 
     # Create a transformer - select 'text' output format and flag MISP

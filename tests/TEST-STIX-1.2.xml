@@ -1,8 +1,5 @@
-<stix:STIX_Package xmlns:AddressObj="http://cybox.mitre.org/objects#AddressObject-2" xmlns:DomainNameObj="http://cybox.mitre.org/objects#DomainNameObject-1" xmlns:EmailMessageObj="http://cybox.mitre.org/objects#EmailMessageObject-2" xmlns:FileObj="http://cybox.mitre.org/objects#FileObject-2" xmlns:HTTPSessionObj="http://cybox.mitre.org/objects#HTTPSessionObject-2" xmlns:MutexObj="http://cybox.mitre.org/objects#MutexObject-2" xmlns:NetworkConnectionObj="http://cybox.mitre.org/objects#NetworkConnectionObject-2" xmlns:PortObj="http://cybox.mitre.org/objects#PortObject-2" xmlns:SocketAddressObj="http://cybox.mitre.org/objects#SocketAddressObject-1" xmlns:URIObj="http://cybox.mitre.org/objects#URIObject-2" xmlns:WinRegistryKeyObj="http://cybox.mitre.org/objects#WinRegistryKeyObject-2" xmlns:cert_au="http://www.cert.gov.au/" xmlns:CCIRC-CCRIC="http://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx" xmlns:CISCP="us-cert.gov/ciscp" xmlns:NCCIC="us-cert.gov" xmlns:coa="http://stix.mitre.org/CourseOfAction-1" xmlns:cybox="http://cybox.mitre.org/cybox-2" xmlns:cyboxCommon="http://cybox.mitre.org/common-2" xmlns:cyboxVocabs="http://cybox.mitre.org/default_vocabularies-2" xmlns:indicator="http://stix.mitre.org/Indicator-2" xmlns:marking="http://data-marking.mitre.org/Marking-1" xmlns:stix="http://stix.mitre.org/stix-1" xmlns:stixCommon="http://stix.mitre.org/common-1" xmlns:stixVocabs="http://stix.mitre.org/default_vocabularies-1" xmlns:tlpMarking="http://data-marking.mitre.org/extensions/MarkingStructure#TLP-1" xmlns:ttp="http://stix.mitre.org/TTP-1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="cert_au:Package-dd2d0b1c-22d6-48b8-a511-2659a642015d" version="1.2" timestamp="2015-12-23T03:06:50.254779+00:00">
+<stix:STIX_Package xmlns:AddressObj="http://cybox.mitre.org/objects#AddressObject-2" xmlns:DomainNameObj="http://cybox.mitre.org/objects#DomainNameObject-1" xmlns:EmailMessageObj="http://cybox.mitre.org/objects#EmailMessageObject-2" xmlns:FileObj="http://cybox.mitre.org/objects#FileObject-2" xmlns:HTTPSessionObj="http://cybox.mitre.org/objects#HTTPSessionObject-2" xmlns:MutexObj="http://cybox.mitre.org/objects#MutexObject-2" xmlns:NetworkConnectionObj="http://cybox.mitre.org/objects#NetworkConnectionObject-2" xmlns:PortObj="http://cybox.mitre.org/objects#PortObject-2" xmlns:SocketAddressObj="http://cybox.mitre.org/objects#SocketAddressObject-1" xmlns:URIObj="http://cybox.mitre.org/objects#URIObject-2" xmlns:WinRegistryKeyObj="http://cybox.mitre.org/objects#WinRegistryKeyObject-2" xmlns:cert_au="http://www.cert.gov.au/" xmlns:CCIRC-CCRIC="http://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx" xmlns:CISCP="us-cert.gov/ciscp" xmlns:NCCIC="us-cert.gov" xmlns:coa="http://stix.mitre.org/CourseOfAction-1" xmlns:cybox="http://cybox.mitre.org/cybox-2" xmlns:cyboxCommon="http://cybox.mitre.org/common-2" xmlns:cyboxVocabs="http://cybox.mitre.org/default_vocabularies-2" xmlns:indicator="http://stix.mitre.org/Indicator-2" xmlns:marking="http://data-marking.mitre.org/Marking-1" xmlns:stix="http://stix.mitre.org/stix-1" xmlns:stixCommon="http://stix.mitre.org/common-1" xmlns:stixVocabs="http://stix.mitre.org/default_vocabularies-1" xmlns:tlpMarking="http://data-marking.mitre.org/extensions/MarkingStructure#TLP-1" xmlns:ttp="http://stix.mitre.org/TTP-1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:report="http://stix.mitre.org/Report-1" id="cert_au:Package-dd2d0b1c-22d6-48b8-a511-2659a642015d" version="1.2" timestamp="2015-12-23T03:06:50.254779+00:00">
   <stix:STIX_Header>
-    <stix:Title>CA-TEST-STIX</stix:Title>
-    <stix:Package_Intent xsi:type="stixVocabs:PackageIntentVocab-1.0">Indicators</stix:Package_Intent>
-    <stix:Description>Test STIX data</stix:Description>
     <stix:Handling>
       <marking:Marking>
         <marking:Controlled_Structure>//node()</marking:Controlled_Structure>
@@ -478,4 +475,14 @@
       </coa:Efficacy>
     </stix:Course_Of_Action>
   </stix:Courses_Of_Action>
+  <stix:Reports>
+    <stix:Report id="cert_au:report-caa85a76-ab70-4fe7-8d5f-1b70f3624189" timestamp="2015-01-21T00:52:30.062598+00:00" xsi:type="report:ReportType">
+      <report:Header>
+        <report:Title>CA-TEST-STIX</report:Title>
+        <report:Intent xsi:type="stixVocabs:PackageIntentVocab-1.0">Indicators</report:Intent>
+        <report:Description>Test STIX data</report:Description>
+      </report:Header>
+    </stix:Report>
+  </stix:Reports>
 </stix:STIX_Package>
+

@@ -7,17 +7,21 @@ import pytest
 
 import certau.transform
 
-def test_transform_to_text(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_text(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'text' output
     format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'text' output format transformer
     transformer = certau.transform.StixCsvTransform(
         package, include_header=True
     )
 
     assert transformer.text().strip() == textwrap.dedent("""
-        # TEST-STIX-1.1.1 (TLP:WHITE)
+        # CA-TEST-STIX (TLP:WHITE)
 
         # Address observables
         # id|category|address
@@ -69,11 +73,14 @@ def test_transform_to_text(package):
         cert_au:Observable-d0f4708e-4f2b-49c9-bc31-29e7119844e5|HKEY_CURRENT_USER\\Software|Equals|\\Microsoft\\Windows\\CurrentVersion\\Run|Equals|hotkey|Equals|%APPDATA%\\malware.exe -st|Equals
     """).strip()
 
-
-def test_text_delimiter_quoting(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_text_delimiter_quoting(stix_version, package_111, package_12):
     """Test that delimiters included in the values of text transforms are
     correctly quoted.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     transformer = certau.transform.StixCsvTransform(package)
 
     joined = transformer.join(('first|second', 'third'))
@@ -84,11 +91,14 @@ def test_text_delimiter_quoting(package):
 
     assert reader.next() == ['first|second', 'third']
 
-
-def test_transform_to_stats(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_stats(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'stats'
     output format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'stats' output format.
     transformer = certau.transform.StixStatsTransform(
         package, include_header=True
@@ -96,7 +106,7 @@ def test_transform_to_stats(package):
 
     assert transformer.text().strip() == textwrap.dedent("""
         ++++++++++++++++++++++++++++++++++++++++
-        Summary statistics: TEST-STIX-1.1.1 (WHITE)
+        Summary statistics: CA-TEST-STIX (WHITE)
         ++++++++++++++++++++++++++++++++++++++++
         Address observables:                   2
         DomainName observables:                3
@@ -109,11 +119,14 @@ def test_transform_to_stats(package):
         WinRegistryKey observables:            1
     """).strip()
 
-
-def test_transform_to_bro(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_bro(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'bro' output
     format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'stats' output format.
     transformer = certau.transform.StixBroIntelTransform(
         package, include_header=True
@@ -163,10 +176,14 @@ def test_transform_to_bro(package):
         host.domain.tld/path/file\tIntel::URL\tCERT-AU\thttps://www.cert.gov.au/\tF\t-\t-
     """).strip().expandtabs()
 
-def test_transform_to_snort(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_snort(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'snort' output
     format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'stats' output format.
     transformer = certau.transform.StixSnortTransform(
             package, include_header=False
