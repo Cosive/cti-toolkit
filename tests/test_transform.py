@@ -3,9 +3,9 @@
 import csv
 import StringIO
 import textwrap
+import pytest
 
 import certau.transform
-
 
 def test_transform_to_text(package):
     """Test of transform between a sample STIX file and the 'text' output
@@ -17,7 +17,7 @@ def test_transform_to_text(package):
     )
 
     assert transformer.text().strip() == textwrap.dedent("""
-        # CA-TEST-STIX (TLP:WHITE)
+        # TEST-STIX-1.1.1 (TLP:WHITE)
 
         # Address observables
         # id|category|address
@@ -96,7 +96,7 @@ def test_transform_to_stats(package):
 
     assert transformer.text().strip() == textwrap.dedent("""
         ++++++++++++++++++++++++++++++++++++++++
-        Summary statistics: CA-TEST-STIX (WHITE)
+        Summary statistics: TEST-STIX-1.1.1 (WHITE)
         ++++++++++++++++++++++++++++++++++++++++
         Address observables:                   2
         DomainName observables:                3

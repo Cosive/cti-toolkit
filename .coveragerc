@@ -1,2 +1,3 @@
 [run]
-omit = certau/scripts/stixtransclient.py
+omit = 
+    certau/scripts/*.py

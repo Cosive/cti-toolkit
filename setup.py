@@ -1,8 +1,22 @@
 #!/usr/bin/env python
 
+import os
 from setuptools import setup
 
 from certau import package_name, package_version
+
+def here(*path):
+    return os.path.join(os.path.dirname(__file__), *path)
+
+
+def get_file_contents(filename):
+    with open(here(filename)) as fp:
+        return fp.read()
+
+
+# This is a quick and dirty way to include everything from
+# requirements.txt as package dependencies.
+install_requires_list = get_file_contents('requirements.txt').split()
 
 setup(
     name=package_name,
@@ -38,15 +52,6 @@ setup(
             'stixtransclient.py=certau.scripts.stixtransclient:main',
         ],
     },
-    install_requires=[
-        'configargparse',
-        'lxml',
-        'libtaxii',
-        'cybox>=2.1.0.13',
-        'stix>=1.2.0.4',
-        'stix-ramrod>=1.1.0',
-        'mixbox',
-        'pymisp>=2.4.71',
-        'requests',
-    ]
+
+    install_requires=install_requires_list
 )

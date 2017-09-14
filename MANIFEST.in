@@ -1,0 +1,8 @@
+include LICENSE.rst
+include README.rst
+include requirements.txt
+recursive-include docs *
+recursive-include opentaxi *.yml
+global-exclude *.pyc
+recursive-exclude env *
+recursive-exclude venv *
