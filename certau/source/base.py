@@ -1,25 +1,31 @@
 import logging
 import os
+import warnings
 
 import ramrod
 from stix.core import STIXPackage
 from stix.utils.parser import UnsupportedVersionError
 
+LATEST_STIX_VERSION = "1.2"
 
 class StixSourceItem(object):
     """A base class for STIX package containers."""
 
-    def __init__(self, source_item, stix_version='1.2'):
+    def __init__(self, source_item):
         self.source_item = source_item
-        try:
-            self.stix_package = STIXPackage.from_xml(self.io())
-        except UnsupportedVersionError:
-            updated = ramrod.update(self.io(), to_=stix_version)
-            document = updated.document.as_stringio()
-            self.stix_package = STIXPackage.from_xml(document)
-        except Exception:
-            logging.error('error parsing STIX package (%s)', self.file_name())
-            self.stix_package = None
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore","The use of this field has been deprecated",UserWarning)
+            try:
+                self.stix_package = STIXPackage.from_xml(self.io())
+            except UnsupportedVersionError:
+                updated = ramrod.update(self.io(), to_=LATEST_STIX_VERSION)
+                document = updated.document.as_stringio()
+                self.stix_package = STIXPackage.from_xml(document)
+            except Exception:
+                logging.error('error parsing STIX package (%s)', self.file_name())
+                self.stix_package = None
+
+        self.stix_version = self.stix_package.version
 
     def io(self):
         raise NotImplementedError

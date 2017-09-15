@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from stix.extensions.marking.tlp import TLPMarkingStructure
 
 TLP_COLOURS = ["WHITE", "GREEN", "AMBER", "RED"]
+SUPPORTED_STIX_VERSIONS = ["1.0", "1.0.1", "1.1", "1.1.1", "1.2"]
 
 def package_time(package):
     if package.stix_header:
@@ -15,14 +16,20 @@ def package_time(package):
 
 def package_title(package):
     """Retrieves the STIX package title (str) from the header."""
-    if package.stix_header and package.stix_header.title:
+    if package.reports and package.reports[0].header and package.reports[0].header.title:
+        # STIX 1.2+
+        return str(package.reports[0].header.title)
+    elif package.stix_header and package.stix_header.title:
         return str(package.stix_header.title)
     else:
         return None
 
 def package_description(package):
     """Retrieves the STIX package description (str) from the header."""
-    if package.stix_header and package.stix_header.description:
+    if package.reports and package.reports[0].header and package.reports[0].header.description:
+        # STIX 1.2+
+        return str(package.reports[0].header.description)
+    elif package.stix_header and package.stix_header.description:
         return str(package.stix_header.description)
     else:
         return None
