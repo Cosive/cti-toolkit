@@ -1,4 +1,9 @@
-from StringIO import StringIO
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
+
+from io import StringIO
 
 from certau.lib.taxii.util import file_name_for_content_block
 from certau.source.base import StixSourceItem

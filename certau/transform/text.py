@@ -1,8 +1,11 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
 
 import contextlib
 import csv
-import StringIO
+import io
 
 from .base import StixTransform
 
@@ -39,14 +42,14 @@ class StixTextTransform(StixTransform):
     OBJECT_HEADER_LABELS = {}
 
     def __init__(self, package, default_title=None, default_description=None,
-                 default_tlp='AMBER', separator='|', include_header=True,
-                 header_prefix='#'):
+                 default_tlp=u'AMBER', separator=u'|', include_header=True,
+                 header_prefix=u'#'):
         super(StixTextTransform, self).__init__(
             package, default_title, default_description, default_tlp,
         )
-        self.separator = separator
+        self.separator = unicode(separator)
         self.include_header = include_header
-        self.header_prefix = header_prefix
+        self.header_prefix = unicode(header_prefix)
 
     # ##### Properties
 
@@ -56,7 +59,7 @@ class StixTextTransform(StixTransform):
 
     @separator.setter
     def separator(self, separator):
-        self._separator = '' if separator is None else str(separator)
+        self._separator = u'' if separator is None else unicode(separator)
 
     @property
     def include_header(self):
@@ -73,67 +76,75 @@ class StixTextTransform(StixTransform):
     @header_prefix.setter
     def header_prefix(self, header_prefix):
         if header_prefix is None:
-            self._header_prefix = ''
+            self._header_prefix = u''
         else:
-            self._header_prefix = str(header_prefix)
+            self._header_prefix = unicode(header_prefix)
 
     # ##### Class helper methods
 
+    def quote_strings_containing_seperators(self, item):
+        """returns an item, quoting it when it contains the delimiter."""
+        if self.separator.decode('utf-8') in item.decode('utf-8'):
+            return u'"' + unicode(item) + u'"'
+        else:
+            return unicode(item)
+
     def join(self, items):
         """str.join, but with quoting when the items contain delimiters."""
-        with contextlib.closing(StringIO.StringIO()) as sio:
-            csv.writer(sio, delimiter=self.separator).writerow(items)
-            return sio.getvalue().strip()
+        #with io.BytesIO() as csv_stream:
+        #    csv.writer(csv_stream, delimiter=self.separator.encode('utf-8')).writerow(items)
+        #    return csv_stream.getvalue().strip()
+        return unicode(self.separator.join(self.quote_strings_containing_seperators(item) for item in items))
 
     # ##### Overridden class methods
 
     def header(self):
         """Returns a header string to display with transform."""
         if self.HEADER_LABELS:
-            return '{} {}\n'.format(
+            return unicode('{} {}\n'.format(
                 self.header_prefix,
                 self.join(self.HEADER_LABELS),
-            )
+            ))
         else:
-            return ''
+            return u''
 
     def header_for_object_type(self, object_type):
         """Returns a header string associated with an object type."""
         if object_type in self.OBJECT_HEADER_LABELS:
-            return '{} {}\n'.format(
+            return unicode('{} {}\n'.format(
                 self.header_prefix,
                 self.join(self.OBJECT_HEADER_LABELS[object_type]),
-            )
+            ))
         else:
-            return ''
+            return u''
 
     def text_for_fields(self, fields, object_type):
         """Returns a string representing the given object fields."""
         field_values = []
         if self.OBJECT_FIELDS and object_type in self.OBJECT_FIELDS:
             for field in self.OBJECT_FIELDS[object_type]:
-                field_value = fields[field] if field in fields else 'None'
+                field_value = unicode(fields[field]) if field in fields else u'None'
                 field_values.append(field_value)
         return self.join(field_values)
 
     def text_for_observable(self, observable, object_type):
         """Returns a string representing the given observable."""
-        text = ''
+        text = u''
         for field in observable['fields']:
             text += self.text_for_fields(field, object_type) + '\n'
-        return text
+        return unicode(text)
 
     def text_for_object_type(self, object_type):
         """Returns a string representing observables of the given type."""
-        text = ''
+        text = u''
         if object_type in self.observables:
             for observable in self.observables[object_type]:
                 text += self.text_for_observable(observable, object_type)
-        return text
+        return unicode(text)
 
     def text(self):
         """Returns a string representation of the STIX package."""
-        text = self.header() if self.include_header else ''
+        text = self.header() if self.include_header else u''
 
         if self.OBJECT_FIELDS:
             object_types = self.OBJECT_FIELDS.keys()
@@ -145,4 +156,4 @@ class StixTextTransform(StixTransform):
                 if self.include_header:
                     text += self.header_for_object_type(object_type)
                 text += object_text
-        return text
+        return unicode(text,'utf-8')

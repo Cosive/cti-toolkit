@@ -3,6 +3,12 @@
 The SimpleTaxiiClient encapsulates the libtaxii.clients.HttpClient,
 configuring it using the passed in configargparse instance.
 """
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
+
 import httpretty
 import libtaxii.clients
 import pytest

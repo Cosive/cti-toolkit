@@ -1,6 +1,12 @@
 """Test setup."""
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
+
 import sys
-import StringIO
+import io
 import pytest
 import stix
 from certau.scripts import stixtransclient
@@ -13,8 +19,8 @@ def package_111():
     If you include 'package_111' as a test argument, you have access to a
     pre-loaded STIX package, ready to transform.
     """
-    with open('TEST-STIX-1.1.1.xml', 'rb') as stix_f:
-        stix_io = StringIO.StringIO(stix_f.read())
+    with open('TEST-STIX-1.1.1.xml', encoding='utf-8') as stix_f:
+        stix_io = io.StringIO(stix_f.read())
         return stix.core.STIXPackage.from_xml(stix_io)
 
 @pytest.fixture(scope='session')
@@ -24,8 +30,8 @@ def package_12():
     If you include 'package_12' as a test argument, you have access to a
     pre-loaded STIX package, ready to transform.
     """
-    with open('TEST-STIX-1.2.xml', 'rb') as stix_f:
-        stix_io = StringIO.StringIO(stix_f.read())
+    with open('TEST-STIX-1.2.xml', encoding='utf-8') as stix_f:
+        stix_io = io.StringIO(stix_f.read())
         return stix.core.STIXPackage.from_xml(stix_io)
 
 

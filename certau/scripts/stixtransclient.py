@@ -4,6 +4,11 @@ into the Bro Intelligence Format. It can interact with a TAXII server to obtain
 the STIX package(s), or a STIX package file can be supplied.
 """
 
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
+
 import os
 import sys
 import logging
