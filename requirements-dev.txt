@@ -1,9 +1,9 @@
 -r requirements.txt
+tox
 pytest
 pytest-cov>=2.2.1
-httpretty>=0.8.12
+#httpretty>=0.8.12
 mock
+requests-mock
 xmltodict
-# pymisp>=2.4.71
-# stix-ramrod
 #flake8
