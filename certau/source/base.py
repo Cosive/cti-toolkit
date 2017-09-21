@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
-from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
 
 import logging
 import os
@@ -39,13 +38,11 @@ class StixSourceItem(object):
         raise NotImplementedError
 
     def save(self, directory):
+        file_name = self.file_name()
+        full_path = os.path.join(directory, file_name)
         try:
-            stix_package = self.stix_package
-            file_name = self.file_name()
-            full_path = os.path.join(directory, file_name)
-            logging.info('saving STIX package to file \'%s\'', full_path)
+            logging.info('saving STIX package to file \'{}\''.format(full_path))
             with open(full_path, 'wb') as file_:
                 file_.write(self.stix_package.to_xml())
         except Exception:
-            logging.error('unable to save STIX package to file \'%s\'',
-                          full_path)
+            logging.error('unable to save STIX package to file \'{}\''.format(full_path))

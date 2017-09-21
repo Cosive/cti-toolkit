@@ -7,17 +7,15 @@ the STIX package(s), or a STIX package file can be supplied.
 from __future__ import absolute_import, division, print_function, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
-from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
 
 import os
 import sys
 import logging
 import dateutil
-import urlparse
 import pickle
-
 import configargparse
 
+from six.moves.urllib.parse import urlparse
 from stix.extensions.marking import ais
 
 from certau import version_string
@@ -452,6 +450,7 @@ def main():
         transform_kwargs['snort_rule_revision'] = options.snort_rule_revision
         transform_kwargs['snort_rule_action'] = options.snort_rule_action
     elif options.xml_output:
+        transform_class = None
         pass
     else:
         logger.error('Unable to determine transform type from options')
@@ -554,6 +553,7 @@ def main():
                 _process_package(package, transform_class, transform_kwargs)
 
     # Update the timestamp for the latest poll
+    # noinspection PyUnboundLocalVariable
     if options.taxii and options.state_file and taxii_client.poll_end_time:
         set_taxii_poll_state(
             filename=options.state_file,

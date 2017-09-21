@@ -1,6 +1,10 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+
 import os
 import logging
-import urlparse
+from six.moves.urllib.parse import urlparse
 
 from libtaxii import get_message_from_http_response, VID_TAXII_XML_11
 from libtaxii.messages_11 import PollRequest, PollFulfillmentRequest
@@ -170,6 +174,7 @@ class SimpleTaxiiClient(HttpClient):
         )
 
         first = True
+        part_number = 0
         while True:
             if not isinstance(response, PollResponse):
                 raise Exception('didn\'t get a poll response')

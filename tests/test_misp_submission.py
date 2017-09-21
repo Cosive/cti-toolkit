@@ -6,12 +6,11 @@ The STIX transform module can publish results to a MISP server.
 from __future__ import absolute_import, division, print_function, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
-from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
 
 import httpretty
 import json
 import mock
-import StringIO
+import io
 import pytest
 
 import certau.transform
@@ -26,7 +25,7 @@ def test_misp_publishing(_,stix_version):
     # STIX file to test against. Place in a StringIO instance so we can
     # close the file.
     with open(('TEST-STIX-1.2.xml' if stix_version == 12 else 'TEST-STIX-1.1.1.xml'), 'rb') as stix_f:
-        stix_io = StringIO.StringIO(stix_f.read())
+        stix_io = io.StringIO(stix_f.read())
 
     # Create a transformer - select 'text' output format and flag MISP
     # publishing (with appropriate settings).

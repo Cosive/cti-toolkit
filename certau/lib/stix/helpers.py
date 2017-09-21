@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
-from builtins import (bytes, str, open, super, range, zip, round, input, int, pow, object)
 
 from stix.extensions.marking.tlp import TLPMarkingStructure
 

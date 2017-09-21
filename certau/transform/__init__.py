@@ -20,7 +20,9 @@ There are two broad types of transform currently supported:
      * :py:class:`StixMispTransform` - publish indicators to a MISP instance
 """
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 
 __all__ = ['base', 'text', 'stats', 'csv', 'brointel', 'misp', 'snort']
 
