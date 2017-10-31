@@ -30,9 +30,9 @@ def test_misp_publishing(_,stix_version):
         'misp_key': '111111111111111111111111111',
     }
     misp_event_args = {
-        'distribution': '1',
-        'threat_level': '4',
-        'analysis': '0',
+        'distribution': u'1',
+        'threat_level': u'4',
+        'analysis': u'0',
     }
 
     # Ensures that non-registered paths fail
@@ -88,7 +88,8 @@ def test_misp_publishing(_,stix_version):
         content_type='application/json',
     )
 
-    # Perform the processing and the misp publishing.
+    # Perform the processing and the misp publishing, ie make the HTTP requests
+    # to which httpretty will respond
     misp = certau.transform.StixMispTransform.get_misp_object(
         **misp_args
     )
@@ -108,17 +109,19 @@ def test_misp_publishing(_,stix_version):
     assert r_get_version.headers.dict['authorization'] == misp_args['misp_key']
 
     # The event creation request includes basic information.
+    #TODO - change assertion so that it complies with the schema appropriate to the stix_version
     r_create_event = reqs[2]
     assert r_create_event.path == '/events'
     assert json.loads(r_create_event.body) == {
         u'Event': {
-            u'Attribute': [],
+            u'Tag': [],
+            u'attributes': [],
             u'analysis': misp_event_args['analysis'],
             u'published': False,
             u'threat_level_id': misp_event_args['threat_level'],
             u'distribution': misp_event_args['distribution'],
-            u'date': '2015-12-23',
-            u'info': 'CA-TEST-STIX | Test STIX data'
+            u'date': u'2015-12-23',
+            u'info': u'CA-TEST-STIX | Test STIX data'
         }
     }
 
@@ -137,7 +140,30 @@ def test_misp_publishing(_,stix_version):
                              for request
                              in reqs[5:]])
 
-    assert obs_attributes == sorted([
+"""
+        for (attr, test_attr,) in zip(obs_attributes, test_obs_attributes):
+>           assert attr == test_attr
+E           AssertionError: assert {'category': ...': 'md5', ...} == {'category': '...on': '5', ...}
+E             Common items:
+E             {u'category': u'Artifacts dropped',
+E              u'disable_correlation': False,
+E              u'to_ids': True,
+E              u'type': u'md5',
+E              u'value': u'11111111111111111f2601b4d21660fb'}
+E             Right contains more items:
+E             {u'comment': u'', u'distribution': '5'}
+E             Full diff:
+E             {u'category': u'Artifacts dropped',
+E             +  u'comment': u'',
+E             u'disable_correlation': False,
+E             +  u'distribution': '5',
+E             u'to_ids': True,
+E             u'type': u'md5',
+E             u'value': u'11111111111111111f2601b4d21660fb'}
+
+"""
+
+    test_obs_attributes = sorted([
         {
             u'category': u'Artifacts dropped',
             u'comment': u'',
@@ -329,3 +355,6 @@ def test_misp_publishing(_,stix_version):
             u'value': u'Important project details',
         },
     ])
+
+    for (attr, test_attr,) in zip(obs_attributes, test_obs_attributes):
+        assert attr == test_attr
