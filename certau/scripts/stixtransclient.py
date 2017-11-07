@@ -472,16 +472,14 @@ def main():
             if options.port:
                 netloc += ':{}'.format(options.port)
             url_parts = [scheme, netloc, options.path, '', '', '']
-            poll_url = urlparse.urlunparse(url_parts)
-        else:
-            poll_url = options.poll_url
+            options.poll_url = urlparse.urlunparse(url_parts)
 
         # Use state file to grab begin_timestamp if possible
         # Otherwise, parse begin and end timestamps if provided
         if options.state_file and not options.begin_timestamp:
             begin_timestamp = get_taxii_poll_state(
                 filename=options.state_file,
-                poll_url=poll_url,
+                poll_url=options.poll_url,
                 collection=options.collection,
             )
         elif options.begin_timestamp:
@@ -501,7 +499,7 @@ def main():
             return
 
         content_blocks = taxii_client.poll(
-            poll_url=poll_url,
+            poll_url=options.poll_url,
             collection=options.collection,
             subscription_id=options.subscription_id,
             begin_timestamp=begin_timestamp,
