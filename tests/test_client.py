@@ -211,7 +211,7 @@ def test_send_poll_request():
         'x-taxii-accept': 'urn:taxii.mitre.org:message:xml:1.1',
         'x-taxii-protocol': 'urn:taxii.mitre.org:protocol:http:1.0',
         'accept-encoding': 'identity',
-        'user-agent': 'cti-toolkit v1.1.0.dev4 (libtaxii)',
+        'user-agent': 'cti-toolkit v1.1.0 (libtaxii)',
         'connection': 'close',
         'accept': 'application/xml',
         'x-taxii-content-type': 'urn:taxii.mitre.org:message:xml:1.1',
