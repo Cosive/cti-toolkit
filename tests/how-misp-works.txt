@@ -1,0 +1,1090 @@
+# This document contains wireshark output showing how a real MISP server responds
+# to a CTI-toolkit connection using PyMISP 2.4.81. This example is provided to help
+# future developers who wish to troubleshoot the MISP cti-toolkit tests.
+
+
+# PyMISP will first attempt a connection to check the MISP Server version
+
+GET /servers/getPyMISPVersion.json HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+
+HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=4nml9g2rpti07hc0jb0mkvte61; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 20
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{"version":"2.4.81"}
+
+# -------------------
+
+# PyMISP will then try to download a list of Event Types from the MISP Server 
+
+GET /attributes/describeTypes.json HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+
+HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=mk75iep3cg15mdm1hm9lpuqf63; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 16122
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{"result":{"sane_defaults":{"md5":{"default_category":"Payload delivery","to_ids":1},"sha1":{"default_category":"Payload delivery","to_ids":1},"sha256":{"default_category":"Payload delivery","to_ids":1},"filename":{"default_category":"Payload delivery","to_ids":1},"pdb":{"default_category":"Artifacts dropped","to_ids":0},"filename|md5":{"default_category":"Payload delivery","to_ids":1},"filename|sha1":{"default_category":"Payload delivery","to_ids":1},"filename|sha256":{"default_category":"Payload delivery","to_ids":1},"ip-src":{"default_category":"Network activity","to_ids":1},"ip-dst":{"default_category":"Network activity","to_ids":1},"hostname":{"default_category":"Network activity","to_ids":1},"domain":{"default_category":"Network activity","to_ids":1},"domain|ip":{"default_category":"Network activity","to_ids":1},"email-src":{"default_category":"Payload delivery","to_ids":1},"email-dst":{"default_category":"Network activity","to_ids":1},"email-subject":{"default_category":"Payload delivery","to_ids":0},"email-attachment":{"default_category":"Payload delivery","to_ids":1},"email-body":{"default_category":"Payload delivery","to_ids":0},"float":{"default_category":"Other","to_ids":0},"url":{"default_category":"External analysis","to_ids":1},"http-method":{"default_category":"Network activity","to_ids":0},"user-agent":{"default_category":"Network activity","to_ids":0},"regkey":{"default_category":"Persistence mechanism","to_ids":1},"regkey|value":{"default_category":"Persistence mechanism","to_ids":1},"AS":{"default_category":"Network activity","to_ids":0},"snort":{"default_category":"Network activity","to_ids":1},"pattern-in-file":{"default_category":"Payload installation","to_ids":1},"pattern-in-traffic":{"default_category":"Network activity","to_ids":1},"pattern-in-memory":{"default_category":"Payload installation","to_ids":1},"yara":{"default_category":"Payload installation","to_ids":1},"sigma":{"default_category":"Payload installation","to_ids":1},"cookie":{"default_category":"Network activity","to_ids":0},"vulnerability":{"default_category":"External analysis","to_ids":0},"attachment":{"default_category":"External analysis","to_ids":0},"malware-sample":{"default_category":"Payload delivery","to_ids":1},"link":{"default_category":"External analysis","to_ids":0},"comment":{"default_category":"Other","to_ids":0},"text":{"default_category":"Other","to_ids":0},"hex":{"default_category":"Other","to_ids":0},"other":{"default_category":"Other","to_ids":0},"named pipe":{"default_category":"Artifacts dropped","to_ids":0},"mutex":{"default_category":"Artifacts dropped","to_ids":1},"target-user":{"default_category":"Targeting data","to_ids":0},"target-email":{"default_category":"Targeting data","to_ids":0},"target-machine":{"default_category":"Targeting data","to_ids":0},"target-org":{"default_category":"Targeting data","to_ids":0},"target-location":{"default_category":"Targeting data","to_ids":0},"target-external":{"default_category":"Targeting data","to_ids":0},"btc":{"default_category":"Financial fraud","to_ids":1},"iban":{"default_category":"Financial fraud","to_ids":1},"bic":{"default_category":"Financial fraud","to_ids":1},"bank-account-nr":{"default_category":"Financial fraud","to_ids":1},"aba-rtn":{"default_category":"Financial fraud","to_ids":1},"bin":{"default_category":"Financial fraud","to_ids":1},"cc-number":{"default_category":"Financial fraud","to_ids":1},"prtn":{"default_category":"Financial fraud","to_ids":1},"phone-number":{"default_category":"Person","to_ids":0},"threat-actor":{"default_category":"Attribution","to_ids":0},"campaign-name":{"default_category":"Attribution","to_ids":0},"campaign-id":{"default_category":"Attribution","to_ids":0},"malware-type":{"default_category":"Payload delivery","to_ids":0},"uri":{"default_category":"Network activity","to_ids":1},"authentihash":{"default_category":"Payload delivery","to_ids":1},"ssdeep":{"default_category":"Payload delivery","to_ids":1},"imphash":{"default_category":"Payload delivery","to_ids":1},"pehash":{"default_category":"Payload delivery","to_ids":1},"impfuzzy":{"default_category":"Payload delivery","to_ids":1},"sha224":{"default_category":"Payload delivery","to_ids":1},"sha384":{"default_category":"Payload delivery","to_ids":1},"sha512":{"default_category":"Payload delivery","to_ids":1},"sha512\/224":{"default_category":"Payload delivery","to_ids":1},"sha512\/256":{"default_category":"Payload delivery","to_ids":1},"tlsh":{"default_category":"Payload delivery","to_ids":1},"filename|authentihash":{"default_category":"Payload delivery","to_ids":1},"filename|ssdeep":{"default_category":"Payload delivery","to_ids":1},"filename|imphash":{"default_category":"Payload delivery","to_ids":1},"filename|impfuzzy":{"default_category":"Payload delivery","to_ids":1},"filename|pehash":{"default_category":"Payload delivery","to_ids":1},"filename|sha224":{"default_category":"Payload delivery","to_ids":1},"filename|sha384":{"default_category":"Payload delivery","to_ids":1},"filename|sha512":{"default_category":"Payload delivery","to_ids":1},"filename|sha512\/224":{"default_category":"Payload delivery","to_ids":1},"filename|sha512\/256":{"default_category":"Payload delivery","to_ids":1},"filename|tlsh":{"default_category":"Payload delivery","to_ids":1},"windows-scheduled-task":{"default_category":"Artifacts dropped","to_ids":0},"windows-service-name":{"default_category":"Artifacts dropped","to_ids":0},"windows-service-displayname":{"default_category":"Artifacts dropped","to_ids":0},"whois-registrant-email":{"default_category":"Attribution","to_ids":0},"whois-registrant-phone":{"default_category":"Attribution","to_ids":0},"whois-registrant-name":{"default_category":"Attribution","to_ids":0},"whois-registrar":{"default_category":"Attribution","to_ids":0},"whois-creation-date":{"default_category":"Attribution","to_ids":0},"x509-fingerprint-sha1":{"default_category":"Network activity","to_ids":1},"dns-soa-email":{"default_category":"Attribution","to_ids":0},"size-in-bytes":{"default_category":"Other","to_ids":0},"counter":{"default_category":"Other","to_ids":0},"datetime":{"default_category":"Other","to_ids":0},"cpe":{"default_category":"Other","to_ids":0},"port":{"default_category":"Network activity","to_ids":0},"ip-dst|port":{"default_category":"Network activity","to_ids":1},"ip-src|port":{"default_category":"Network activity","to_ids":1},"hostname|port":{"default_category":"Network activity","to_ids":1},"email-dst-display-name":{"default_category":"Payload delivery","to_ids":0},"email-src-display-name":{"default_category":"Payload delivery","to_ids":0},"email-header":{"default_category":"Payload delivery","to_ids":0},"email-reply-to":{"default_category":"Payload delivery","to_ids":0},"email-x-mailer":{"default_category":"Payload delivery","to_ids":0},"email-mime-boundary":{"default_category":"Payload delivery","to_ids":0},"email-thread-index":{"default_category":"Payload delivery","to_ids":0},"email-message-id":{"default_category":"Payload delivery","to_ids":0},"github-username":{"default_category":"Social network","to_ids":0},"github-repository":{"default_category":"Social network","to_ids":0},"github-organisation":{"default_category":"Social network","to_ids":0},"jabber-id":{"default_category":"Social network","to_ids":0},"twitter-id":{"default_category":"Social network","to_ids":0},"first-name":{"default_category":"Person","to_ids":0},"middle-name":{"default_category":"Person","to_ids":0},"last-name":{"default_category":"Person","to_ids":0},"date-of-birth":{"default_category":"Person","to_ids":0},"place-of-birth":{"default_category":"Person","to_ids":0},"gender":{"default_category":"Person","to_ids":0},"passport-number":{"default_category":"Person","to_ids":0},"passport-country":{"default_category":"Person","to_ids":0},"passport-expiration":{"default_category":"Person","to_ids":0},"redress-number":{"default_category":"Person","to_ids":0},"nationality":{"default_category":"Person","to_ids":0},"visa-number":{"default_category":"Person","to_ids":0},"issue-date-of-the-visa":{"default_category":"Person","to_ids":0},"primary-residence":{"default_category":"Person","to_ids":0},"country-of-residence":{"default_category":"Person","to_ids":0},"special-service-request":{"default_category":"Person","to_ids":0},"frequent-flyer-number":{"default_category":"Person","to_ids":0},"travel-details":{"default_category":"Person","to_ids":0},"payment-details":{"default_category":"Person","to_ids":0},"place-port-of-original-embarkation":{"default_category":"Person","to_ids":0},"place-port-of-clearance":{"default_category":"Person","to_ids":0},"place-port-of-onward-foreign-destination":{"default_category":"Person","to_ids":0},"passenger-name-record-locator-number":{"default_category":"Person","to_ids":0},"mobile-application-id":{"default_category":"Payload delivery","to_ids":1},"cortex":{"default_category":"External analysis","to_ids":0}},"types":["md5","sha1","sha256","filename","pdb","filename|md5","filename|sha1","filename|sha256","ip-src","ip-dst","hostname","domain","domain|ip","email-src","email-dst","email-subject","email-attachment","email-body","float","url","http-method","user-agent","regkey","regkey|value","AS","snort","pattern-in-file","pattern-in-traffic","pattern-in-memory","yara","sigma","cookie","vulnerability","attachment","malware-sample","link","comment","text","hex","other","named pipe","mutex","target-user","target-email","target-machine","target-org","target-location","target-external","btc","iban","bic","bank-account-nr","aba-rtn","bin","cc-number","prtn","phone-number","threat-actor","campaign-name","campaign-id","malware-type","uri","authentihash","ssdeep","imphash","pehash","impfuzzy","sha224","sha384","sha512","sha512\/224","sha512\/256","tlsh","filename|authentihash","filename|ssdeep","filename|imphash","filename|impfuzzy","filename|pehash","filename|sha224","filename|sha384","filename|sha512","filename|sha512\/224","filename|sha512\/256","filename|tlsh","windows-scheduled-task","windows-service-name","windows-service-displayname","whois-registrant-email","whois-registrant-phone","whois-registrant-name","whois-registrar","whois-creation-date","x509-fingerprint-sha1","dns-soa-email","size-in-bytes","counter","datetime","cpe","port","ip-dst|port","ip-src|port","hostname|port","email-dst-display-name","email-src-display-name","email-header","email-reply-to","email-x-mailer","email-mime-boundary","email-thread-index","email-message-id","github-username","github-repository","github-organisation","jabber-id","twitter-id","first-name","middle-name","last-name","date-of-birth","place-of-birth","gender","passport-number","passport-country","passport-expiration","redress-number","nationality","visa-number","issue-date-of-the-visa","primary-residence","country-of-residence","special-service-request","frequent-flyer-number","travel-details","payment-details","place-port-of-original-embarkation","place-port-of-clearance","place-port-of-onward-foreign-destination","passenger-name-record-locator-number","mobile-application-id","cortex"],"categories":["Internal reference","Targeting data","Antivirus detection","Payload delivery","Artifacts dropped","Payload installation","Persistence mechanism","Network activity","Payload type","Attribution","External analysis","Financial fraud","Support Tool","Social network","Person","Other"],"category_type_mappings":{"Internal reference":["text","link","comment","other","hex"],"Targeting data":["target-user","target-email","target-machine","target-org","target-location","target-external","comment"],"Antivirus detection":["link","comment","text","hex","attachment","other"],"Payload delivery":["md5","sha1","sha224","sha256","sha384","sha512","sha512\/224","sha512\/256","ssdeep","imphash","impfuzzy","authentihash","pehash","tlsh","filename","filename|md5","filename|sha1","filename|sha224","filename|sha256","filename|sha384","filename|sha512","filename|sha512\/224","filename|sha512\/256","filename|authentihash","filename|ssdeep","filename|tlsh","filename|imphash","filename|impfuzzy","filename|pehash","ip-src","ip-dst","ip-dst|port","ip-src|port","hostname","domain","email-src","email-dst","email-subject","email-attachment","email-body","url","user-agent","AS","pattern-in-file","pattern-in-traffic","yara","sigma","attachment","malware-sample","link","malware-type","comment","text","hex","vulnerability","x509-fingerprint-sha1","other","hostname|port","email-dst-display-name","email-src-display-name","email-header","email-reply-to","email-x-mailer","email-mime-boundary","email-thread-index","email-message-id","mobile-application-id","whois-registrant-email"],"Artifacts dropped":["md5","sha1","sha224","sha256","sha384","sha512","sha512\/224","sha512\/256","ssdeep","imphash","impfuzzy","authentihash","filename","filename|md5","filename|sha1","filename|sha224","filename|sha256","filename|sha384","filename|sha512","filename|sha512\/224","filename|sha512\/256","filename|authentihash","filename|ssdeep","filename|tlsh","filename|imphash","filename|impfuzzy","filename|pehash","regkey","regkey|value","pattern-in-file","pattern-in-memory","pdb","yara","sigma","attachment","malware-sample","named pipe","mutex","windows-scheduled-task","windows-service-name","windows-service-displayname","comment","text","hex","x509-fingerprint-sha1","other","cookie"],"Payload installation":["md5","sha1","sha224","sha256","sha384","sha512","sha512\/224","sha512\/256","ssdeep","imphash","impfuzzy","authentihash","pehash","tlsh","filename","filename|md5","filename|sha1","filename|sha224","filename|sha256","filename|sha384","filename|sha512","filename|sha512\/224","filename|sha512\/256","filename|authentihash","filename|ssdeep","filename|tlsh","filename|imphash","filename|impfuzzy","filename|pehash","pattern-in-file","pattern-in-traffic","pattern-in-memory","yara","sigma","vulnerability","attachment","malware-sample","malware-type","comment","text","hex","x509-fingerprint-sha1","mobile-application-id","other"],"Persistence mechanism":["filename","regkey","regkey|value","comment","text","other","hex"],"Network activity":["ip-src","ip-dst","ip-dst|port","ip-src|port","port","hostname","domain","domain|ip","email-dst","url","uri","user-agent","http-method","AS","snort","pattern-in-file","pattern-in-traffic","attachment","comment","text","x509-fingerprint-sha1","other","hex","cookie"],"Payload type":["comment","text","other"],"Attribution":["threat-actor","campaign-name","campaign-id","whois-registrant-phone","whois-registrant-email","whois-registrant-name","whois-registrar","whois-creation-date","comment","text","x509-fingerprint-sha1","other"],"External analysis":["md5","sha1","sha256","filename","filename|md5","filename|sha1","filename|sha256","ip-src","ip-dst","ip-dst|port","ip-src|port","hostname","domain","domain|ip","url","user-agent","regkey","regkey|value","AS","snort","pattern-in-file","pattern-in-traffic","pattern-in-memory","vulnerability","attachment","malware-sample","link","comment","text","x509-fingerprint-sha1","github-repository","other","cortex"],"Financial fraud":["btc","iban","bic","bank-account-nr","aba-rtn","bin","cc-number","prtn","phone-number","comment","text","other","hex"],"Support Tool":["link","text","attachment","comment","other","hex"],"Social network":["github-username","github-repository","github-organisation","jabber-id","twitter-id","email-src","email-dst","comment","text","other","whois-registrant-email"],"Person":["first-name","middle-name","last-name","date-of-birth","place-of-birth","gender","passport-number","passport-country","passport-expiration","redress-number","nationality","visa-number","issue-date-of-the-visa","primary-residence","country-of-residence","special-service-request","frequent-flyer-number","travel-details","payment-details","place-port-of-original-embarkation","place-port-of-clearance","place-port-of-onward-foreign-destination","passenger-name-record-locator-number","comment","text","other","phone-number"],"Other":["comment","text","other","size-in-bytes","counter","datetime","cpe","port","float","hex","phone-number"]}}}
+
+
+# -------------------
+
+# PyMISP will try to create a new Event Types on the MISP Server, by POSTing the event data there
+
+POST /events HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 185
+
+{"Event": {"info": "CA-TEST-STIX | Test STIX data", "analysis": "0", "Tag": [], "published": false, "date": "2015-12-23", "attributes": [], "distribution": "0", "threat_level_id": "4"}}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=cqldpqjhrndnvc0mi1uj08s506; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 1036
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Event": {
+        "id": "1",
+        "orgc_id": "1",
+        "org_id": "1",
+        "date": "2015-12-23",
+        "threat_level_id": "4",
+        "info": "CA-TEST-STIX | Test STIX data",
+        "published": false,
+        "uuid": "5a04f0cb-8484-49e7-b23e-074fc0a8c034",
+        "attribute_count": "0",
+        "analysis": "0",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "proposal_email_lock": false,
+        "locked": false,
+        "publish_timestamp": "0",
+        "sharing_group_id": "0",
+        "disable_correlation": false,
+        "event_creator_email": "admin@admin.test",
+        "Org": {
+            "id": "1",
+            "name": "ORGNAME",
+            "uuid": "5a034cd3-74bc-458e-af13-7843b8dab993"
+        },
+        "Orgc": {
+            "id": "1",
+            "name": "ORGNAME",
+            "uuid": "5a034cd3-74bc-458e-af13-7843b8dab993"
+        },
+        "Attribute": [],
+        "ShadowAttribute": [],
+        "RelatedEvent": [],
+        "Galaxy": [],
+        "Object": []
+    }
+}
+
+# -------------------
+
+# PyMISP will next check what tags are available on the MISP instance
+
+GET /tags HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+
+HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=3a3bpknq91sb2nhm7vsmpaco61; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 10
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{"Tag":[]}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 122
+
+{"category": "Network activity", "to_ids": true, "type": "ip-dst", "disable_correlation": false, "value": "158.164.39.51"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=pki27i4uj8eufd4kgtqelnbao1; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 554
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "211",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "ip-dst",
+        "value1": "158.164.39.51",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-2244-4217-9a7e-0751c0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "158.164.39.51"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add another new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 122
+
+{"category": "Network activity", "to_ids": true, "type": "ip-dst", "disable_correlation": false, "value": "111.222.33.44"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=flu7feipb130h2dp0mm9lutrm0; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 554
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "212",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "ip-dst",
+        "value1": "111.222.33.44",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-5c54-4798-a702-0752c0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "111.222.33.44"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 123
+
+{"category": "Network activity", "to_ids": true, "type": "domain", "disable_correlation": false, "value": "bad.domain.org"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=jo7osea0du33pusph2at8f6230; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 556
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "213",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "domain",
+        "value1": "bad.domain.org",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-cae4-42fb-a332-0750c0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "bad.domain.org"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 126
+
+{"category": "Network activity", "to_ids": true, "type": "domain", "disable_correlation": false, "value": "dnsupdate.dyn.net"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=hta0aimdd5gd19r3psoa0dfaj2; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 562
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "214",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "domain",
+        "value1": "dnsupdate.dyn.net",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-9eec-4bbf-b888-07acc0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "dnsupdate.dyn.net"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 123
+
+{"category": "Network activity", "to_ids": true, "type": "domain", "disable_correlation": false, "value": "free.stuff.com"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=m3rf1991g6g7ftsd9i8mueo395; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 556
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "215",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "domain",
+        "value1": "free.stuff.com",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-28a8-4a16-82e5-074fc0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "free.stuff.com"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 129
+
+{"category": "Payload delivery", "to_ids": true, "type": "email-src", "disable_correlation": false, "value": "sender@domain.tld"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=gohf7j02u3ovpbjl5j7275os95; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 565
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "216",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Payload delivery",
+        "type": "email-src",
+        "value1": "sender@domain.tld",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-d3b0-4865-a244-074ec0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "sender@domain.tld"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 141
+
+{"category": "Payload delivery", "to_ids": true, "type": "email-subject", "disable_correlation": false, "value": "Important project details"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=860t373r8jb98ru1gcn3taogc5; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 585
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "217",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Payload delivery",
+        "type": "email-subject",
+        "value1": "Important project details",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-55dc-4152-b99f-0751c0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "Important project details"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 139
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "md5", "disable_correlation": false, "value": "1111111111b42b57f518197d930471d9"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=snc074pl9d0r1o70fji0o9oe40; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 590
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "218",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "md5",
+        "value1": "1111111111b42b57f518197d930471d9",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-b194-48c6-a2e1-0752c0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "1111111111b42b57f518197d930471d9"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 139
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "md5", "disable_correlation": false, "value": "ccccccccccccccc33574c79829dc1ccf"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:27 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=s13o1a7jkmbck49tratdcta183; expires=Fri, 10-Nov-2017 01:20:27 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 590
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "219",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "md5",
+        "value1": "ccccccccccccccc33574c79829dc1ccf",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cb-b714-43fa-b2f0-0750c0a8c034",
+        "timestamp": "1510273227",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "ccccccccccccccc33574c79829dc1ccf"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 139
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "md5", "disable_correlation": false, "value": "11111111111111133574c79829dc1ccf"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=508e3l5vkld868if8veear7eu1; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 590
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "220",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "md5",
+        "value1": "11111111111111133574c79829dc1ccf",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-2b30-41a9-be7c-07acc0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "11111111111111133574c79829dc1ccf"
+    }
+}
+
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 139
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "md5", "disable_correlation": false, "value": "11111111111111111f2601b4d21660fb"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=qfbgi2vkbgbkm69r4r1sbdodl2; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 590
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "221",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "md5",
+        "value1": "11111111111111111f2601b4d21660fb",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-0f04-43b4-84ea-074fc0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "11111111111111111f2601b4d21660fb"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 174
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "sha256", "disable_correlation": false, "value": "11111111111111119f167683e164e795896be3be94de7f7103f67c6fde667bdf"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=9vbk1qom751vdp2cdcdjud5v21; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 657
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "222",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "sha256",
+        "value1": "11111111111111119f167683e164e795896be3be94de7f7103f67c6fde667bdf",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-3930-43a9-82e5-074ec0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "11111111111111119f167683e164e795896be3be94de7f7103f67c6fde667bdf"
+    }
+}
+
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 148
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "sha1", "disable_correlation": false, "value": "893fb19ac24eabf9b1fe1ddd1111111111111111"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=cjvkvuuoo7cfjvnq6l724vsmk3; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 607
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "223",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "sha1",
+        "value1": "893fb19ac24eabf9b1fe1ddd1111111111111111",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-0078-4762-8ffd-0751c0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "893fb19ac24eabf9b1fe1ddd1111111111111111"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 139
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "md5", "disable_correlation": false, "value": "11111111111111112977fa0588bd504a"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=81dqm9fdo0s2vjv5k7ir6kqdq5; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 590
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "224",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "md5",
+        "value1": "11111111111111112977fa0588bd504a",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-9360-4d8b-bf0d-0752c0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "11111111111111112977fa0588bd504a"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 215
+
+{"category": "Network activity", "to_ids": true, "type": "user-agent", "disable_correlation": false, "value": "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2309.372 Safari/537.36"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=dqrd5gsak1va2jsilbm22unr32; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 744
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "225",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "user-agent",
+        "value1": "Mozilla\/5.0 (Windows NT 5.1) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.2309.372 Safari\/537.36",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-add0-4a99-99db-0750c0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "Mozilla\/5.0 (Windows NT 5.1) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.2309.372 Safari\/537.36"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 139
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "mutex", "disable_correlation": false, "value": "\\BaseNamedObjects\\WIN_ABCDEF"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=d9cko9iaa3pmpi68qpnjt26623; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 588
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "226",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "mutex",
+        "value1": "\\BaseNamedObjects\\WIN_ABCDEF",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-e324-4f41-a2de-07acc0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "\\BaseNamedObjects\\WIN_ABCDEF"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 139
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "mutex", "disable_correlation": false, "value": "\\BaseNamedObjects\\MUTEX_0001"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=38a3d2160otkat4non89dr48a6; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 588
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "227",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "mutex",
+        "value1": "\\BaseNamedObjects\\MUTEX_0001",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-53c4-42a0-94d3-074fc0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "\\BaseNamedObjects\\MUTEX_0001"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 140
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "mutex", "disable_correlation": false, "value": "\\BaseNamedObjects\\iurlkjashdk"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=3vem2u20q7065vrifj4vidf6g0; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 590
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "228",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "mutex",
+        "value1": "\\BaseNamedObjects\\iurlkjashdk",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-7cc4-45a4-ae54-074ec0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "\\BaseNamedObjects\\iurlkjashdk"
+    }
+}
+
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 122
+
+{"category": "Network activity", "to_ids": true, "type": "ip-dst", "disable_correlation": false, "value": "183.82.180.95"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=crlt20j7trljiekp112pdmgj10; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 554
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "229",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "ip-dst",
+        "value1": "183.82.180.95",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-de18-44ef-a927-0751c0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "183.82.180.95"
+    }
+}
+
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 138
+
+{"category": "Network activity", "to_ids": true, "type": "url", "disable_correlation": false, "value": "http://host.domain.tld/path/file"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=uv08k0gsqq9h21bnce757kp930; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 597
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "230",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Network activity",
+        "type": "url",
+        "value1": "http:\/\/host.domain.tld\/path\/file",
+        "value2": "",
+        "to_ids": true,
+        "uuid": "5a04f0cc-ba14-4c0d-bbc2-0752c0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "http:\/\/host.domain.tld\/path\/file"
+    }
+}
+
+# -------------------
+
+# PyMISP will then add a new attribute and relate it to the Event we just created
+
+POST /attributes/add/1 HTTP/1.1
+Host: 192.168.192.52
+Connection: keep-alive
+Accept-Encoding: gzip, deflate
+Accept: application/json
+User-Agent: PyMISP 2.4.81 - Python 2.7.5
+content-type: application/json
+Authorization: xcq6nOob7c4aigXJfHgQxQQ2RZlEWo3UtsG5byuA
+Content-Length: 219
+
+{"category": "Artifacts dropped", "to_ids": true, "type": "regkey|value", "disable_correlation": false, "value": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run|hotkey\\%APPDATA%\\malware.exe -st"}HTTP/1.1 200 OK
+Date: Fri, 10 Nov 2017 00:20:28 GMT
+Server: Apache/2.4.25 (Ubuntu)
+Set-Cookie: CAKEPHP=e9jsnp44inipda4geeifg573q3; expires=Fri, 10-Nov-2017 01:20:28 GMT; Max-Age=3600; path=/; HttpOnly
+Content-Length: 740
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json; charset=UTF-8
+
+{
+    "Attribute": {
+        "id": "231",
+        "event_id": "1",
+        "object_id": "0",
+        "object_relation": null,
+        "category": "Artifacts dropped",
+        "type": "regkey|value",
+        "value1": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "value2": "hotkey\\%APPDATA%\\malware.exe -st",
+        "to_ids": true,
+        "uuid": "5a04f0cc-e87c-4914-bb45-0750c0a8c034",
+        "timestamp": "1510273228",
+        "distribution": "0",
+        "sharing_group_id": "0",
+        "comment": "",
+        "deleted": false,
+        "disable_correlation": false,
+        "value": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run|hotkey\\%APPDATA%\\malware.exe -st"
+    }
+}
+
+# -------------------
+
+# PyMISP has finished it's work at this point.
+
