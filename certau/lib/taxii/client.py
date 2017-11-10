@@ -118,6 +118,7 @@ class SimpleTaxiiClient(HttpClient):
 
     def send_taxii_message(self, request, host, path, port):
         # Send the request message and return the response
+        self._logger.debug('sending the taxii message now')
         http_response = self.call_taxii_service2(
             host=host,
             path=path,
@@ -126,10 +127,12 @@ class SimpleTaxiiClient(HttpClient):
             port=port,
             user_agent='{} (libtaxii)'.format(version_string)
         )
+        self._logger.debug('sent the taxii message')
         response = get_message_from_http_response(
             http_response=http_response,
             in_response_to=request.message_id,
         )
+        self._logger.debug('got a response to the taxii message')
         return response
 
     def poll(self, poll_url, collection, subscription_id=None,

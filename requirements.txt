@@ -6,4 +6,3 @@ stix>=1.2.0.4
 stix-ramrod>=1.1.0
 mixbox
 pymisp
-requests

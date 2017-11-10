@@ -56,3 +56,4 @@ target/
 # Editor files
 *.iml
 .idea
+*.bak
