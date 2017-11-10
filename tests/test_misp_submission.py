@@ -36,7 +36,6 @@ def test_misp_publishing(_,stix_version):
             u"deleted": False,
         }
         static_fields.update(fields)
-        print("returning response fields: {}".format(static_fields))
         return static_fields 
 
     def attribute_request_callback(request, uri, headers):
@@ -381,52 +380,8 @@ def test_misp_publishing(_,stix_version):
         httpretty.GET,
         'http://misp.host.tld/tags',
         body=json.dumps({'Tag': []}),
-        #body=json.dumps({'Tag': [{
-        #    'id': '1',
-        #    'name': 'tlp:white',
-        #]}),
         content_type='application/json',
     )
-
-
-    # Mock the adding of a tag to an event
-    #httpretty.register_uri(
-    #    httpretty.POST,
-    #    'http://misp.host.tld/tags/attachTagToObject',
-    #    body=json.dumps({}),
-    #    content_type='application/json',
-    #)
-
-    # Mock adding an attribute to a event 1.
-    # (This is the fifth thing PyMISP does after authentication) 
-    #httpretty.register_uri(
-    #    httpretty.POST,
-    #    'http://misp.host.tld/attributes/add/1',
-        #body=json.dumps({
-        #    "Attribute": {
-        #        "id": "211",
-        #        "event_id": "1",
-        #        "object_id": "0",
-        #        "object_relation": None,
-        #        "category": "Network activity",
-        #        "type": "ip-dst",
-        #        "value1": "158.164.39.51",
-        #        "value2": "",
-        #        "to_ids": True,
-        #        "uuid": "5a04f0cb-2244-4217-9a7e-0751c0a8c034",
-        #        "timestamp": "1510273227",
-        #        "distribution": "0",
-        #        "sharing_group_id": "0",
-        #        "comment": "",
-        #        "deleted": False,
-        #        "disable_correlation": False,
-        #        "value": "158.164.39.51"
-        #    }
-        #}),
-    #    body=json.dumps({}),
-    #    content_type='application/json',
-    #)
-
 
     # Mock adding an attribute to a event 1.
     # (This is the fifth thing PyMISP does after authentication)
@@ -458,16 +413,18 @@ def test_misp_publishing(_,stix_version):
     # has a list of the HTTP requests and responses sent by cti-toolkit,
     # PyMISP and the mocked MISP server
 
-    # Test the correct requests were made
+    # Get a list of the requests that the PyMISP library made
+    # We need to test the reqests, not the responses, as we're testing
+    # the MISP Transform code and PyMISP... not the MISP Server
     reqs = list(httpretty.httpretty.latest_requests)
 
-    # The "get version" request includes the MISP key.
+    # Check that the "get version" request includes the MISP key.
     r_get_version = reqs[0]
     assert r_get_version.path == '/servers/getPyMISPVersion.json'
     assert r_get_version.headers.dict['authorization'] == misp_args['misp_key']
 
-    # The event creation request includes basic information.
-    #TODO - change assertion so that it complies with the schema appropriate to the stix_version
+    # Check that the event creation request includes basic information.
+    # TODO - change assertion so that it complies with the schema appropriate to the stix_version
     r_create_event = reqs[2]
     assert r_create_event.path == '/events'
     assert json.loads(r_create_event.body) == {
@@ -482,17 +439,12 @@ def test_misp_publishing(_,stix_version):
         }
     }
 
-    ## The TLP tag is added to the event.
-    #r_add_tag = reqs[4]
-    #assert r_add_tag.path == '/tags/attachTagToObject'
-    #assert json.loads(r_add_tag.body) == {
-    #    u'uuid': '590980a2-154c-47fb-b494-26660a00020f',
-    #    u'tag': '1',
-    #}
-
-    # The event is then updated with the observables, over multiple
-    # requests. We're only interested in the 'Attribute' key here as that
-    # contains the data extracted from the observable.
+    # Check that PyMISP then tried creating related attrubutes
+    # for all the content in the STIX TEST XML documents
+    # We do this by gathering all the POSTed data from all the 
+    # attribute/add/1 requests PyMISP sent earlier, and we
+    # compare them with the expected requests we should be sending. 
+    # If they are the same then the test passes.
     obs_attributes = sorted([json.loads(request.body)
                              for request
                              in reqs[4:]])
@@ -500,135 +452,105 @@ def test_misp_publishing(_,stix_version):
     test_obs_attributes = sorted([
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'md5',
             u'value': u'11111111111111112977fa0588bd504a',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'md5',
             u'value': u'ccccccccccccccc33574c79829dc1ccf',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'md5',
             u'value': u'11111111111111133574c79829dc1ccf',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'md5',
             u'value': u'11111111111111111f2601b4d21660fb',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'md5',
             u'value': u'1111111111b42b57f518197d930471d9',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'mutex',
             u'value': u'\\BaseNamedObjects\\MUTEX_0001',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'mutex',
             u'value': u'\\BaseNamedObjects\\WIN_ABCDEF',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'mutex',
             u'value': u'\\BaseNamedObjects\\iurlkjashdk',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'regkey|value',
             u'value': u'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run|hotkey\\%APPDATA%\\malware.exe -st',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'sha1',
             u'value': u'893fb19ac24eabf9b1fe1ddd1111111111111111',
         },
         {
             u'category': u'Artifacts dropped',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'sha256',
             u'value': u'11111111111111119f167683e164e795896be3be94de7f7103f67c6fde667bdf',
         },
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'domain',
             u'value': u'bad.domain.org',
         },
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'domain',
             u'value': u'dnsupdate.dyn.net',
         },
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'domain',
             u'value': u'free.stuff.com',
         },
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'ip-dst',
             u'value': u'183.82.180.95',
@@ -636,54 +558,42 @@ def test_misp_publishing(_,stix_version):
 
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'ip-dst',
             u'value': u'111.222.33.44',
         },
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'ip-dst',
             u'value': u'158.164.39.51',
         },
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'url',
             u'value': u'http://host.domain.tld/path/file',
         },
         {
             u'category': u'Network activity',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'user-agent',
             u'value': u'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2309.372 Safari/537.36',
         },
         {
             u'category': u'Payload delivery',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'email-src',
             u'value': u'sender@domain.tld',
         },
         {
             u'category': u'Payload delivery',
-            #u'comment': u'',
             u'disable_correlation': False,
-            #u'distribution': '0',
             u'to_ids': True,
             u'type': u'email-subject',
             u'value': u'Important project details',
