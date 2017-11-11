@@ -1,6 +1,6 @@
 from StringIO import StringIO
 
-from certau.lib.taxii.util import file_name_for_content_block
+from certau.util.taxii.util import file_name_for_content_block
 from certau.source.base import StixSourceItem
 
 

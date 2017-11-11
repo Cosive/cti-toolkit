@@ -8,7 +8,7 @@ from cybox.core import Object
 from cybox.common import ObjectProperties
 from stix.core import STIXPackage
 
-import certau.lib.stix.helpers as stix_helpers
+import certau.util.stix.helpers as stix_helpers
 
 
 class StixTransform(object):

@@ -9,7 +9,7 @@ import pytest
 import xmltodict
 
 import certau.source
-import certau.lib.taxii.client
+import certau.util.taxii.client
 
 
 def test_client_creation():
@@ -19,7 +19,7 @@ def test_client_creation():
     # Enabling SSL and providing a username stores the username, password,
     # key file and cert file in the instance's auth credentials. It also
     # sets the authentication mode to AUTH_CERT_BASIC and enables HTTPS.
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient(
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient(
         username='user',
         password='pass',
         key_file='/path1',
@@ -41,7 +41,7 @@ def test_client_creation():
     # Enabling SSL but not providing a username stores only the key file
     # and cert file in the instance's auth credentials. It sets the
     # authentication mode to AUTH_CERT and enables HTTPS.
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient(
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient(
         key_file='/path1',
         cert_file='/path2',
     )
@@ -59,7 +59,7 @@ def test_client_creation():
     # Providing a username but not enabling SSL stores only the username
     # and password in the instance's auth credentials. It sets the
     # authentication mode to AUTH_BASIC but does not enable HTTPS.
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient(
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient(
         username='user',
         password='pass',
     )
@@ -80,7 +80,7 @@ def test_create_poll_request():
     options.
     """
     # Minimal poll request
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient()
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient()
     poll_request = taxii_client.create_poll_request(
         collection='my_collection',
     )
@@ -102,7 +102,7 @@ def test_create_poll_request():
     }
 
     # Including start and/or end date
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient()
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient()
     poll_request = taxii_client.create_poll_request(
         collection='my_collection',
         begin_timestamp='2015-12-30T10:13:05.00000+10:00',
@@ -124,7 +124,7 @@ def test_create_poll_request():
         'exclusive_begin_timestamp_label': '2015-12-30T10:13:05+10:00',
     }
 
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient()
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient()
     poll_request = taxii_client.create_poll_request(
         collection='my_collection',
         begin_timestamp='2015-12-30T10:13:05.00000+10:00',
@@ -149,7 +149,7 @@ def test_create_poll_request():
     }
 
     # Including a subscription id replaces the poll_parameters
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient()
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient()
     poll_request = taxii_client.create_poll_request(
         collection='my_collection',
         subscription_id='2973847897',
@@ -179,7 +179,7 @@ def test_send_poll_request():
     )
 
     # Configure a client and make a poll request
-    taxii_client = certau.lib.taxii.client.SimpleTaxiiClient(
+    taxii_client = certau.util.taxii.client.SimpleTaxiiClient(
         username='user',
         password='pass',
     )
