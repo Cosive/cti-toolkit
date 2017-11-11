@@ -1,0 +1,10 @@
+-r requirements.txt
+pytest
+pytest-cov>=2.2.1
+httpretty>=0.8.12
+mock>=2.0.0
+xmltodict
+# pymisp>=2.4.71
+# stix-ramrod
+#flake8
+tox>=2.9.1

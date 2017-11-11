@@ -3,14 +3,18 @@
 import csv
 import StringIO
 import textwrap
+import pytest
 
 import certau.transform
 
-
-def test_transform_to_text(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_text(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'text' output
     format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'text' output format transformer
     transformer = certau.transform.StixCsvTransform(
         package, include_header=True
@@ -69,11 +73,14 @@ def test_transform_to_text(package):
         cert_au:Observable-d0f4708e-4f2b-49c9-bc31-29e7119844e5|HKEY_CURRENT_USER\\Software|Equals|\\Microsoft\\Windows\\CurrentVersion\\Run|Equals|hotkey|Equals|%APPDATA%\\malware.exe -st|Equals
     """).strip()
 
-
-def test_text_delimiter_quoting(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_text_delimiter_quoting(stix_version, package_111, package_12):
     """Test that delimiters included in the values of text transforms are
     correctly quoted.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     transformer = certau.transform.StixCsvTransform(package)
 
     joined = transformer.join(('first|second', 'third'))
@@ -84,11 +91,14 @@ def test_text_delimiter_quoting(package):
 
     assert reader.next() == ['first|second', 'third']
 
-
-def test_transform_to_stats(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_stats(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'stats'
     output format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'stats' output format.
     transformer = certau.transform.StixStatsTransform(
         package, include_header=True
@@ -109,11 +119,14 @@ def test_transform_to_stats(package):
         WinRegistryKey observables:            1
     """).strip()
 
-
-def test_transform_to_bro(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_bro(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'bro' output
     format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'stats' output format.
     transformer = certau.transform.StixBroIntelTransform(
         package, include_header=True
@@ -163,21 +176,26 @@ def test_transform_to_bro(package):
         host.domain.tld/path/file\tIntel::URL\tCERT-AU\thttps://www.cert.gov.au/\tF\t-\t-
     """).strip().expandtabs()
 
-def test_transform_to_snort(package):
+@pytest.mark.parametrize("stix_version", [111, 12])
+def test_transform_to_snort(stix_version, package_111, package_12):
     """Test of transform between a sample STIX file and the 'snort' output
     format.
     """
+    # Select the right package for the stix version
+    package = package_12 if stix_version == 12 else package_111    
+
     # Select 'stats' output format.
     transformer = certau.transform.StixSnortTransform(
             package, include_header=False
     )
 
     assert transformer.text().strip().expandtabs() == textwrap.dedent("""
+
         alert ip any any -> 158.164.39.51 any (flow:established,to_server; msg:"CTI-Toolkit connection to potentially malicious server 158.164.39.51 (ID cert_au:Observable-fe5ddeac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500000; rev:1; classtype:bad-unknown;)
         alert ip any any -> 111.222.33.44 any (flow:established,to_server; msg:"CTI-Toolkit connection to potentially malicious server 111.222.33.44 (ID cert_au:Observable-ccccceac-f9b0-4488-9f89-bfbd9351efd4)"; sid:5500001; rev:1; classtype:bad-unknown;)
-        alert tcp any any -> $EXTERNAL_NET $HTTP_PORTS (flow:established,to_server; content:"bad.domain.org"; http_header; nocase; msg:"CTI-Toolkit connection to potentially malicious domain bad.domain.org (ID cert_au:Observable-6517027e-2cdb-47e8-b5c8-50c6044e42de)"; sid:5500002; rev:1; classtype:bad-unknown;)
-        alert tcp any any -> $EXTERNAL_NET $HTTP_PORTS (flow:established,to_server; content:"dnsupdate.dyn.net"; http_header; nocase; msg:"CTI-Toolkit connection to potentially malicious domain dnsupdate.dyn.net (ID cert_au:Observable-c97cc016-24b6-4d02-afc2-308742c722dc)"; sid:5500003; rev:1; classtype:bad-unknown;)
-        alert tcp any any -> $EXTERNAL_NET $HTTP_PORTS (flow:established,to_server; content:"free.stuff.com"; http_header; nocase; msg:"CTI-Toolkit connection to potentially malicious domain free.stuff.com (ID cert_au:Observable-138a5be6-56b2-4d2d-af73-2d4865d6ff71)"; sid:5500004; rev:1; classtype:bad-unknown;)
+        alert udp any any -> $EXTERNAL_NET 53 (byte_test:1, !&, 0xF8,2; content:"bad.domain.org"; fast_pattern:only; metadata:service dns; msg:"CTI-Toolkit connection to potentially malicious domain bad.domain.org (ID cert_au:Observable-6517027e-2cdb-47e8-b5c8-50c6044e42de)"; sid:5500002; rev:1; classtype:bad-unknown;)
+        alert udp any any -> $EXTERNAL_NET 53 (byte_test:1, !&, 0xF8,2; content:"dnsupdate.dyn.net"; fast_pattern:only; metadata:service dns; msg:"CTI-Toolkit connection to potentially malicious domain dnsupdate.dyn.net (ID cert_au:Observable-c97cc016-24b6-4d02-afc2-308742c722dc)"; sid:5500003; rev:1; classtype:bad-unknown;)
+        alert udp any any -> $EXTERNAL_NET 53 (byte_test:1, !&, 0xF8,2; content:"free.stuff.com"; fast_pattern:only; metadata:service dns; msg:"CTI-Toolkit connection to potentially malicious domain free.stuff.com (ID cert_au:Observable-138a5be6-56b2-4d2d-af73-2d4865d6ff71)"; sid:5500004; rev:1; classtype:bad-unknown;)
         alert ip any any -> 183.82.180.95 any (flow:established,to_server; msg:"CTI-Toolkit connection to potentially malicious server 183.82.180.95 (ID CCIRC-CCRIC:Observable-01234567-2823-4d6d-8d77-bae10ca5bd97)"; sid:5500005; rev:1; classtype:bad-unknown;)
-        alert tcp any any -> $EXTERNAL_NET $HTTP_PORTS (flow:established,to_server; content:"host.domain.tld"; http_header; nocase; uricontent:"/path/file"; nocase; msg:"CTI-Toolkit connection to potentially malicious url http://host.domain.tld/path/file (ID cert_au:Observable-1a919136-ba69-4a28-9615-ad6ee37e88a5)"; sid:5500006; rev:1; classtype:bad-unknown;)
+        alert tcp any any -> $EXTERNAL_NET $HTTP_PORTS (flow:established,to_server; content:"host.domain.tld"; http_header; nocase; uricontent:"/path/file"; metadata:service http; msg:"CTI-Toolkit connection to potentially malicious url http://host.domain.tld/path/file (ID cert_au:Observable-1a919136-ba69-4a28-9615-ad6ee37e88a5)"; sid:5500006; rev:1; classtype:bad-unknown;)
     """).strip().expandtabs()

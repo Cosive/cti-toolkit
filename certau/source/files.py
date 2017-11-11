@@ -1,10 +1,18 @@
 import os
-import logging
 
-from .base import StixSource
+from .base import StixSourceItem
 
 
-class StixFileSource(StixSource):
+class StixFileSourceItem(StixSourceItem):
+
+    def io(self):
+        return self.source_item
+
+    def file_name(self):
+        return self.source_item
+
+
+class StixFileSource(object):
     """Return STIX packages from a file or directory.
 
     Args:
@@ -15,34 +23,21 @@ class StixFileSource(StixSource):
     """
 
     def __init__(self, files, recurse=False):
-        self._logger = logging.getLogger()
-        self._files = []
-        for file_ in files:
-            self._add_file(file_, recurse)
-        self._index = 0
+        self.files = files
+        self.recurse = recurse
 
-    def _add_file(self, file_, recurse):
+    def source_items(self):
+        for file_ in self.files:
+           for another_file in self.scan(file_):
+               yield StixFileSourceItem(another_file)
+
+    def scan(self, file_):
         if os.path.isdir(file_):
             for dir_file in sorted(os.listdir(file_)):
                 path = os.path.join(file_, dir_file)
-                if os.path.isdir(path) and recurse:
-                    self._add_file(path, recurse)
+                if os.path.isdir(path) and self.recurse:
+                    self.scan(path)
                 elif os.path.isfile(path):
-                    self._files.append(path)
+                    yield path
         elif os.path.isfile(file_):
-            self._files.append(file_)
-
-    def next_stix_package(self):
-        package = None
-        while self._index < len(self._files):
-            file_ = self._files[self._index]
-            self._index += 1
-            package = self.load_stix_package(file_)
-            if package:
-                break
-            else:
-                self._logger.info(
-                    "skipping file '%s' - invalid XML/STIX" % file_
-                )
-
-        return package
+            yield file_

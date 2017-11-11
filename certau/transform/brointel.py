@@ -85,21 +85,53 @@ class StixBroIntelTransform(StixTextTransform):
         },
     }
 
-    def __init__(self, package, separator='\t',
-                 include_header=False, header_prefix='#',
-                 source='UNKNOWN', url='', do_notice='T'):
+    def __init__(self, package, default_title=None, default_description=None,
+                 default_tlp='AMBER', separator='\t', include_header=False,
+                 header_prefix='#', source='UNKNOWN', url='', do_notice='T'):
         super(StixBroIntelTransform, self).__init__(
-            package, separator, include_header, header_prefix,
+            package, default_title, default_description, default_tlp,
+            separator, include_header, header_prefix,
         )
-        self._source = source
-        self._url = url
-        self._do_notice = do_notice
+        self.source = source
+        self.url = url
+        self.do_notice = do_notice
+
         # Make URIs suitable for the Bro format (remove protocol)
         self._fix_uris()
 
+    # ##### Properties
+
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, source):
+        self._source = '' if source is None else str(source)
+
+    @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, url):
+        self._url = '' if url is None else str(url)
+
+    @property
+    def do_notice(self):
+        return self._do_notice
+
+    @do_notice.setter
+    def do_notice(self, do_notice):
+        if do_notice not in ['T', 'F']:
+            raise TypeError('expected \'T\' or \'F\'')
+        self._do_notice = do_notice
+
+    # ##### Class helper methods
+
     def _fix_uris(self):
-        if 'URI' in self._observables:
-            for observable in self._observables['URI']:
+        if 'URI' in self.observables:
+            for observable in self.observables['URI']:
                 if 'fields' in observable:
                     for field in observable['fields']:
                         if 'value' in field:
@@ -109,18 +141,20 @@ class StixBroIntelTransform(StixTextTransform):
                                 string=field['value'],
                             )
 
+    # ##### Overridden class methods
+
     def text_for_object_type(self, object_type):
         text = ''
-        if object_type in self._observables:
-            for observable in self._observables[object_type]:
+        if object_type in self.observables:
+            for observable in self.observables[object_type]:
                 # Look up source and url from observable ID
                 id_prefix = observable['id'].split(':')[0]
                 if id_prefix in self.BIF_SOURCE_MAPPING:
                     source = self.BIF_SOURCE_MAPPING[id_prefix]['source']
                     url = self.BIF_SOURCE_MAPPING[id_prefix]['url']
                 else:
-                    source = self._source
-                    url = self._url
+                    source = self.source
+                    url = self.url
 
                 bif_type = self.BIF_TYPE_MAPPING[object_type]
                 for fields in observable['fields']:
@@ -131,7 +165,7 @@ class StixBroIntelTransform(StixTextTransform):
                                 bif_type,
                                 source,
                                 url,
-                                self._do_notice,
+                                self.do_notice,
                                 '-',
                                 '-',
                             ]

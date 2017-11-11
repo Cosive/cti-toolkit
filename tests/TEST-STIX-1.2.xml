@@ -1,0 +1,488 @@
+<stix:STIX_Package xmlns:AddressObj="http://cybox.mitre.org/objects#AddressObject-2" xmlns:DomainNameObj="http://cybox.mitre.org/objects#DomainNameObject-1" xmlns:EmailMessageObj="http://cybox.mitre.org/objects#EmailMessageObject-2" xmlns:FileObj="http://cybox.mitre.org/objects#FileObject-2" xmlns:HTTPSessionObj="http://cybox.mitre.org/objects#HTTPSessionObject-2" xmlns:MutexObj="http://cybox.mitre.org/objects#MutexObject-2" xmlns:NetworkConnectionObj="http://cybox.mitre.org/objects#NetworkConnectionObject-2" xmlns:PortObj="http://cybox.mitre.org/objects#PortObject-2" xmlns:SocketAddressObj="http://cybox.mitre.org/objects#SocketAddressObject-1" xmlns:URIObj="http://cybox.mitre.org/objects#URIObject-2" xmlns:WinRegistryKeyObj="http://cybox.mitre.org/objects#WinRegistryKeyObject-2" xmlns:cert_au="http://www.cert.gov.au/" xmlns:CCIRC-CCRIC="http://www.publicsafety.gc.ca/cnt/ntnl-scrt/cbr-scrt/ccirc-ccric-eng.aspx" xmlns:CISCP="us-cert.gov/ciscp" xmlns:NCCIC="us-cert.gov" xmlns:coa="http://stix.mitre.org/CourseOfAction-1" xmlns:cybox="http://cybox.mitre.org/cybox-2" xmlns:cyboxCommon="http://cybox.mitre.org/common-2" xmlns:cyboxVocabs="http://cybox.mitre.org/default_vocabularies-2" xmlns:indicator="http://stix.mitre.org/Indicator-2" xmlns:marking="http://data-marking.mitre.org/Marking-1" xmlns:stix="http://stix.mitre.org/stix-1" xmlns:stixCommon="http://stix.mitre.org/common-1" xmlns:stixVocabs="http://stix.mitre.org/default_vocabularies-1" xmlns:tlpMarking="http://data-marking.mitre.org/extensions/MarkingStructure#TLP-1" xmlns:ttp="http://stix.mitre.org/TTP-1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:report="http://stix.mitre.org/Report-1" id="cert_au:Package-dd2d0b1c-22d6-48b8-a511-2659a642015d" version="1.2" timestamp="2015-12-23T03:06:50.254779+00:00">
+  <stix:STIX_Header>
+    <stix:Handling>
+      <marking:Marking>
+        <marking:Controlled_Structure>//node()</marking:Controlled_Structure>
+        <marking:Marking_Structure xsi:type="tlpMarking:TLPMarkingStructureType" color="WHITE"/>
+      </marking:Marking>
+    </stix:Handling>
+    <stix:Information_Source>
+      <stixCommon:Identity>
+        <stixCommon:Name>CERT Australia</stixCommon:Name>
+      </stixCommon:Identity>
+    </stix:Information_Source>
+  </stix:STIX_Header>
+  <stix:Observables cybox_major_version="2" cybox_minor_version="1" cybox_update_version="0">
+    <cybox:Observable id="cert_au:Observable-1a919136-ba69-4a28-9615-ad6ee37e88a5">
+      <cybox:Object id="cert_au:URI-bc9ca790-5471-4be4-8d22-ce2886d46e3c">
+        <cybox:Properties xsi:type="URIObj:URIObjectType" type="URL">
+          <URIObj:Value>http://host.domain.tld/path/file</URIObj:Value>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-b6770e76-7f05-48cb-a3de-7ba5fece8751">
+      <cybox:Object id="cert_au:EmailMessage-999c5a34-e457-4e61-a81b-457788d8ee99">
+        <cybox:Properties xsi:type="EmailMessageObj:EmailMessageObjectType">
+          <EmailMessageObj:Header>
+            <EmailMessageObj:From xsi:type="AddressObj:AddressObjectType" category="e-mail">
+              <AddressObj:Address_Value condition="Equals">sender@domain.tld</AddressObj:Address_Value>
+            </EmailMessageObj:From>
+          </EmailMessageObj:Header>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-5d647351-f8cf-442f-9e5a-ba6967cccccc">
+      <cybox:Object id="cert_au:File-ddbe8a61-266c-4c7d-9320-5dac4603ccccc">
+        <cybox:Properties xsi:type="FileObj:FileObjectType">
+          <FileObj:File_Name>filenameonly.doc</FileObj:File_Name>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-5d647351-f8cf-442f-9e5a-ba6967c16301">
+      <cybox:Object id="cert_au:File-ddbe8a61-266c-4c7d-9320-5dac46033814">
+        <cybox:Properties xsi:type="FileObj:FileObjectType">
+          <FileObj:File_Name condition="Equals">project.doc</FileObj:File_Name>
+          <FileObj:Hashes>
+            <cyboxCommon:Hash>
+              <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
+              <cyboxCommon:Simple_Hash_Value condition="Equals">1111111111b42b57f518197d930471d9</cyboxCommon:Simple_Hash_Value>
+            </cyboxCommon:Hash>
+          </FileObj:Hashes>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-31e5af27-2f71-4922-b49c-cfd3ddee2963">
+      <cybox:Object id="cert_au:EmailMessage-e6fb9b9f-cf51-4a8d-966b-e0cf9df476a1">
+        <cybox:Properties xsi:type="EmailMessageObj:EmailMessageObjectType">
+          <EmailMessageObj:Header>
+            <EmailMessageObj:Subject condition="Equals">Important project details</EmailMessageObj:Subject>
+          </EmailMessageObj:Header>
+          <EmailMessageObj:Attachments>
+            <EmailMessageObj:File object_reference="cert_au:Observable-5d647351-f8cf-442f-9e5a-ba6967c16301"/>
+          </EmailMessageObj:Attachments>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-cccccd51-a524-483f-8f17-2e8ff8474d80">
+      <cybox:Object id="cert_au:File-ccccc188-0bb8-4fb3-ac6a-5a77ca38c35e">
+        <cybox:Properties xsi:type="FileObj:FileObjectType">
+          <FileObj:Hashes>
+            <cyboxCommon:Hash>
+              <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
+              <cyboxCommon:Simple_Hash_Value>ccccccccccccccc33574c79829dc1ccf</cyboxCommon:Simple_Hash_Value>
+            </cyboxCommon:Hash>
+          </FileObj:Hashes>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-84060d51-a524-483f-8f17-2e8ff8474d80">
+      <cybox:Object id="cert_au:File-a0c56188-0bb8-4fb3-ac6a-5a77ca38c35e">
+        <cybox:Properties xsi:type="FileObj:FileObjectType">
+          <FileObj:File_Name condition="Equals">Execute&#8212;this.jar</FileObj:File_Name>
+          <FileObj:Hashes>
+            <cyboxCommon:Hash>
+              <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
+              <cyboxCommon:Simple_Hash_Value>11111111111111133574c79829dc1ccf</cyboxCommon:Simple_Hash_Value>
+            </cyboxCommon:Hash>
+          </FileObj:Hashes>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-3ad6c684-80aa-4d92-9fef-7a9f70ccba95">
+      <cybox:Object id="cert_au:File-ab1366ca-3baf-43ed-bc40-9a40cee1780b">
+        <cybox:Properties xsi:type="FileObj:FileObjectType">
+          <FileObj:File_Name condition="Equals">malware.exe</FileObj:File_Name>
+          <FileObj:Hashes>
+            <cyboxCommon:Hash>
+              <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
+              <cyboxCommon:Simple_Hash_Value condition="Equals">11111111111111111f2601b4d21660fb</cyboxCommon:Simple_Hash_Value>
+            </cyboxCommon:Hash>
+          </FileObj:Hashes>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-7cb2ac9f-4cae-443f-905d-0b01cb1faedc">
+      <cybox:Object id="cert_au:File-cc2cbac3-fd1f-46bc-80be-39eceab9e18e">
+        <cybox:Properties xsi:type="FileObj:FileObjectType">
+          <FileObj:File_Name condition="Equals">VPN.exe</FileObj:File_Name>
+          <FileObj:Hashes>
+            <cyboxCommon:Hash>
+              <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">SHA256</cyboxCommon:Type>
+              <cyboxCommon:Simple_Hash_Value condition="Equals">11111111111111119f167683e164e795896be3be94de7f7103f67c6fde667bdf</cyboxCommon:Simple_Hash_Value>
+            </cyboxCommon:Hash>
+            <cyboxCommon:Hash>
+              <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">SHA1</cyboxCommon:Type>
+              <cyboxCommon:Simple_Hash_Value condition="Equals">893fb19ac24eabf9b1fe1ddd1111111111111111</cyboxCommon:Simple_Hash_Value>
+            </cyboxCommon:Hash>
+            <cyboxCommon:Hash>
+              <cyboxCommon:Type condition="Equals" xsi:type="cyboxVocabs:HashNameVocab-1.0">MD5</cyboxCommon:Type>
+              <cyboxCommon:Simple_Hash_Value condition="Equals">11111111111111112977fa0588bd504a</cyboxCommon:Simple_Hash_Value>
+            </cyboxCommon:Hash>
+          </FileObj:Hashes>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-d0f4708e-4f2b-49c9-bc31-29e7119844e5">
+      <cybox:Object id="cert_au:WinRegistryKey-1991b10b-6f02-4670-ab0b-0069867d093e">
+        <cybox:Properties xsi:type="WinRegistryKeyObj:WindowsRegistryKeyObjectType">
+          <WinRegistryKeyObj:Key condition="Equals">\Microsoft\Windows\CurrentVersion\Run</WinRegistryKeyObj:Key>
+          <WinRegistryKeyObj:Hive condition="Equals">HKEY_CURRENT_USER\Software</WinRegistryKeyObj:Hive>
+          <WinRegistryKeyObj:Values>
+            <WinRegistryKeyObj:Value>
+              <WinRegistryKeyObj:Name condition="Equals">hotkey</WinRegistryKeyObj:Name>
+              <WinRegistryKeyObj:Data condition="Equals">%APPDATA%\malware.exe -st</WinRegistryKeyObj:Data>
+            </WinRegistryKeyObj:Value>
+          </WinRegistryKeyObj:Values>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-6517027e-2cdb-47e8-b5c8-50c6044e42de">
+      <cybox:Object id="cert_au:DomainName-1787cd4a-6b9a-4e07-b275-e933e63744f2">
+        <cybox:Properties xsi:type="DomainNameObj:DomainNameObjectType">
+          <DomainNameObj:Value>bad.domain.org</DomainNameObj:Value>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-c97cc016-24b6-4d02-afc2-308742c722dc">
+      <cybox:Object id="cert_au:DomainName-5e058e16-6fe9-4329-b219-5b903e9d4471">
+        <cybox:Properties xsi:type="DomainNameObj:DomainNameObjectType">
+          <DomainNameObj:Value>dnsupdate.dyn.net</DomainNameObj:Value>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-138a5be6-56b2-4d2d-af73-2d4865d6ff71">
+      <cybox:Object id="cert_au:DomainName-e016b473-d77d-407c-9034-821cb3fca41e">
+        <cybox:Properties xsi:type="DomainNameObj:DomainNameObjectType">
+          <DomainNameObj:Value>free.stuff.com</DomainNameObj:Value>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-fe5ddeac-f9b0-4488-9f89-bfbd9351efd4">
+      <cybox:Object id="cert_au:Address-6ab1b220-d0ba-4ddd-8506-9dbb13cf479b">
+        <cybox:Properties xsi:type="AddressObj:AddressObjectType" category="ipv4-addr">
+          <AddressObj:Address_Value>158.164.39.51</AddressObj:Address_Value>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-ccccceac-f9b0-4488-9f89-bfbd9351efd4">
+      <cybox:Object id="cert_au:Address-ccccc220-d0ba-4ddd-8506-9dbb13cf479b">
+        <cybox:Properties xsi:type="AddressObj:AddressObjectType" category="ipv4-addr">
+          <AddressObj:Address_Value condition="Equals">111.222.33.44</AddressObj:Address_Value>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="NCCIC:Observable-01234567-6868-4ffd-babc-ba2ad0e34f43">
+      <cybox:Object id="NCCIC:Object-01234567-a8f9-4c14-ba58-292aa4a35eea">
+        <cybox:Properties xsi:type="MutexObj:MutexObjectType">
+          <MutexObj:Name>WIN_ABCDEF</MutexObj:Name>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="NCCIC:Observable-abcdef01-3363-4533-a77c-10d71c371282">
+      <cybox:Object id="NCCIC:Object-abcdef01-261f-4cc6-a9f4-8cb485cc110e">
+        <cybox:Properties xsi:type="MutexObj:MutexObjectType">
+          <MutexObj:Name>MUTEX_0001</MutexObj:Name>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="CCIRC-CCRIC:Observable-01234567-e44c-473a-85c6-fc6c2e781114">
+      <cybox:Object id="CCIRC-CCRIC:Mutex-01234567-55a1-4210-bdbd-4d7d0f965766">
+        <cybox:Properties xsi:type="MutexObj:MutexObjectType">
+          <MutexObj:Name condition="Equals">iurlkjashdk</MutexObj:Name>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="CCIRC-CCRIC:Observable-01234567-2823-4d6d-8d77-bae10ca5bd97">
+      <cybox:Object id="CCIRC-CCRIC:SocketAddress-01234567-140f-48d1-afa1-65905584f610">
+        <cybox:Properties xsi:type="SocketAddressObj:SocketAddressObjectType">
+          <SocketAddressObj:IP_Address xsi:type="AddressObj:AddressObjectType" category="ipv4-addr">
+            <AddressObj:Address_Value condition="Equals">183.82.180.95</AddressObj:Address_Value>
+          </SocketAddressObj:IP_Address>
+          <SocketAddressObj:Port xsi:type="PortObj:PortObjectType">
+            <PortObj:Port_Value condition="Equals">2665</PortObj:Port_Value>
+            <PortObj:Layer4_Protocol pattern_type="string" is_obfuscated="true" condition="Equals">TCP</PortObj:Layer4_Protocol>
+          </SocketAddressObj:Port>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="cert_au:Observable-6a733d83-5d19-4d17-a51f-5bcb4ebc860a">
+      <cybox:Object id="cert_au:HTTPSession-39d7fad0-ca65-43df-ad16-94676af77fef">
+        <cybox:Properties xsi:type="HTTPSessionObj:HTTPSessionObjectType">
+          <HTTPSessionObj:HTTP_Request_Response>
+            <HTTPSessionObj:HTTP_Client_Request>
+              <HTTPSessionObj:HTTP_Request_Header>
+                <HTTPSessionObj:Parsed_Header>
+                  <HTTPSessionObj:User_Agent>Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2309.372 Safari/537.36</HTTPSessionObj:User_Agent>
+                </HTTPSessionObj:Parsed_Header>
+              </HTTPSessionObj:HTTP_Request_Header>
+            </HTTPSessionObj:HTTP_Client_Request>
+          </HTTPSessionObj:HTTP_Request_Response>
+        </cybox:Properties>
+      </cybox:Object>
+    </cybox:Observable>
+  </stix:Observables>
+  <stix:Indicators>
+    <stix:Indicator id="cert_au:indicator-205f1b70-c5dc-42e5-85d7-15c9fe93c9b8" timestamp="2015-12-23T03:06:50.358888+00:00" xsi:type="indicator:IndicatorType">
+      <indicator:Title>Malicious URLs</indicator:Title>
+      <indicator:Type xsi:type="stixVocabs:IndicatorTypeVocab-1.1">URL Watchlist</indicator:Type>
+      <indicator:Observable idref="cert_au:Observable-1a919136-ba69-4a28-9615-ad6ee37e88a5">
+            </indicator:Observable>
+      <indicator:Indicated_TTP>
+        <stixCommon:TTP idref="cert_au:ttp-542f7bde-6cc3-4bf0-9591-132d62c6aca1" timestamp="2015-01-23T04:01:05.839820+00:00" xsi:type="ttp:TTPType"/>
+      </indicator:Indicated_TTP>
+      <indicator:Kill_Chain_Phases>
+        <stixCommon:Kill_Chain_Phase ordinality="1" name="Pre-infection" phase_id="cert_au:killchainphase-4f20d18e-9a02-4301-b3f2-1d103fe7ca0d" kill_chain_id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87"/>
+      </indicator:Kill_Chain_Phases>
+    </stix:Indicator>
+    <stix:Indicator id="cert_au:indicator-29f42e42-9df4-489b-b67a-cf0accc5dd7a" timestamp="2015-12-23T03:06:50.390845+00:00" xsi:type="indicator:IndicatorType">
+      <indicator:Title>Attributes associated with a malicious e-mail</indicator:Title>
+      <indicator:Type xsi:type="stixVocabs:IndicatorTypeVocab-1.1">Malicious E-mail</indicator:Type>
+      <indicator:Observable idref="cert_au:Observable-b6770e76-7f05-48cb-a3de-7ba5fece8751">
+            </indicator:Observable>
+      <indicator:Indicated_TTP>
+        <stixCommon:TTP idref="cert_au:ttp-94fccb2e-27f2-4f29-9810-5b797a6849ed" timestamp="2015-01-23T04:01:05.839600+00:00" xsi:type="ttp:TTPType"/>
+      </indicator:Indicated_TTP>
+      <indicator:Kill_Chain_Phases>
+        <stixCommon:Kill_Chain_Phase ordinality="1" name="Pre-infection" phase_id="cert_au:killchainphase-4f20d18e-9a02-4301-b3f2-1d103fe7ca0d" kill_chain_id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87"/>
+      </indicator:Kill_Chain_Phases>
+      <indicator:Suggested_COAs>
+        <indicator:Suggested_COA>
+          <stixCommon:Course_Of_Action idref="cert_au:coa-104d8ebf-6210-47c0-b932-51acbcef5c43" timestamp="2015-01-21T00:52:30.062598+00:00" xsi:type="coa:CourseOfActionType"/>
+        </indicator:Suggested_COA>
+      </indicator:Suggested_COAs>
+      <indicator:Confidence timestamp="2015-12-23T03:06:50.391139+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+      </indicator:Confidence>
+    </stix:Indicator>
+    <stix:Indicator id="cert_au:indicator-a8b7aa31-e16c-43a9-a4b0-cd62bb182d48" timestamp="2015-12-23T03:06:50.478418+00:00" xsi:type="indicator:IndicatorType">
+      <indicator:Title>Attributes associated with a malicious e-mail</indicator:Title>
+      <indicator:Type xsi:type="stixVocabs:IndicatorTypeVocab-1.1">Malicious E-mail</indicator:Type>
+      <indicator:Observable idref="cert_au:Observable-31e5af27-2f71-4922-b49c-cfd3ddee2963">
+            </indicator:Observable>
+      <indicator:Indicated_TTP>
+        <stixCommon:TTP idref="cert_au:ttp-94fccb2e-27f2-4f29-9810-5b797a6849ed" timestamp="2015-01-23T04:01:05.839600+00:00" xsi:type="ttp:TTPType"/>
+      </indicator:Indicated_TTP>
+      <indicator:Kill_Chain_Phases>
+        <stixCommon:Kill_Chain_Phase ordinality="1" name="Pre-infection" phase_id="cert_au:killchainphase-4f20d18e-9a02-4301-b3f2-1d103fe7ca0d" kill_chain_id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87"/>
+      </indicator:Kill_Chain_Phases>
+      <indicator:Suggested_COAs>
+        <indicator:Suggested_COA>
+          <stixCommon:Course_Of_Action idref="cert_au:coa-104d8ebf-6210-47c0-b932-51acbcef5c43" timestamp="2015-01-21T00:52:30.062598+00:00" xsi:type="coa:CourseOfActionType"/>
+        </indicator:Suggested_COA>
+      </indicator:Suggested_COAs>
+      <indicator:Confidence timestamp="2015-12-23T03:06:50.478698+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+      </indicator:Confidence>
+    </stix:Indicator>
+    <stix:Indicator id="cert_au:indicator-11cbaca5-25f0-4503-b6df-e372d2339934" timestamp="2015-12-23T03:06:50.644035+00:00" xsi:type="indicator:IndicatorType">
+      <indicator:Title>Malware samples - files</indicator:Title>
+      <indicator:Type xsi:type="stixVocabs:IndicatorTypeVocab-1.1">Malware Artifacts</indicator:Type>
+      <indicator:Observable id="cert_au:Observable-ad84a719-fbe9-44fa-9597-fdf750b1b0a8">
+        <cybox:Observable_Composition operator="OR">
+          <cybox:Observable idref="cert_au:Observable-84060d51-a524-483f-8f17-2e8ff8474d80">
+                    </cybox:Observable>
+          <cybox:Observable idref="cert_au:Observable-5d647351-f8cf-442f-9e5a-ba6967cccccc">
+                    </cybox:Observable>
+          <cybox:Observable idref="cert_au:Observable-3ad6c684-80aa-4d92-9fef-7a9f70ccba95">
+                    </cybox:Observable>
+          <cybox:Observable idref="cert_au:Observable-7cb2ac9f-4cae-443f-905d-0b01cb1faedc">
+                    </cybox:Observable>
+        </cybox:Observable_Composition>
+      </indicator:Observable>
+      <indicator:Indicated_TTP>
+        <stixCommon:TTP idref="cert_au:ttp-abe2c3dc-b9fe-4a54-ad78-6c32372feee5" timestamp="2015-01-05T04:01:05.849123+00:00" xsi:type="ttp:TTPType"/>
+      </indicator:Indicated_TTP>
+      <indicator:Kill_Chain_Phases>
+        <stixCommon:Kill_Chain_Phase ordinality="2" name="Post-infection" phase_id="cert_au:killchainphase-2ca22885-a8c4-4e63-87be-97507a2a7ae2" kill_chain_id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87"/>
+      </indicator:Kill_Chain_Phases>
+      <indicator:Suggested_COAs>
+        <indicator:Suggested_COA>
+          <stixCommon:Course_Of_Action idref="cert_au:coa-016e9078-7275-4bd3-89eb-f6655d283265" timestamp="2015-06-19T02:01:58.105922+00:00" xsi:type="coa:CourseOfActionType"/>
+        </indicator:Suggested_COA>
+      </indicator:Suggested_COAs>
+      <indicator:Confidence timestamp="2015-12-23T03:06:50.644343+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+      </indicator:Confidence>
+    </stix:Indicator>
+    <stix:Indicator id="cert_au:indicator-ac1bf436-1dbe-40e0-b53b-52080c2bc34d" timestamp="2015-12-23T03:06:50.649447+00:00" xsi:type="indicator:IndicatorType">
+      <indicator:Title>Windows registry key value associated with malicious software</indicator:Title>
+      <indicator:Type xsi:type="stixVocabs:IndicatorTypeVocab-1.1">Malware Artifacts</indicator:Type>
+      <indicator:Observable idref="cert_au:Observable-d0f4708e-4f2b-49c9-bc31-29e7119844e5">
+            </indicator:Observable>
+      <indicator:Indicated_TTP>
+        <stixCommon:TTP idref="cert_au:ttp-abe2c3dc-b9fe-4a54-ad78-6c32372feee5" timestamp="2015-01-05T04:01:05.849123+00:00" xsi:type="ttp:TTPType"/>
+      </indicator:Indicated_TTP>
+      <indicator:Kill_Chain_Phases>
+        <stixCommon:Kill_Chain_Phase ordinality="2" name="Post-infection" phase_id="cert_au:killchainphase-2ca22885-a8c4-4e63-87be-97507a2a7ae2" kill_chain_id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87"/>
+      </indicator:Kill_Chain_Phases>
+      <indicator:Suggested_COAs>
+        <indicator:Suggested_COA>
+          <stixCommon:Course_Of_Action idref="cert_au:coa-016e9078-7275-4bd3-89eb-f6655d283265" timestamp="2015-06-19T02:01:58.105922+00:00" xsi:type="coa:CourseOfActionType"/>
+        </indicator:Suggested_COA>
+      </indicator:Suggested_COAs>
+    </stix:Indicator>
+    <stix:Indicator id="cert_au:indicator-4ee3952f-672e-4dd2-a8e5-f3a524e17d5f" timestamp="2015-12-23T03:06:50.655526+00:00" xsi:type="indicator:IndicatorType">
+      <indicator:Title>Domains for known C2 channel</indicator:Title>
+      <indicator:Type xsi:type="stixVocabs:IndicatorTypeVocab-1.1">Domain Watchlist</indicator:Type>
+      <indicator:Observable id="cert_au:Observable-7086fdef-5191-46b8-b1b5-3a886a0b3de0">
+        <cybox:Observable_Composition operator="OR">
+          <cybox:Observable idref="cert_au:Observable-6517027e-2cdb-47e8-b5c8-50c6044e42de">
+                    </cybox:Observable>
+          <cybox:Observable idref="cert_au:Observable-c97cc016-24b6-4d02-afc2-308742c722dc">
+                    </cybox:Observable>
+          <cybox:Observable idref="cert_au:Observable-138a5be6-56b2-4d2d-af73-2d4865d6ff71">
+                    </cybox:Observable>
+        </cybox:Observable_Composition>
+      </indicator:Observable>
+      <indicator:Indicated_TTP>
+        <stixCommon:TTP idref="cert_au:ttp-08c47bb7-272d-46f6-a70c-9d93306b6d7b" timestamp="2015-01-23T04:01:05.839764+00:00" xsi:type="ttp:TTPType"/>
+      </indicator:Indicated_TTP>
+      <indicator:Kill_Chain_Phases>
+        <stixCommon:Kill_Chain_Phase ordinality="2" name="Post-infection" phase_id="cert_au:killchainphase-2ca22885-a8c4-4e63-87be-97507a2a7ae2" kill_chain_id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87"/>
+      </indicator:Kill_Chain_Phases>
+      <indicator:Suggested_COAs>
+        <indicator:Suggested_COA>
+          <stixCommon:Course_Of_Action idref="cert_au:coa-1ed740e0-cba0-4fea-8744-b06d63ef0d7e" timestamp="2015-01-21T00:52:30.062093+00:00" xsi:type="coa:CourseOfActionType"/>
+        </indicator:Suggested_COA>
+      </indicator:Suggested_COAs>
+    </stix:Indicator>
+    <stix:Indicator id="cert_au:indicator-5a91c64d-1a26-4ae3-88d2-fc77434deabb" timestamp="2015-12-23T03:06:50.659925+00:00" xsi:type="indicator:IndicatorType">
+      <indicator:Title>IP addresses for known C2 channel</indicator:Title>
+      <indicator:Type xsi:type="stixVocabs:IndicatorTypeVocab-1.1">IP Watchlist</indicator:Type>
+      <indicator:Observable idref="cert_au:Observable-fe5ddeac-f9b0-4488-9f89-bfbd9351efd4">
+            </indicator:Observable>
+      <indicator:Indicated_TTP>
+        <stixCommon:TTP idref="cert_au:ttp-08c47bb7-272d-46f6-a70c-9d93306b6d7b" timestamp="2015-01-23T04:01:05.839764+00:00" xsi:type="ttp:TTPType"/>
+      </indicator:Indicated_TTP>
+      <indicator:Kill_Chain_Phases>
+        <stixCommon:Kill_Chain_Phase ordinality="2" name="Post-infection" phase_id="cert_au:killchainphase-2ca22885-a8c4-4e63-87be-97507a2a7ae2" kill_chain_id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87"/>
+      </indicator:Kill_Chain_Phases>
+      <indicator:Suggested_COAs>
+        <indicator:Suggested_COA>
+          <stixCommon:Course_Of_Action idref="cert_au:coa-46cb7963-6dc8-4862-bbc2-23c923c9ed54" timestamp="2015-01-21T00:52:30.061991+00:00" xsi:type="coa:CourseOfActionType"/>
+        </indicator:Suggested_COA>
+      </indicator:Suggested_COAs>
+    </stix:Indicator>
+  </stix:Indicators>
+  <stix:TTPs>
+    <stix:TTP id="cert_au:ttp-542f7bde-6cc3-4bf0-9591-132d62c6aca1" timestamp="2015-01-23T04:01:05.839820+00:00" xsi:type="ttp:TTPType">
+      <ttp:Title>Malicious URL</ttp:Title>
+    </stix:TTP>
+    <stix:TTP id="cert_au:ttp-94fccb2e-27f2-4f29-9810-5b797a6849ed" timestamp="2015-01-23T04:01:05.839600+00:00" xsi:type="ttp:TTPType">
+      <ttp:Title>Spear phishing</ttp:Title>
+    </stix:TTP>
+    <stix:TTP id="cert_au:ttp-abe2c3dc-b9fe-4a54-ad78-6c32372feee5" timestamp="2015-01-05T04:01:05.849123+00:00" xsi:type="ttp:TTPType">
+      <ttp:Title>Malicious file</ttp:Title>
+    </stix:TTP>
+    <stix:TTP id="cert_au:ttp-08c47bb7-272d-46f6-a70c-9d93306b6d7b" timestamp="2015-01-23T04:01:05.839764+00:00" xsi:type="ttp:TTPType">
+      <ttp:Title>Attacker infrastructure - hosting</ttp:Title>
+      <ttp:Resources>
+        <ttp:Infrastructure>
+          <ttp:Type xsi:type="stixVocabs:AttackerInfrastructureTypeVocab-1.0">Hosting</ttp:Type>
+        </ttp:Infrastructure>
+      </ttp:Resources>
+    </stix:TTP>
+    <stix:Kill_Chains>
+      <stixCommon:Kill_Chain id="cert_au:killchain-b7e7f2ff-bad1-458a-aadd-de8abe4b5c87" name="CERT Australia Cyber Kill Chain">
+        <stixCommon:Kill_Chain_Phase ordinality="1" name="Pre-infection" phase_id="cert_au:killchainphase-4f20d18e-9a02-4301-b3f2-1d103fe7ca0d"/>
+        <stixCommon:Kill_Chain_Phase ordinality="2" name="Post-infection" phase_id="cert_au:killchainphase-2ca22885-a8c4-4e63-87be-97507a2a7ae2"/>
+      </stixCommon:Kill_Chain>
+    </stix:Kill_Chains>
+  </stix:TTPs>
+  <stix:Courses_Of_Action>
+    <stix:Course_Of_Action id="cert_au:coa-46cb7963-6dc8-4862-bbc2-23c923c9ed54" timestamp="2015-01-21T00:52:30.061991+00:00" xsi:type="coa:CourseOfActionType">
+      <coa:Title>Block, log and monitor traffic to known malicious IP addresses</coa:Title>
+      <coa:Stage xsi:type="stixVocabs:COAStageVocab-1.0">Response</coa:Stage>
+      <coa:Type xsi:type="stixVocabs:CourseOfActionTypeVocab-1.0">Perimeter Blocking</coa:Type>
+      <coa:Objective>
+        <coa:Description>Block, log and monitor communications with known malicious IP addresses</coa:Description>
+        <coa:Applicability_Confidence timestamp="2015-01-21T00:52:30.062034+00:00">
+          <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+        </coa:Applicability_Confidence>
+      </coa:Objective>
+      <coa:Impact timestamp="2015-01-21T00:52:30.062046+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Medium</stixCommon:Value>
+        <stixCommon:Description>A risk assessment should always be undertaken before implementing network level blocks of infrastructure. In some incidents, otherwise legitimate infrastructure is compromised (possibly only temporarily). When implementing this course of action, blocks should silently drop and log connection attempts. Logs should be regularly reviewed connection attempts to malicious infrastructure are detected rapidly.</stixCommon:Description>
+      </coa:Impact>
+      <coa:Cost timestamp="2015-01-21T00:52:30.062005+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Low</stixCommon:Value>
+      </coa:Cost>
+      <coa:Efficacy timestamp="2015-01-21T00:52:30.062019+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+      </coa:Efficacy>
+    </stix:Course_Of_Action>
+    <stix:Course_Of_Action id="cert_au:coa-1ed740e0-cba0-4fea-8744-b06d63ef0d7e" timestamp="2015-01-21T00:52:30.062093+00:00" xsi:type="coa:CourseOfActionType">
+      <coa:Title>Block, log and monitor traffic to known malicious domains</coa:Title>
+      <coa:Stage xsi:type="stixVocabs:COAStageVocab-1.0">Response</coa:Stage>
+      <coa:Type xsi:type="stixVocabs:CourseOfActionTypeVocab-1.0">Perimeter Blocking</coa:Type>
+      <coa:Objective>
+        <coa:Description>Block, log and monitor communications with known malicious domains</coa:Description>
+        <coa:Applicability_Confidence timestamp="2015-01-21T00:52:30.062124+00:00">
+          <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+        </coa:Applicability_Confidence>
+      </coa:Objective>
+      <coa:Impact timestamp="2015-01-21T00:52:30.062133+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Medium</stixCommon:Value>
+        <stixCommon:Description>A risk assessment should always be undertaken before implementing network level blocks of infrastructure. In some incidents, otherwise legitimate infrastructure is compromised (possibly only temporarily). When implementing this course of action, blocks should silently drop and log connection attempts. Logs should be regularly reviewed connection attempts to malicious infrastructure are detected rapidly. When adding domain based blocks these should be implemented in DNS, proxy and gateway devices as appropriate.</stixCommon:Description>
+      </coa:Impact>
+      <coa:Cost timestamp="2015-01-21T00:52:30.062103+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Low</stixCommon:Value>
+      </coa:Cost>
+      <coa:Efficacy timestamp="2015-01-21T00:52:30.062112+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+      </coa:Efficacy>
+    </stix:Course_Of_Action>
+    <stix:Course_Of_Action id="cert_au:coa-016e9078-7275-4bd3-89eb-f6655d283265" timestamp="2015-06-19T02:01:58.105922+00:00" xsi:type="coa:CourseOfActionType">
+      <coa:Title>Monitor for known malicious files and settings</coa:Title>
+      <coa:Stage xsi:type="stixVocabs:COAStageVocab-1.0">Response</coa:Stage>
+      <coa:Type xsi:type="stixVocabs:CourseOfActionTypeVocab-1.0">Monitoring</coa:Type>
+      <coa:Objective>
+        <coa:Description>Monitor for known malicious files and settings</coa:Description>
+        <coa:Applicability_Confidence timestamp="2015-06-19T02:01:58.106054+00:00">
+          <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+        </coa:Applicability_Confidence>
+      </coa:Objective>
+      <coa:Impact timestamp="2015-06-19T02:01:58.106088+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Low</stixCommon:Value>
+        <stixCommon:Description>Monitoring for malicious files at mail gateways and monitoring for malicious files and associated system configuration settings on hosts using regulary updated and activated anti-virus scanners will support the identification of targeted and potentially compromised hosts. Where malicious files matching the indicators provided are detected these should be investigated and reported to CERT Australia for further advice and assistance.</stixCommon:Description>
+      </coa:Impact>
+      <coa:Cost timestamp="2015-06-19T02:01:58.105969+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Low</stixCommon:Value>
+      </coa:Cost>
+      <coa:Efficacy timestamp="2015-06-19T02:01:58.105992+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Medium</stixCommon:Value>
+      </coa:Efficacy>
+    </stix:Course_Of_Action>
+    <stix:Course_Of_Action id="cert_au:coa-104d8ebf-6210-47c0-b932-51acbcef5c43" timestamp="2015-01-21T00:52:30.062598+00:00" xsi:type="coa:CourseOfActionType">
+      <coa:Title>Monitor known malicious emails</coa:Title>
+      <coa:Stage xsi:type="stixVocabs:COAStageVocab-1.0">Response</coa:Stage>
+      <coa:Type xsi:type="stixVocabs:CourseOfActionTypeVocab-1.0">Monitoring</coa:Type>
+      <coa:Objective>
+        <coa:Description>Monitor known malicious emails</coa:Description>
+        <coa:Applicability_Confidence timestamp="2015-01-21T00:52:30.062626+00:00">
+          <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">High</stixCommon:Value>
+        </coa:Applicability_Confidence>
+      </coa:Objective>
+      <coa:Impact timestamp="2015-01-21T00:52:30.062637+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Low</stixCommon:Value>
+        <stixCommon:Description>Monitoring for malicious emails (subjects, senders, attachments) will allow the identification of targeted and potentially compromised hosts. Where malicious emails are detected these should be investigated and reported to CERT Australia for further advice and assistance.</stixCommon:Description>
+      </coa:Impact>
+      <coa:Cost timestamp="2015-01-21T00:52:30.062607+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Low</stixCommon:Value>
+      </coa:Cost>
+      <coa:Efficacy timestamp="2015-01-21T00:52:30.062616+00:00">
+        <stixCommon:Value xsi:type="stixVocabs:HighMediumLowVocab-1.0">Medium</stixCommon:Value>
+      </coa:Efficacy>
+    </stix:Course_Of_Action>
+  </stix:Courses_Of_Action>
+  <stix:Reports>
+    <stix:Report id="cert_au:report-caa85a76-ab70-4fe7-8d5f-1b70f3624189" timestamp="2015-01-21T00:52:30.062598+00:00" xsi:type="report:ReportType">
+      <report:Header>
+        <report:Title>CA-TEST-STIX</report:Title>
+        <report:Intent xsi:type="stixVocabs:PackageIntentVocab-1.0">Indicators</report:Intent>
+        <report:Description>Test STIX data</report:Description>
+      </report:Header>
+    </stix:Report>
+  </stix:Reports>
+</stix:STIX_Package>
+

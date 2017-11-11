@@ -1,10 +1,26 @@
 #!/usr/bin/env python
 
+import os
 from setuptools import setup
 
+from certau import package_name, package_version
+
+def here(*path):
+    return os.path.join(os.path.dirname(__file__), *path)
+
+
+def get_file_contents(filename):
+    with open(here(filename)) as fp:
+        return fp.read()
+
+
+# This is a quick and dirty way to include everything from
+# requirements.txt as package dependencies.
+install_requires_list = get_file_contents('requirements.txt').split()
+
 setup(
-    name='cti-toolkit',
-    version='1.1.0.dev2',
+    name=package_name,
+    version=package_version,
     description='CERT Australia cyber threat intelligence (CTI) toolkit',
     url='https://github.com/certau/cti-toolkit/',
     author='CERT Australia, Australian Government',
@@ -24,6 +40,9 @@ setup(
     keywords='STIX TAXII',
     packages={
         'certau',
+        'certau/lib',
+        'certau/lib/stix',
+        'certau/lib/taxii',
         'certau/scripts',
         'certau/source',
         'certau/transform',
@@ -33,15 +52,6 @@ setup(
             'stixtransclient.py=certau.scripts.stixtransclient:main',
         ],
     },
-    install_requires=[
-        'configargparse',
-        'lxml',
-        'libtaxii',
-        'cybox==2.1.0.13',
-        'stix==1.2.0.2',
-        'stix-ramrod==1.1.0',
-        'mixbox',
-        'pymisp',
-        'requests',
-    ]
+
+    install_requires=install_requires_list
 )

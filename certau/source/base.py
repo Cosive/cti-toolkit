@@ -1,30 +1,46 @@
+import logging
+import os
+import warnings
+
 import ramrod
 from stix.core import STIXPackage
 from stix.utils.parser import UnsupportedVersionError
 
+LATEST_STIX_VERSION = "1.2"
 
-class StixSource(object):
-    """A base class for sources of STIX packages."""
+class StixSourceItem(object):
+    """A base class for STIX package containers."""
 
-    def load_stix_package(self, stix_file, stix_version='1.2'):
-        """Helper for loading and updating (if required) a STIX package."""
-        try:
-            # TODO add in a version check to make sure that the returned STIX is
-            # what the user requested. If not, it needs ramrodding
-            package = STIXPackage.from_xml(stix_file)
-            
-        except UnsupportedVersionError:
-            updated = ramrod.update(stix_file, to_=stix_version)
-            document = updated.document.as_stringio()
+    def __init__(self, source_item):
+        self.source_item = source_item
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore","The use of this field has been deprecated",UserWarning)
             try:
-                package = STIXPackage.from_xml(document)
+                self.stix_package = STIXPackage.from_xml(self.io())
+            except UnsupportedVersionError:
+                updated = ramrod.update(self.io(), to_=LATEST_STIX_VERSION)
+                document = updated.document.as_stringio()
+                self.stix_package = STIXPackage.from_xml(document)
             except Exception:
-                package = None
-        except Exception:
-            package = None
+                logging.error('error parsing STIX package (%s)', self.file_name())
+                self.stix_package = None
 
-        return package
+        self.stix_version = self.stix_package.version
 
-    def next_stix_package(self):
-        """Return the next STIX package available from the source (or None)."""
+    def io(self):
         raise NotImplementedError
+
+    def file_name(self):
+        raise NotImplementedError
+
+    def save(self, directory):
+        try:
+            stix_package = self.stix_package
+            file_name = self.file_name()
+            full_path = os.path.join(directory, file_name)
+            logging.info('saving STIX package to file \'%s\'', full_path)
+            with open(full_path, 'wb') as file_:
+                file_.write(self.stix_package.to_xml())
+        except Exception:
+            logging.error('unable to save STIX package to file \'%s\'',
+                          full_path)

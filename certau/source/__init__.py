@@ -1,8 +1,7 @@
-"""Classes that provide a source of STIX packages.
+"""Classes used to provide a source of STIX packages."""
 
-These classes should implement the ``next_stix_package()`` method.
-"""
-
-from .base import StixSource
-from .taxii import SimpleTaxiiClient
+from .base import StixSourceItem
+from .files import StixFileSourceItem
 from .files import StixFileSource
+from .taxii import TaxiiContentBlockSourceItem
+from .taxii import TaxiiContentBlockSource
