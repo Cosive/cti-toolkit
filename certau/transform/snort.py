@@ -112,12 +112,12 @@ class StixSnortTransform(StixTextTransform):
                 for field in observable['fields']:
                     domain = field['value']
                     text += self.snort_rule_text(
-                        match='tcp any any -> $EXTERNAL_NET $HTTP_PORTS',
+                        match='udp any any -> $EXTERNAL_NET 53',
                         conditions=[
-                            'flow:established,to_server',
+                            'byte_test:1, !&, 0xF8,2',
                             'content:"{}"'.format(domain),
-                            'http_header',
-                            'nocase',
+                            'fast_pattern:only',
+                            'metadata:service dns',
                             'msg:"CTI-Toolkit connection to potentially '
                             'malicious domain {} (ID {})"'.format(domain, id_),
                         ],
@@ -133,7 +133,7 @@ class StixSnortTransform(StixTextTransform):
                             'http_header',
                             'nocase',
                             'uricontent:"{}"'.format(url.path),
-                            'nocase',
+                            'metadata:service http',
                             'msg:"CTI-Toolkit connection to potentially '
                             'malicious url {} (ID {})"'.format(url.geturl(), id_),
                         ],

@@ -5,10 +5,10 @@ Configuration examples
 
 The ``stixtransclient.py`` utility can read its configuration parameters from
 the following locations:
- - /etc/ctitoolkit.conf
- - ~/.ctitoolkit
- - a configuration file specified using the ``--config`` command line option
- - as explicit command line parameters
+- /etc/ctitoolkit.conf
+- ~/.ctitoolkit
+- a configuration file specified using the ``--config`` command line option
+- as explicit command line parameters
 
 If a configuration option is specified in more than one of the above locations
 the last one processed will take precedence. Options are processed in the

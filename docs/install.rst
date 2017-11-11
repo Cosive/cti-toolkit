@@ -45,3 +45,34 @@ Requires tox::
 Then run the tests from the repository root using::
 
     $ tox
+
+Development
+-----------
+
+To build a development version from the codebase perform the following steps.
+
+#. Clone the github repository::
+
+    $ sudo git clone https://github.com/certau/cti-toolkit.git
+
+#. Create a vurtualenv environment::
+
+    $ cd cti-toolkit
+    $ sudo pip install virtualenv
+    $ virtualenv env
+    $ source env/bin/activate
+
+#. Install all the python develeopment requirements into the virtualenv::
+
+    $ sudo pip install -r requirements-dev.txt
+
+#. Build and Install the local cti-toolkit::
+
+    $ sudo python setup.py install
+
+That's it. You should now be able to run utilities, such as
+``stixtransclient.py``::
+
+    $ stixtransclient.py -h
+
+
