@@ -42,11 +42,11 @@ setup(
         'configargparse',
         'lxml',
         'libtaxii>=1.1.111',  # needed for user-agent support
-        'cybox==2.1.0.13',
-        'stix==1.1.1.8',
+        'cybox==2.1.0.14',
+        'stix==1.2.0.4',
         'stix-ramrod',
         'mixbox',
-        'pymisp>=2.4.71',
+        'pymisp>=2.4.82',
         'requests',
     ]
 )
