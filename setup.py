@@ -41,7 +41,7 @@ setup(
     install_requires=[
         'configargparse',
         'lxml',
-        'libtaxii',
+        'libtaxii>=1.1.111',  # needed for user-agent support
         'cybox==2.1.0.13',
         'stix==1.1.1.8',
         'stix-ramrod',
