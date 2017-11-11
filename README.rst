@@ -29,11 +29,11 @@ installation process has been tested on clean install of Ubuntu 14.04 and CentOS
 
 #. Install prerequisites required by setuptools and libtaxii::
 
-** For Ubuntu/Debian **
+**For Ubuntu/Debian**::
 
     $ sudo apt-get install python-pip python-dev libxml2-dev libxslt1-dev libz-dev
 
-** For RHEL/CentOS **
+**For RHEL/CentOS**::
 
     $ sudo yum install python-pip python-devel python-lxml libxml2-devel zlib-devel
 
@@ -74,6 +74,16 @@ Development
 -----------
 
 To build a development version from the codebase perform the following steps.
+
+#. Install prerequisites required by setuptools and libtaxii::
+
+**For Ubuntu/Debian**::
+
+    $ sudo apt-get install python-pip python-dev libxml2-dev libxslt1-dev libz-dev
+
+**For RHEL/CentOS**::
+
+    $ sudo yum install python-pip python-devel python-lxml libxml2-devel zlib-devel
 
 #. Clone the github repository::
 
