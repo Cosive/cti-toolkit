@@ -429,6 +429,7 @@ def test_misp_publishing(_,stix_version):
     assert r_create_event.path == '/events'
     assert json.loads(r_create_event.body) == {
         u'Event': {
+            u'Tag': [],
             u'attributes': [],
             u'analysis': misp_event_args['analysis'],
             u'published': False,
