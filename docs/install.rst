@@ -6,11 +6,17 @@ Installation
 This document describes how to install the CERT Australia CTI Toolkit.
 
 Installation is streamlined using Python's setuptools. The following
-installation process has been tested on clean install of Ubuntu Server 16.04.
+installation process has been tested on clean install of Ubuntu Server 16.04 and CentOS 7.
 
 #. Install prerequisites required by setuptools and libtaxii::
 
+** For Ubuntu/Debian **
+
     $ sudo apt-get install python-pip python-dev libxml2-dev libxslt1-dev libz-dev
+
+** For RHEL/CentOS **
+
+    $ sudo yum install python-pip python-devel python-lxml libxml2-devel zlib-devel
 
 #. Install the cti-toolkit::
 
