@@ -183,15 +183,15 @@ class SimpleTaxiiClient(HttpClient):
                                response.result_id,
                                'True' if response.more else 'False')
 
+            # Save end timestamp from first PollResponse
+            if first:
+                self.poll_end_time = response.inclusive_end_timestamp_label
+
             if len(response.content_blocks) == 0:
                 if first:
                     self._logger.info('poll response contained '
                                       'no content blocks')
                 break
-
-            # Save end timestamp from first PollResponse
-            if first:
-                self.poll_end_time = response.inclusive_end_timestamp_label
 
             for content_block in response.content_blocks:
                 yield content_block

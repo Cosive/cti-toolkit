@@ -11,7 +11,7 @@ warnings.filterwarnings('ignore', 'You\'re using python 2, it is strongly '
                         'recommended to use python >=3.4')
 from pymisp import PyMISP
 
-from certau.lib.stix.helpers import package_time
+from certau.util.stix.helpers import package_time
 from .base import StixTransform
 
 
