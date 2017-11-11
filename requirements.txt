@@ -1,5 +1,5 @@
 configargparse
-lxml
+lxml>=3.3.5
 libtaxii>=1.1.111
 cybox>=2.1.0.13
 stix>=1.2.0.4
