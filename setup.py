@@ -26,9 +26,9 @@ setup(
     keywords='STIX TAXII',
     packages={
         'certau',
-        'certau/lib',
-        'certau/lib/stix',
-        'certau/lib/taxii',
+        'certau/util',
+        'certau/util/stix',
+        'certau/util/taxii',
         'certau/scripts',
         'certau/source',
         'certau/transform',

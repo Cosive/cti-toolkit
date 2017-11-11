@@ -20,9 +20,9 @@ from certau.source import StixFileSource, TaxiiContentBlockSource
 from certau.transform import StixTextTransform, StixStatsTransform
 from certau.transform import StixCsvTransform, StixBroIntelTransform
 from certau.transform import StixMispTransform, StixSnortTransform
-from certau.lib.stix.ais import ais_refactor
-from certau.lib.stix.helpers import package_tlp, TLP_COLOURS
-from certau.lib.taxii.client import SimpleTaxiiClient
+from certau.util.stix.ais import ais_refactor
+from certau.util.stix.helpers import package_tlp, TLP_COLOURS
+from certau.util.taxii.client import SimpleTaxiiClient
 
 
 def get_arg_parser():
